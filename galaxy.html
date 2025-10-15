@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Galaxy Gift ✨</title>
+  <style>
+    html, body { height:100%; margin:0; background:#000; overflow:hidden; }
+    #tip { position:fixed; left:12px; bottom:12px; color:#fff; font:14px/1.2 system-ui, -apple-system, Segoe UI, Roboto, sans-serif; opacity:.85 }
+  </style>
+</head>
+<body>
+  <div id="tip">✨ Kéo để xoay, lăn để zoom. Ảnh quay quanh hành tinh. <a href="index.html" style="color:#fff">Quay lại</a></div>
+  <canvas id="cv"></canvas>
+  <script>
+    const img = new Image();
+const userImg = localStorage.getItem('userImageDataUrl');
+img.src = userImg || 'assets/OIP.webp';
+
+    // Touch drag
+cv.addEventListener('touchstart', e=>{
+  if(!e.touches.length) return;
+  dragging = true;
+  const t = e.touches[0]; px = t.clientX; py = t.clientY;
+}, {passive:true});
+
+cv.addEventListener('touchmove', e=>{
+  if(!dragging || !e.touches.length) return;
+  const t = e.touches[0]; const dx = t.clientX - px, dy = t.clientY - py;
+  px = t.clientX; py = t.clientY;
+  userRotY += dx * 0.006;
+  userRotX += dy * 0.006;
+  userRotX = Math.max(-1.2, Math.min(1.2, userRotX));
+}, {passive:true});
+
+cv.addEventListener('touchend', ()=> dragging=false, {passive:true});
+
+// Pinch zoom (đơn giản: 2 ngón → thay đổi dist)
+let lastPinch = null;
+cv.addEventListener('touchmove', e=>{
+  if(e.touches.length === 2){
+    const [a,b] = e.touches;
+    const d = Math.hypot(a.clientX-b.clientX, a.clientY-b.clientY);
+    if(lastPinch != null){
+      const delta = d - lastPinch;
+      dist = Math.max(220, Math.min(920, dist - delta*0.6));
+    }
+    lastPinch = d;
+  } else {
+    lastPinch = null;
+  }
+}, {passive:true});
+    const cv = document.getElementById('cv');
+    const cx = cv.getContext('2d');
+    let W, H, DPR = devicePixelRatio||1;
+    function resize(){
+      W = cv.width = innerWidth * DPR;
+      H = cv.height = innerHeight * DPR;
+      cv.style.width = innerWidth+'px'; cv.style.height = innerHeight+'px';
+      cx.setTransform(DPR,0,0,DPR,0,0);
+    }
+    addEventListener('resize', resize); resize();
+
+    // starfield
+    const stars = Array.from({length: 900}, ()=> ({
+      x: (Math.random()-0.5)*2400,
+      y: (Math.random()-0.5)*1400,
+      z: Math.random()*2000 + 300
+    }));
+
+    // ring sprites
+    const N = 240;
+    const sprites = [];
+    for(let i=0;i<N;i++){
+      const a = i/N * Math.PI*2;
+      const r = 280 + Math.sin(i*0.3)*16;
+      sprites.push({a, r, y:(Math.random()-0.5)*40, s: Math.random()*0.7 + 0.5});
+    }
+
+    // camera/orbit
+    let rotY = 0, rotX = 0.18, dist = 520;
+    let drag=false, lx=0, ly=0;
+    cv.addEventListener('mousedown', e=>{drag=true; lx=e.clientX; ly=e.clientY;});
+    addEventListener('mouseup', ()=>drag=false);
+    addEventListener('mousemove', e=>{
+      if(!drag) return;
+      const dx = e.clientX-lx, dy=e.clientY-ly; lx=e.clientX; ly=e.clientY;
+      rotY += dx*0.006;
+      rotX += dy*0.006;
+      rotX = Math.max(-1.2, Math.min(1.2, rotX));
+    });
+    addEventListener('wheel', e=> dist = Math.max(220, Math.min(920, dist + e.deltaY*0.4)) );
+
+    function proj(x,y,z){
+      const cY=Math.cos(rotY), sY=Math.sin(rotY);
+      const cX=Math.cos(rotX), sX=Math.sin(rotX);
+      let X = x*cY - z*sY;
+      let Z = x*sY + z*cY;
+      let Y = y*cX - Z*sX;
+      Z = y*sX + Z*cX + dist;
+      const f = 420/Z;
+      return {x: innerWidth/2 + X*f, y: innerHeight/2 + Y*f, s: f, Z};
+    }
+
+    let t=0;
+    (function loop(){
+      requestAnimationFrame(loop);
+      t += 0.02; // faster!
+      rotY += 0.0035; // auto-rotate faster
+
+      // background glow
+      const g = cx.createRadialGradient(innerWidth*0.7, innerHeight*0.4, 0, innerWidth*0.7, innerHeight*0.4, Math.max(innerWidth,innerHeight));
+      g.addColorStop(0,'rgba(120,200,255,0.35)');
+      g.addColorStop(1,'rgba(0,0,0,1)');
+      cx.fillStyle = g; cx.fillRect(0,0,innerWidth,innerHeight);
+
+      // stars
+      cx.fillStyle = 'rgba(255,255,255,.9)';
+      for(const s of stars){
+        const p = proj(s.x, s.y, s.z);
+        const r = Math.max(.4, 1.4*p.s);
+        cx.globalAlpha = .7;
+        cx.beginPath(); cx.arc(p.x, p.y, r, 0, Math.PI*2); cx.fill();
+      }
+      cx.globalAlpha = 1;
+
+      // planet
+      const center = {x: innerWidth/2, y: innerHeight/2};
+      const planetR = 52;
+      const pg = cx.createRadialGradient(center.x-18, center.y-20, 10, center.x, center.y, planetR*1.6);
+      pg.addColorStop(0,'#ffe5f1');
+      pg.addColorStop(0.6,'#f7a1c8');
+      pg.addColorStop(1,'#5cb3ff');
+      cx.fillStyle = pg; cx.beginPath(); cx.arc(center.x, center.y, planetR, 0, Math.PI*2); cx.fill();
+
+      // rings
+      cx.strokeStyle = 'rgba(255,255,255,.5)';
+      cx.setLineDash([6,8]); cx.lineWidth = 2;
+      cx.beginPath(); cx.ellipse(center.x, center.y, planetR+28, planetR+10, 0.25, 0, Math.PI*2); cx.stroke();
+      cx.setLineDash([]);
+
+      // orbiting sprites
+      const ordered = sprites.slice().sort((a,b)=> a.a-b.a);
+      for(const sp of ordered){
+        const a = sp.a + t*(1.4 + sp.s*0.8);
+        const r = sp.r;
+        const x = Math.cos(a)*r;
+        const z = Math.sin(a)*r;
+        const y = sp.y;
+        const p = proj(x,y,z);
+        const w = 28*sp.s*p.s; const h = w; // square card
+        const radius = 8 * p.s;
+        // draw rounded rect with image inside
+        cx.save();
+        cx.translate(p.x, p.y);
+        cx.beginPath();
+        const rw = Math.max(6, w), rh = Math.max(6, h), rr = Math.min(radius, rw/3);
+        roundedRect(cx, -rw/2, -rh/2, rw, rh, rr); cx.clip();
+        if(img.complete) cx.drawImage(img, -rw/2, -rh/2, rw, rh);
+        cx.restore();
+      }
+
+      function roundedRect(ctx, x, y, w, h, r){
+        ctx.moveTo(x+r, y);
+        ctx.arcTo(x+w, y, x+w, y+h, r);
+        ctx.arcTo(x+w, y+h, x, y+h, r);
+        ctx.arcTo(x, y+h, x, y, r);
+        ctx.arcTo(x, y, x+w, y, r);
+        ctx.closePath();
+      }
+    })();
+
+    if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js').catch(()=>{});
+}
+
+  </script>
+</body>
+</html>

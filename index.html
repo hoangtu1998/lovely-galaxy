@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+  />
+  <title>Nhập Pass</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#000000">
+
+  <link href="https://fonts.googleapis.com/css2?family=Playpen+Sans:wght@700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#f6f7fb; --card:#ffffff; --ink:#1b1c1f; --muted:#60646c;
+      --key:#ffffff; --keyShadow: 6px 8px 16px rgba(0,0,0,.08), -2px -2px 6px rgba(255,255,255,.9);
+      --accent:#ff6b9e; --danger:#b6bbc6; --link:#ff6b9e;
+    }
+    *{ box-sizing:border-box }
+    html, body{ height:100% }
+    body{
+      margin:0; background:var(--bg); color:var(--ink);
+      font-family:"Playpen Sans", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+    h1{
+      margin:28px 0 12px; text-align:center; font-size:clamp(28px, 3.6vw, 44px); letter-spacing:.5px;
+      text-transform:uppercase;
+    }
+    .wrap{
+      width:min(1000px, 94vw); margin:0 auto; padding:18px 0 34px;
+      display:grid; place-items:center;
+    }
+    .card{
+      width:min(860px, 100%); background:var(--card); border-radius:20px;
+      box-shadow: 0 24px 80px rgba(0,0,0,.08);
+      padding:28px;
+      display:grid; grid-template-columns: 1fr 1fr; gap:26px;
+    }
+    .left{ display:grid; place-items:center; }
+    .pic{
+      width:min(360px, 100%);
+      border-radius:18px;
+      box-shadow: 0 14px 40px rgba(0,0,0,.12);
+      display:block;
+      background:#eee;
+    }
+    .right{ display:grid; gap:14px; align-content:start }
+    .display{
+      height:58px; border-radius:14px; background:#f0f2f7; border:1px solid #e7e9f0;
+      display:flex; align-items:center; justify-content:flex-end; padding:0 16px; font-size:26px;
+      letter-spacing:4px; font-variant-numeric: tabular-nums; overflow:hidden;
+      box-shadow: inset 0 2px 6px rgba(0,0,0,.06);
+      user-select:none;
+    }
+    .pad{
+      display:grid; grid-template-columns: repeat(3, 1fr); gap:12px;
+      user-select:none; touch-action: manipulation;
+    }
+    /* ép ảnh vuông, fill đẹp */
+    img.pic, .inner img {
+      width: 100%; aspect-ratio: 1 / 1; object-fit: cover; border-radius: 12px;
+    }
+    button.key{
+      height:60px; border-radius:14px; border:0; background:var(--key); box-shadow:var(--keyShadow);
+      font-size:20px; font-weight:700; cursor:pointer; color:#3a3f4b;
+      transition: transform .05s ease-in-out, box-shadow .2s;
+    }
+    button.key:active{ transform: translateY(1px) scale(.99); }
+    .key.ok{ background:linear-gradient(0deg, #ff6b9e 0%, #ff8fb1 100%); color:#fff; }
+    .key.del{ background:#e9ebf2; color:#636976; }
+    .foot{
+      text-align:center; color:var(--muted); font-size:12px; margin-top:6px;
+    }
+    .nav{
+      text-align:center; margin:6px 0 10px;
+    }
+    .nav a{
+      color:var(--link); text-decoration:none; font-size:14px;
+    }
+    @media (max-width: 780px){
+      .card{ grid-template-columns: 1fr; }
+      .left{ order: 1 }
+      .right{ order: 2 }
+    }
+    /* rung nhẹ khi sai */
+    .shake{ animation:shake .25s ease; }
+    @keyframes shake{
+      10%,90%{ transform:translateX(-2px) }
+      20%,80%{ transform:translateX(4px) }
+      30%,50%,70%{ transform:translateX(-7px) }
+      40%,60%{ transform:translateX(7px) }
+    }
+  </style>
+</head>
+<body>
+  <h1>NHẬP PASS ĐI NGƯỜI ĐẸP</h1>
+  <section class="wrap">
+    <div class="card" id="card" aria-live="polite">
+      <div class="left">
+        <img class="pic" id="avatar" src="assets/OIP.webp" alt="Ảnh minh hoạ"/>
+      </div>
+      <div class="right">
+        <div class="display" id="disp" aria-label="Mật khẩu đang nhập"></div>
+        <div class="pad" role="group" aria-label="Bàn phím số">
+          <!-- row 1 -->
+          <button class="key" data-k="1" aria-label="1">1</button>
+          <button class="key" data-k="2" aria-label="2">2</button>
+          <button class="key" data-k="3" aria-label="3">3</button>
+          <!-- row 2 -->
+          <button class="key" data-k="4" aria-label="4">4</button>
+          <button class="key" data-k="5" aria-label="5">5</button>
+          <button class="key" data-k="6" aria-label="6">6</button>
+          <!-- row 3 -->
+          <button class="key" data-k="7" aria-label="7">7</button>
+          <button class="key" data-k="8" aria-label="8">8</button>
+          <button class="key" data-k="9" aria-label="9">9</button>
+          <!-- row 4 -->
+          <button class="key del" data-k="del" aria-label="Xoá">⨉</button>
+          <button class="key" data-k="0" aria-label="0">0</button>
+          <button class="key ok" data-k="ok" aria-label="Xác nhận">✓</button>
+        </div>
+        <div class="foot">Gợi ý: <code>1234</code> (đổi trong <code>settings.html</code> hoặc localStorage)</div>
+      </div>
+    </div>
+    <div class="nav">
+      <a href="settings.html">⚙️ Cài đặt</a>
+    </div>
+  </section>
+
+<script>
+/* ====== Config keys ====== */
+const LS_PW  = 'userPassword';
+const LS_IMG = 'userImageDataUrl';
+const SECRET_DEFAULT = "1234"; // fallback nếu chưa đặt trong settings
+
+/* ====== Elements ====== */
+const disp = document.getElementById('disp');
+const card = document.getElementById('card');
+const avatar = document.getElementById('avatar');
+
+/* ====== Load user image if any ====== */
+(function loadUserImage(){
+  const dataUrl = localStorage.getItem(LS_IMG);
+  if (dataUrl) {
+    avatar.src = dataUrl;
+  } else {
+    // fallback asset (bạn có thể đổi tên file này)
+    avatar.src = 'assets/OIP.webp';
+  }
+})();
+
+/* ====== Password handling ====== */
+let buf = "";
+function getSecret(){
+  return (localStorage.getItem(LS_PW) || '').trim() || SECRET_DEFAULT;
+}
+function updateDisp(){
+  // hiển thị dạng •••• cho kín
+  disp.textContent = '•'.repeat(buf.length);
+}
+function vibrate(ms=10){
+  // rung nhẹ khi tap (máy hỗ trợ)
+  if (navigator.vibrate) navigator.vibrate(ms);
+}
+let shakeTimer = null;
+function shake(){
+  card.classList.add('shake');
+  clearTimeout(shakeTimer);
+  shakeTimer = setTimeout(()=> card.classList.remove('shake'), 260);
+}
+function submit(){
+  const ok = (buf === getSecret());
+  if(ok){
+    localStorage.setItem('gift_unlocked','1');
+    location.href = 'birthday.html'; // hoặc 'birthday_combo.html'
+  } else {
+    buf = ""; updateDisp(); shake(); vibrate(30);
+  }
+}
+function press(k){
+  if(k === 'ok') { submit(); return; }
+  if(k === 'del') { buf = buf.slice(0,-1); updateDisp(); return; }
+  if(/^[0-9]$/.test(k) && buf.length < 12){
+    buf += k; updateDisp(); vibrate(6);
+  }
+}
+
+/* ====== Bind keypad ====== */
+document.querySelectorAll('.key').forEach(b=>{
+  b.addEventListener('click', ()=> press(b.dataset.k));
+});
+
+/* Giữ nút xoá để xoá nhanh */
+(function holdToDelete(){
+  const delBtn = document.querySelector('.key.del');
+  let holdT=null, repT=null;
+
+  function start(){
+    clearTimeout(holdT); clearInterval(repT);
+    holdT = setTimeout(()=>{
+      repT = setInterval(()=>{
+        if(!buf.length){ clearInterval(repT); return; }
+        buf = buf.slice(0,-1); updateDisp();
+      }, 40);
+    }, 300);
+  }
+  function end(){
+    clearTimeout(holdT); clearInterval(repT);
+  }
+  delBtn.addEventListener('mousedown', start);
+  delBtn.addEventListener('touchstart', start, {passive:true});
+  ['mouseup','mouseleave','touchend','touchcancel'].forEach(ev=> delBtn.addEventListener(ev, end));
+})();
+
+/* ====== Keyboard support (desktop) ====== */
+addEventListener('keydown', e=>{
+  if(e.key >= '0' && e.key <= '9') press(e.key);
+  if(e.key === 'Backspace') press('del');
+  if(e.key === 'Enter') press('ok');
+});
+
+updateDisp();
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js').catch(()=>{});
+}
+</script>
+
+</body>
+</html>

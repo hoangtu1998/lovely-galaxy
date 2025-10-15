@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lovely — Happy Birthday</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playpen+Sans:wght@400;700&display=swap" rel="stylesheet">
+   <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#000000">
+  <style>
+    *{box-sizing:border-box}
+    html, body{height:100%}
+    body{margin:0; background:#000; overflow:hidden; font-family:"Playpen Sans", system-ui, -apple-system, Segoe UI, Roboto, sans-serif; color:#fff;}
+    canvas#matrix{position:fixed; inset:0; z-index:0;}
+    .title{
+      position:fixed; top:24px; left:50%; transform:translateX(-50%); z-index:2;
+      font-weight:800; letter-spacing:.5px; font-size:clamp(24px, 4vw, 44px); text-align:center;
+      text-shadow: 0 4px 22px rgba(0,0,0,.6);
+      white-space:nowrap;
+    }
+    .intro{ position:fixed; inset:0; display:grid; place-items:center; z-index:1; }
+    .dots{ width:70vmin; height:70vmin; }
+    .card{ 
+      position:fixed; inset:0; display:grid; place-items:center; z-index:3; opacity:0; pointer-events:none;
+      transition: opacity .8s ease;
+    }
+    .card.show{ opacity:1; pointer-events:auto; }
+    .inner{
+      width:min(92vw, 520px); background:#fff; color:#111; border-radius:16px;
+      box-shadow:0 24px 80px rgba(0,0,0,.55); padding:20px; text-align:center;
+    }
+    .inner img{ width:100%; border-radius:12px; display:block; }
+    .btn{ margin-top:18px; display:inline-block; padding:12px 18px; border-radius:999px; border:0;
+      font-weight:700; text-decoration:none; background:linear-gradient(90deg,#ff8fb1,#ff6b9e); color:white;
+      box-shadow:0 10px 24px rgba(255,107,158,.3);
+    }
+  </style>
+</head>
+<body>
+  <canvas id="matrix"></canvas>
+  <div class="title" id="title"></div>
+  <div class="intro">
+    <canvas class="dots" id="cake"></canvas>
+  </div>
+  <section class="card" id="card">
+    <div class="inner">
+      <img id="giftImg"  src="assets/OIP.webp" alt="gift"/>
+      <a class="btn" href="galaxy_2.html">Mở quà ✨</a>
+    </div>
+  </section>
+
+<script>
+// ====== Matrix Rain Background ======
+const cvs = document.getElementById('matrix');
+const ctx = cvs.getContext('2d');
+const glyphs = 'HhappyBbirthday🎂✨yêuthương';
+let W,H,cols,drops;
+function resize(){
+  W = cvs.width = innerWidth;
+  H = cvs.height = innerHeight;
+  cols = Math.floor(W/16);
+  drops = Array(cols).fill(0);
+}
+addEventListener('resize', resize); resize();
+(function draw(){
+  requestAnimationFrame(draw);
+  ctx.fillStyle = 'rgba(0,0,0,0.08)';
+  ctx.fillRect(0,0,W,H);
+  ctx.font = '16px monospace';
+  for(let i=0;i<drops.length;i++){
+    const ch = glyphs[Math.floor(Math.random()*glyphs.length)];
+    const x = i*16, y = drops[i]*16;
+    ctx.fillStyle = `hsl(${(i*9 + performance.now()/25)%360} 80% 70%)`;
+    ctx.fillText(ch, x, y);
+    if(y>H && Math.random()>0.965) drops[i]=0; else drops[i]++;
+  }
+})();
+
+// ====== Title typing ======
+const title = document.getElementById('title');
+const msg = 'Chúc mừng sinh nhật! 🎉';
+let idx = 0;
+function type(){
+  if(idx <= msg.length){
+    title.textContent = msg.slice(0, idx);
+    idx++; setTimeout(type, 80);
+  }
+}
+type();
+
+// ====== Cake dots (particle silhouette) ======
+const cake = document.getElementById('cake');
+const c2 = cake.getContext('2d');
+
+function drawCake(){
+  const size = Math.min(cake.clientWidth, cake.clientHeight);
+  cake.width = size; cake.height = size;
+  c2.clearRect(0,0,size,size);
+
+  // Làm việc ở TOẠ ĐỘ MÀN HÌNH (không dùng transform)
+  const s  = size/600;          // scale từ đơn vị “mẫu” → px
+  const cx = size/2;            // tâm X
+  const cy = size/2 + 10*s;     // tâm Y (hạ xuống chút)
+  const X = x => cx + x*s;
+  const Y = y => cy + y*s;
+
+  // Hình bánh kem (đế + kem + nến + lửa)
+  // ===== 3-tier cake (3 tầng) =====
+const bases = [];   // 3 thân bánh
+const creams = [];  // 3 mặt kem
+
+// helper: bo góc cho Path2D (dùng cùng hệ toạ độ X,Y hiện có)
+function addRoundRect(path, x, y, w, h, r){
+  // đảm bảo bán kính hợp lệ
+  r = Math.max(0, Math.min(r, Math.min(w, h) / 2));
+  path.moveTo(X(x - w/2 + r), Y(y));
+  path.lineTo(X(x + w/2 - r), Y(y));
+  path.quadraticCurveTo(X(x + w/2), Y(y), X(x + w/2), Y(y + r));
+  path.lineTo(X(x + w/2), Y(y + h - r));
+  path.quadraticCurveTo(X(x + w/2), Y(y + h), X(x + w/2 - r), Y(y + h));
+  path.lineTo(X(x - w/2 + r), Y(y + h));
+  path.quadraticCurveTo(X(x - w/2), Y(y + h), X(x - w/2), Y(y + h - r));
+  path.lineTo(X(x - w/2), Y(y + r));
+  path.quadraticCurveTo(X(x - w/2), Y(y), X(x - w/2 + r), Y(y));
+  path.closePath();
+}
+
+// Thông số 3 tầng (toạ độ theo “mẫu” trước khi nhân s và đưa vào X/Y)
+const tiers = [
+  //   yTop,   width, height, radius
+  { y:  90,   w: 320, h: 120, r: 28 }, // Bottom
+  { y:  10,   w: 240, h:  95, r: 22 }, // Middle
+  { y: -60,   w: 170, h:  80, r: 18 }, // Top
+];
+
+// Vẽ thân bánh + mặt kem cho mỗi tầng
+for (const t of tiers){
+  // thân (rounded-rect)
+  const p = new Path2D();
+  addRoundRect(p, 0, t.y, t.w, t.h, t.r);
+  bases.push(p);
+
+  // mặt kem (nửa ellipse trên đỉnh tầng)
+  const cream = new Path2D();
+  // tỉ lệ tương tự đoạn cũ (rx ≈ 0.44*w, ry ≈ 0.6*h trên mẫu)
+  const rx = (t.w * 0.44) * s;
+  const ry = (t.h * 0.60) * s;
+  cream.ellipse(X(0), Y(t.y), rx, ry, 0, Math.PI, 0, true);
+  creams.push(cream);
+}
+
+// Nến & Lửa đặt trên đỉnh tầng trên cùng
+const candle = new Path2D();
+candle.rect(X(-8), Y(tiers[2].y - 40), 16*s, 60*s);
+
+const flame = new Path2D();
+flame.moveTo(X(0), Y(tiers[2].y - 70));
+flame.quadraticCurveTo(X(18), Y(tiers[2].y - 110), X(0), Y(tiers[2].y - 130));
+flame.quadraticCurveTo(X(-18), Y(tiers[2].y - 110), X(0), Y(tiers[2].y - 70));
+
+// Hàm kiểm tra 1 điểm có nằm trong hình bánh (bất kỳ tầng/mặt kem/nến/lửa) không
+const inside = (px, py) => {
+  // kiểm thân bánh
+  for (const b of bases) if (c2.isPointInPath(b, px, py)) return true;
+  // kiểm mặt kem
+  for (const cr of creams) if (c2.isPointInPath(cr, px, py)) return true;
+  // kiểm nến + lửa
+  if (c2.isPointInPath(candle, px, py)) return true;
+  if (c2.isPointInPath(flame,  px, py)) return true;
+  return false;
+};
+
+  // Rải điểm & giữ lại điểm nằm trong các path
+  const dots = [];
+  const minx = X(-320), maxx = X(320);
+  const miny = Y(-200), maxy = Y(360);
+  for(let i=0;i<26000;i++){
+    const px = Math.random()*(maxx-minx)+minx;
+    const py = Math.random()*(maxy-miny)+miny;
+    if(inside(px, py)) dots.push({px, py, a: Math.random()*0.6 + 0.4});
+    if(dots.length > 2300) break;
+  }
+
+  // Glow nhẹ
+  const g = c2.createRadialGradient(cx, cy, 10*s, cx, cy, 220*s);
+  g.addColorStop(0,'rgba(255,255,255,.25)');
+  g.addColorStop(1,'rgba(255,255,255,0)');
+  c2.fillStyle = g; c2.beginPath(); c2.arc(cx, cy, 230*s, 0, Math.PI*2); c2.fill();
+
+  // Vẽ chấm
+  for(const d of dots){
+    c2.fillStyle = `rgba(255,255,255,${d.a.toFixed(2)})`;
+    c2.fillRect(d.px-1, d.py-1, 2.2, 2.2);
+  }
+}
+addEventListener('resize', drawCake);
+drawCake();
+
+// Chờ 5 giây rồi mới hiện ảnh + nút
+const dataUrl = localStorage.getItem('userImageDataUrl');
+if (dataUrl) document.getElementById('giftImg').src = dataUrl;
+// Delay 5s đã có rồi; nếu chưa, thêm:
+setTimeout(()=> document.getElementById('card').classList.add('show'), 5000);
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js').catch(()=>{});
+}
+
+</script>
+</body>
+</html>

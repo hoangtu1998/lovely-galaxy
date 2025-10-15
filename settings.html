@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+<title>Cài đặt | Lovely</title>
+<style>
+  :root{ --bg:#0b0f19; --card:#141a2a; --ink:#eaf0ff; --muted:#9fb0d4; --accent:#ff6b9e; }
+  *{box-sizing:border-box} html,body{height:100%}
+  body{margin:0; background:var(--bg); color:var(--ink); font:600 16px/1.4 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+  .wrap{max-width:720px; margin:0 auto; padding:20px 16px 40px}
+  h1{margin:14px 0 2px; text-align:center; font-size:20px}
+  p.sub{margin:0 0 18px; text-align:center; color:var(--muted); font-size:13px}
+  .card{background:var(--card); border:1px solid rgba(255,255,255,.08); border-radius:16px; padding:16px; box-shadow:0 20px 60px rgba(0,0,0,.35)}
+  .row{display:grid; gap:10px; margin-bottom:14px}
+  label{font-size:13px; color:var(--muted)}
+  input[type="password"], input[type="text"]{
+    width:100%; padding:12px 14px; border-radius:12px; border:1px solid rgba(255,255,255,.12);
+    background:#0f1424; color:var(--ink); outline:none; font-size:16px
+  }
+  .btn{display:inline-block; padding:12px 16px; border:0; border-radius:12px; font-weight:700; cursor:pointer}
+  .primary{background:linear-gradient(90deg,#ff8fb1,#ff6b9e); color:#fff; box-shadow:0 10px 24px rgba(255,107,158,.25)}
+  .ghost{background:rgba(255,255,255,.06); color:#fff}
+  .muted{background:rgba(255,255,255,.08); color:#fff}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+  .preview{display:grid; place-items:center; background:#0f1424; border:1px dashed rgba(255,255,255,.15); border-radius:12px; overflow:hidden; min-height:220px}
+  .preview img{width:100%; max-height:360px; object-fit:cover}
+  .hint{font-size:12px; color:var(--muted)}
+  .footer{display:flex; gap:8px; flex-wrap:wrap; margin-top:14px}
+  .nav{margin-top:16px; text-align:center}
+  a.link{color:#fff; text-decoration:none}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>⚙️ Cài đặt</h1>
+    <p class="sub">Chọn ảnh & đặt mật khẩu. Xuất tệp để dùng trên máy khác.</p>
+
+    <div class="card">
+      <div class="row">
+        <label>Ảnh (webp / png / jpg / svg)</label>
+        <div class="grid2">
+          <div class="preview" id="preview"><span class="hint">Chưa có ảnh — chọn ở bên phải</span></div>
+          <div>
+            <input id="file" type="file" accept=".webp,.png,.jpg,.jpeg,.svg,image/*" />
+            <p class="hint">Ảnh vuông 600–1200px sẽ hiển thị đẹp hơn.</p>
+            <button class="btn muted" id="clearImg">Xoá ảnh</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <label>Mật khẩu</label>
+        <input id="pw" type="password" placeholder="Nhập mật khẩu..." inputmode="numeric" />
+      </div>
+
+      <div class="footer">
+        <button class="btn primary" id="save">💾 Lưu</button>
+        <button class="btn ghost" id="export">⬇️ Export (.json)</button>
+        <input id="importFile" type="file" accept=".json" hidden />
+        <button class="btn ghost" id="importBtn">⬆️ Import (.json)</button>
+        <button class="btn muted" id="reset">↺ Reset mặc định</button>
+      </div>
+      <p class="hint" id="msg"></p>
+    </div>
+
+    <div class="nav">
+      <a class="link" href="index.html">← Về trang nhập pass</a>
+    </div>
+  </div>
+
+<script>
+const LS_IMG = 'userImageDataUrl';
+const LS_PW  = 'userPassword';
+
+// Load hiện tại
+const imgData = localStorage.getItem(LS_IMG) || '';
+const savedPw = localStorage.getItem(LS_PW)  || '';
+
+const preview = document.getElementById('preview');
+const pwInput = document.getElementById('pw');
+const fileInp = document.getElementById('file');
+const msg     = document.getElementById('msg');
+
+function renderPreview(dataUrl){
+  preview.innerHTML = '';
+  if(!dataUrl){ preview.innerHTML = '<span class="hint">Chưa có ảnh — chọn ở bên phải</span>'; return; }
+  const img = new Image(); img.src = dataUrl; img.alt = 'preview';
+  preview.appendChild(img);
+}
+renderPreview(imgData);
+pwInput.value = savedPw;
+
+// chọn ảnh
+fileInp.addEventListener('change', e=>{
+  const f = e.target.files[0]; if(!f) return;
+  const reader = new FileReader();
+  reader.onload = () => renderPreview(reader.result);
+  reader.readAsDataURL(f);
+});
+
+// nút xoá ảnh
+document.getElementById('clearImg').onclick = ()=>{
+  renderPreview('');
+};
+
+// lưu
+document.getElementById('save').onclick = ()=>{
+  // lấy ảnh từ preview (nếu có)
+  const img = preview.querySelector('img');
+  const dataUrl = img ? img.src : '';
+  localStorage.setItem(LS_IMG, dataUrl);
+  localStorage.setItem(LS_PW,  pwInput.value.trim());
+  msg.textContent = '✔️ Đã lưu cài đặt.';
+  setTimeout(()=> msg.textContent = '', 2000);
+};
+
+// export
+document.getElementById('export').onclick = ()=>{
+  const data = {
+    image: localStorage.getItem(LS_IMG) || '',
+    password: localStorage.getItem(LS_PW) || ''
+  };
+  const blob = new Blob([JSON.stringify(data)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'lovely-settings.json';
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+};
+
+// import
+document.getElementById('importBtn').onclick = ()=> document.getElementById('importFile').click();
+document.getElementById('importFile').addEventListener('change', e=>{
+  const f = e.target.files[0]; if(!f) return;
+  const reader = new FileReader();
+  reader.onload = () =>{
+    try{
+      const data = JSON.parse(reader.result);
+      if('image' in data) localStorage.setItem(LS_IMG, data.image || '');
+      if('password' in data) localStorage.setItem(LS_PW, data.password || '');
+      renderPreview(data.image || '');
+      pwInput.value = data.password || '';
+      msg.textContent = '✔️ Đã import thiết lập.';
+      setTimeout(()=> msg.textContent = '', 2000);
+    }catch(err){
+      msg.textContent = '❌ File không hợp lệ.';
+    }
+  };
+  reader.readAsText(f);
+});
+
+// reset
+document.getElementById('reset').onclick = ()=>{
+  localStorage.removeItem(LS_IMG);
+  localStorage.removeItem(LS_PW);
+  renderPreview('');
+  pwInput.value = '';
+  msg.textContent = '↺ Đã xoá cài đặt (trở về mặc định).';
+  setTimeout(()=> msg.textContent = '', 2500);
+};
+</script>
+</body>
+</html>
