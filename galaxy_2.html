@@ -32,6 +32,8 @@
   <canvas id="cv"></canvas>
 
 <script>
+  // === Sync với settings ===
+const LS_IMG_GALAXY = 'img_galaxy_dataurl';
 /* ========= Canvas & DPR ========= */
 const cv = document.getElementById('cv');
 const cx = cv.getContext('2d', { alpha: false });
@@ -87,13 +89,17 @@ const stars = Array.from({length: LOW ? 900 : 1400}, ()=> ({
 }));
 
 /* ========= Orbiting sprites (ảnh người dùng nếu có) ========= */
+// ========= Orbiting sprites (ảnh người dùng từ settings) =========
 const spriteImg = new Image();
-(function chooseSprite(){
-  const user = localStorage.getItem('userImageDataUrl');
-  if (user) { spriteImg.src = user; return; }
-  const tryList = ['assets/OIP.webp','assets/OIP.png','assets/abc.jpg','assets/cute.svg'];
-  spriteImg.src = tryList.find(Boolean);
-})();
+const savedGalaxy = localStorage.getItem(LS_IMG_GALAXY);
+
+// fallback khi chưa chọn ảnh trong settings
+const FALLBACK_GALAXY = 'assets/card-cute.png';
+
+// gán nguồn ảnh
+spriteImg.src = savedGalaxy || FALLBACK_GALAXY;
+
+
 
 /* ========= Orbit params ========= */
 const sprites = [];
