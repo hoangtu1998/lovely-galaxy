@@ -162,18 +162,22 @@
   position: fixed;
   inset: 0;
   background-size: cover;
-  background-position: center center;
+  background-position: center;
   background-repeat: no-repeat;
-  filter: blur(18px) brightness(0.8);
-  transform: scale(1.1); /* phóng nhẹ để crop bớt viền */
   z-index: 0;
 }
 
-/* đảm bảo các layer còn lại hiển thị phía trên */
-#matrix { z-index: 1; }
-.intro  { z-index: 2; }
-.card   { z-index: 3; }
-#greet  { z-index: 4; } /* nếu bạn có lời chúc */
+#matrix { 
+  position: fixed;
+  inset: 0;
+  z-index: 1; /* matrix đè lên nền */
+}
+
+.intro, .card, #greet {
+  position: relative;
+  z-index: 2; /* ảnh bánh, thiệp, chữ nổi lên trên matrix */
+}
+
 
   </style>
 </head>
@@ -454,4 +458,5 @@ mainCard.addEventListener('click', e => {
 </script>
 </body>
 </html>
+
 
