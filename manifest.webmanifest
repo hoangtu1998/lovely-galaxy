@@ -1,7 +1,7 @@
 {
   "name": "Lovely Galaxy",
   "short_name": "Galaxy",
-  "start_url": "/lovely-galaxy/galaxy_2.html",
+  "start_url": "/lovely-galaxy/index.html",
   "display": "standalone",
   "icons": [
     {
@@ -11,3 +11,4 @@
     }
   ]
 }
+
