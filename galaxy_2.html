@@ -57,7 +57,7 @@
 
   <div id="wishBox">
     Chúc mừng sinh nhật 🎂
-    Chúc em luôn xinh đẹp, hạnh phúc
+    Chúc bạn luôn xinh đẹp, hạnh phúc
     và được yêu thương nhất vũ trụ 💖✨
   </div>
 
@@ -69,7 +69,7 @@ const LS_IMG_GALAXY = 'img_galaxy_dataurl';
 const LS_WISH_TEXT  = 'wish_text';
 
 const savedWish = localStorage.getItem(LS_WISH_TEXT)
-  || "Chúc mừng sinh nhật 🎂 Chúc em luôn xinh đẹp, hạnh phúc và được yêu thương nhất vũ trụ 💖✨";
+  || "Chúc mừng sinh nhật 🎂 Chúc bạn luôn xinh đẹp, hạnh phúc và được yêu thương nhất vũ trụ 💖✨";
 
 document.getElementById('wishBox').textContent = savedWish;
 setTimeout(()=> {
@@ -145,7 +145,7 @@ spriteImg.src = savedGalaxy || FALLBACK_GALAXY;
 const sprites = [];
 for(let i=0;i<ORBIT_SPRITES;i++){
   const a = i / ORBIT_SPRITES * Math.PI*2;
-  const r = 260 + Math.sin(i*0.7)*18;
+  const r = 280 + Math.sin(i*0.7)*18;
   sprites.push({
     baseA: a,
     r,
@@ -219,7 +219,7 @@ function proj(x,y,z){
 let mode = "orbit";
 let tOrbit = 0;              // thời gian quay
 let orbitFrameCounter = 0;   // đếm frame trong chế độ orbit
-const ORBIT_FRAMES_BEFORE_SPOTLIGHT = 30; // ~4 giây quay trước khi phóng to
+const ORBIT_FRAMES_BEFORE_SPOTLIGHT = 20; // ~4 giây quay trước khi phóng to
 
 let spotlightFrameCounter = 0;
 const SPOTLIGHT_FRAMES = 10; // ~2 giây đứng im to
@@ -241,34 +241,29 @@ let pulsing = false;
     orbitFrameCounter++;
 
     if (orbitFrameCounter >= ORBIT_FRAMES_BEFORE_SPOTLIGHT){
-      // chuyển sang spotlight
-      mode = "spotlight";
-      orbitFrameCounter = 0;
-      spotlightFrameCounter = 0;
+              // chuyển sang spotlight
+        mode = "spotlight";
+        orbitFrameCounter = 0;
+        spotlightFrameCounter = 0;
 
-      // lấy sprite sẽ phóng to
-      const sp = sprites[spotlightSpriteIndex];
+        // chỉ ghi nhớ index sẽ show lần này
+        spotlightSpriteIndex = spotlightSpriteIndex % sprites.length;
 
-      // tính scale hiện tại của sprite đó để dùng làm base
-      const angNow = sp.baseA + tOrbit*(0.028 + sp.s*0.004);
-      const px3 = Math.cos(angNow)*sp.r;
-      const pz3 = Math.sin(angNow)*sp.r;
-      const py3 = sp.y;
-      const screen = proj(px3, py3, pz3);
+        // chuẩn bị index cho lần tới
+        // (tăng trước cho vòng sau)
+        spotlightSpriteIndexNext = (spotlightSpriteIndex + 1) % sprites.length;
 
-      spotlightImageScale = sp.s * screen.s;
-
-      // sau lần này thì lần tới spotlight sẽ là sprite kế tiếp
-      spotlightSpriteIndex = (spotlightSpriteIndex + 1) % sprites.length;
     }
 
   } else if (mode === "spotlight"){
     // KHÔNG tăng tOrbit => tất cả đứng im
     spotlightFrameCounter++;
     if (spotlightFrameCounter >= SPOTLIGHT_FRAMES){
-      // hết spotlight quay lại orbit
-      mode = "orbit";
-    }
+  mode = "orbit";
+  // chuyển index hiện hành sang indexNext
+  spotlightSpriteIndex = spotlightSpriteIndexNext;
+}
+
   }
 
   // --- 2. vẽ nền ---
@@ -366,7 +361,7 @@ let pulsing = false;
       const screen = proj(px3, py3, pz3);
 
       const scaleNow = sp.s * screen.s;
-      const w = 44 * scaleNow;
+      const w = 80 * scaleNow;
       const h = w;
       const rr = Math.min(10*scaleNow, w/4);
 
