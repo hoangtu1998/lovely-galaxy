@@ -211,7 +211,7 @@ localStorage.setItem(LS_GREETING, (document.getElementById('greeting').value || 
     showMsg('Đã lưu ✓', true);
   }catch(e){
     console.error(e);
-    showMsg('Lỗi khi lưu!', false);
+    showMsg('Lỗi khi lưu!'+e, false);
   }
 });
 
@@ -272,3 +272,4 @@ document.getElementById('imp').addEventListener('change', async (e)=>{
 </script>
 </body>
 </html>
+
