@@ -219,6 +219,7 @@ document.getElementById('btnSave').addEventListener('click', async ()=>{
     if (fGala && fGala.files && fGala.files[0]) {
       console.log('[SAVE] converting fGala...');
       const d = await toDataURL(fGala.files[0]);
+       localStorage.removeItem(LS_IMG_GALAXY);
       localStorage.setItem(LS_IMG_GALAXY, d);
       setPreview(pvGala, d);
     }
@@ -290,5 +291,6 @@ document.getElementById('imp').addEventListener('change', async (e)=>{
 </script>
 </body>
 </html>
+
 
 
