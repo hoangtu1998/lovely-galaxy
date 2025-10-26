@@ -181,37 +181,55 @@ load();
 
 /* ====== Save ====== */
 document.getElementById('btnSave').addEventListener('click', async ()=>{
+  console.log('[SAVE] bắt đầu lưu...');
   try{
     // password
+    console.log('[SAVE] set password/localStorage...', { LS_PW, pwEl });
     localStorage.setItem(LS_PW, (pwEl.value||'').trim());
-localStorage.setItem(LS_GREETING, (document.getElementById('greeting').value || '').trim());
+
+    console.log('[SAVE] set greeting/localStorage...', { LS_GREETING });
+    localStorage.setItem(LS_GREETING, (document.getElementById('greeting').value || '').trim());
 
     // images (only when chosen)
-    if (fIndex.files[0]) {
+    console.log('[SAVE] check fIndex:', fIndex);
+    if (fIndex && fIndex.files && fIndex.files[0]) {
+      console.log('[SAVE] converting fIndex...');
       const d = await toDataURL(fIndex.files[0]);
       localStorage.setItem(LS_IMG_INDEX, d);
       setPreview(pvIndex, d);
     }
-    
-    if (fBirthTop.files[0]) {
+
+    console.log('[SAVE] check fBirthTop:', fBirthTop);
+    if (fBirthTop && fBirthTop.files && fBirthTop.files[0]) {
+      console.log('[SAVE] converting fBirthTop...');
       const d = await toDataURL(fBirthTop.files[0]);
       localStorage.setItem(LS_IMG_BIRTH_TOP, d);
       setPreview(pvBirthTop, d);
     }
-    if (fBirthCard.files[0]) {
+
+    console.log('[SAVE] check fBirthCard:', fBirthCard);
+    if (fBirthCard && fBirthCard.files && fBirthCard.files[0]) {
+      console.log('[SAVE] converting fBirthCard...');
       const d = await toDataURL(fBirthCard.files[0]);
       localStorage.setItem(LS_IMG_BIRTH_CARD, d);
       setPreview(pvBirthCard, d);
     }
-    if (fGala.files[0]) {
+
+    console.log('[SAVE] check fGala:', fGala);
+    if (fGala && fGala.files && fGala.files[0]) {
+      console.log('[SAVE] converting fGala...');
       const d = await toDataURL(fGala.files[0]);
       localStorage.setItem(LS_IMG_GALAXY, d);
       setPreview(pvGala, d);
     }
+
+    console.log('[SAVE] DONE OK ✅');
     showMsg('Đã lưu ✓', true);
+
   }catch(e){
-    console.error(e);
-    showMsg('Lỗi khi lưu!'+e, false);
+    console.error('[SAVE] LỖI KHI LƯU ❌', e);
+    alert('Lỗi khi lưu: ' + e); // hiện popup luôn cho bạn thấy lỗi gì
+    showMsg('Lỗi khi lưu! '+ e, false);
   }
 });
 
@@ -272,4 +290,5 @@ document.getElementById('imp').addEventListener('change', async (e)=>{
 </script>
 </body>
 </html>
+
 
