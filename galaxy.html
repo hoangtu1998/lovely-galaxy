@@ -4,6 +4,17 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Galaxy Gift ✨</title>
+  <!-- Cho Android -->
+<meta name="mobile-web-app-capable" content="yes">
+
+<!-- Cho iOS -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<!-- Khai báo manifest để bật chế độ standalone (full màn hình) -->
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+
   <style>
     html, body { height:100%; margin:0; background:#000; overflow:hidden; }
     #tip { position:fixed; left:12px; bottom:12px; color:#fff; font:14px/1.2 system-ui, -apple-system, Segoe UI, Roboto, sans-serif; opacity:.85 }
@@ -177,3 +188,4 @@ cv.addEventListener('touchmove', e=>{
   </script>
 </body>
 </html>
+
