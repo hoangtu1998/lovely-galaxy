@@ -3,276 +3,300 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
-  <title>Galaxy — Fast Spiral ✨</title>
-   <link rel="manifest" href="manifest.webmanifest">
+  <title>Galaxy — Birthday Orbit ✨</title>
   <meta name="theme-color" content="#000000">
   <style>
-    html, body { height:100%; margin:0; background:#000; overflow:hidden; }
-    #tip {
-      position:fixed; left:12px; bottom:12px; color:#fff;
-      font:14px/1.2 system-ui, -apple-system, Segoe UI, Roboto, sans-serif; opacity:.9; z-index:2;
+    html, body {
+      height:100%;
+      margin:0;
+      background:#000;
+      overflow:hidden;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
     }
-    #hud {
-      position:fixed; right:12px; top:12px; display:flex; gap:8px; z-index:2;
+
+    #cv{
+      position:fixed;
+      inset:0;
+      z-index:1;
+      display:block;
     }
-    .btn {
-      background: rgba(255,255,255,.08); color:#fff; border:0;
-      padding:8px 12px; border-radius:999px; cursor:pointer; font:13px system-ui;
+
+    #wishBox{
+      position:fixed;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+      text-align:center;
+
+      font-family: "Dancing Script", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      font-size:clamp(24px,4vw,40px);
+      line-height:1.3;
+      color:#fff;
+
+      text-shadow:
+        0 0 12px rgba(255,100,200,1),
+        0 0 28px rgba(255,0,120,0.8),
+        0 4px 10px rgba(0,0,0,.8);
+
+      background: radial-gradient(
+        circle at 50% 50%,
+        rgba(0,0,0,0.6) 0%,
+        rgba(0,0,0,0.0) 60%
+      );
+
+      pointer-events:none;
+      opacity:0;
+      transition: opacity .8s ease;
+      z-index:5;
     }
-    .btn:active { transform: translateY(1px) }
   </style>
 </head>
 <body>
-  <div id="tip">Kéo để xoay, chụm 2 ngón để zoom • <a href="birthday.html" style="color:#fff">Quay lại</a></div>
-  <div id="hud">
-    <button class="btn" id="speed">⚡ Nhanh</button>
-    <button class="btn" id="pulse">✨ Pulse</button>
-    <button class="btn" id="reset">↺ Reset</button>
+
+  <div id="wishBox">
+    Chúc mừng sinh nhật 🎂
+    Chúc em luôn xinh đẹp, hạnh phúc
+    và được yêu thương nhất vũ trụ 💖✨
   </div>
+
   <canvas id="cv"></canvas>
 
 <script>
-  // === Sync với settings ===
+/* ================== SETTINGS / LOCAL DATA ================== */
 const LS_IMG_GALAXY = 'img_galaxy_dataurl';
-/* ========= Canvas & DPR ========= */
+const LS_WISH_TEXT  = 'wish_text';
+
+const savedWish = localStorage.getItem(LS_WISH_TEXT)
+  || "Chúc mừng sinh nhật 🎂 Chúc em luôn xinh đẹp, hạnh phúc và được yêu thương nhất vũ trụ 💖✨";
+
+document.getElementById('wishBox').textContent = savedWish;
+setTimeout(()=> {
+  document.getElementById('wishBox').style.opacity = 1;
+}, 10000);
+
+/* ================== CANVAS SETUP ================== */
 const cv = document.getElementById('cv');
 const cx = cv.getContext('2d', { alpha: false });
-let DPR = Math.min( (window.devicePixelRatio||1), 1.75 ); // cap DPR cho mobile đỡ nặng
 
+let DPR = Math.min((window.devicePixelRatio||1), 1.75);
 function resize(){
-  cv.width = Math.max(1, Math.floor(innerWidth  * DPR));
-  cv.height= Math.max(1, Math.floor(innerHeight * DPR));
-  cv.style.width = innerWidth + 'px';
-  cv.style.height= innerHeight + 'px';
+  cv.width  = Math.max(1, Math.floor(innerWidth  * DPR));
+  cv.height = Math.max(1, Math.floor(innerHeight * DPR));
+  cv.style.width  = innerWidth + 'px';
+  cv.style.height = innerHeight + 'px';
   cx.setTransform(DPR,0,0,DPR,0,0);
 }
 addEventListener('resize', resize);
-addEventListener('orientationchange', resize);
 resize();
 
-/* ========= Perf preset cho máy yếu ========= */
+/* ================== PERF PRESET ================== */
 const mem = navigator.deviceMemory || 4;
-const LOW = mem <= 4 && innerWidth < 900; // máy yếu hoặc màn nhỏ
-const STAR_COUNT = LOW ? 1800 : 3200;     // giảm bớt hạt cho mobile
-const R_MAX = 420;
-const THICKNESS = 22;
-const ORBIT_SPRITES = 18;
+const LOW = mem <= 4 && innerWidth < 900;
 
-let autoSpeed = 0.017;
-let userRotY = 0.0, userRotX = 0.18, dist = 520;
+const STAR_COUNT    = LOW ? 1800 : 3200;
+const R_MAX         = 420;
+const THICKNESS     = 22;
+const ORBIT_SPRITES = 8; // ít hơn -> dễ nhìn spotlight từng ảnh
 
-/* ========= Galaxy points ========= */
+/* ================== CAMERA / STATE ================== */
+let autoSpeed = 0.01;
+let userRotY = 0.0;
+let userRotX = 0.18;
+const dist = 520; // không zoom toàn cảnh
+
+/* ================== GALAXY POINT CLOUD ================== */
 const points = [];
-for (let i=0;i<STAR_COUNT;i++){
-  const radius = Math.pow(Math.random(), 0.55) * R_MAX;
-  const arms = 4;
+for (let i=0; i<STAR_COUNT; i++){
+  const radius    = Math.pow(Math.random(), 0.55) * R_MAX;
+  const arms      = 4;
   const baseAngle = Math.random() * Math.PI * 2;
-  const twist = radius * 0.17;
-  const angle = baseAngle + Math.floor(Math.random()*arms) * (Math.PI*2/arms) + twist;
+  const twist     = radius * 0.17;
+  const angle     = baseAngle
+                  + Math.floor(Math.random()*arms) * (Math.PI*2/arms)
+                  + twist;
 
   const y = (Math.random()-0.5) * THICKNESS;
   const x = Math.cos(angle) * radius;
   const z = Math.sin(angle) * radius;
 
-  // HUE “ngân hà huyền bí”: map 200–320°, có trôi màu theo thời gian
-  const hueBase = 200 + (angle/(Math.PI*2))*120; // 200→320
-  const sat = 88;
-  const light = 55 + Math.random()*12;
+  const hueBase = 200 + (angle/(Math.PI*2))*120;
+  const sat     = 88;
+  const light   = 55 + Math.random()*12;
+
   points.push({x,y,z,hueBase,sat,light});
 }
 
-/* ========= Starfield xa ========= */
-const stars = Array.from({length: LOW ? 900 : 1400}, ()=> ({
+/* ================== BACKGROUND STARS ================== */
+const stars = Array.from({length: LOW ? 900 : 1400}, () => ({
   x:(Math.random()-0.5)*2600,
   y:(Math.random()-0.5)*1600,
   z: Math.random()*2400 + 400
 }));
 
-/* ========= Orbiting sprites (ảnh người dùng nếu có) ========= */
-// ========= Orbiting sprites (ảnh người dùng từ settings) =========
+/* ================== SPRITES (ẢNH QUAY) ================== */
 const spriteImg = new Image();
 const savedGalaxy = localStorage.getItem(LS_IMG_GALAXY);
-
-// fallback khi chưa chọn ảnh trong settings
-const FALLBACK_GALAXY = 'assets/card-cute.png';
-
-// gán nguồn ảnh
+// đổi thành ảnh bạn muốn show
+const FALLBACK_GALAXY = 'assets/cake-cute.png';
 spriteImg.src = savedGalaxy || FALLBACK_GALAXY;
 
-
-
-/* ========= Orbit params ========= */
 const sprites = [];
 for(let i=0;i<ORBIT_SPRITES;i++){
   const a = i / ORBIT_SPRITES * Math.PI*2;
   const r = 260 + Math.sin(i*0.7)*18;
-  sprites.push({a, r, y: (Math.random()-0.5)*30, s: 0.8 + Math.random()*0.6});
+  sprites.push({
+    baseA: a,
+    r,
+    y: (Math.random()-0.5)*30,
+    s: 0.9 + Math.random()*0.4
+  });
 }
 
-/* ========= Điều khiển: chuột + cảm ứng ========= */
-let dragging = false, px=0, py=0;
+/* ================== INTERACTION: KÉO XOAY ================== */
+let dragging=false, px=0, py=0;
 
-cv.addEventListener('mousedown', e=>{ dragging=true; px=e.clientX; py=e.clientY; });
-addEventListener('mouseup',   ()=> dragging=false);
+cv.addEventListener('mousedown', e=>{
+  dragging=true; px=e.clientX; py=e.clientY;
+});
+addEventListener('mouseup', ()=> dragging=false);
 addEventListener('mousemove', e=>{
   if(!dragging) return;
-  const dx = e.clientX - px, dy = e.clientY - py; px = e.clientX; py = e.clientY;
-  userRotY += dx * 0.006;
-  userRotX += dy * 0.006;
+  const dx=e.clientX-px, dy=e.clientY-py;
+  px=e.clientX; py=e.clientY;
+  userRotY += dx*0.006;
+  userRotX += dy*0.006;
   userRotX = Math.max(-1.2, Math.min(1.2, userRotX));
 });
-addEventListener('wheel', e=>{
-  dist = Math.max(220, Math.min(920, dist + e.deltaY * 0.4));
-}, {passive:true});
 
-// Touch: 1 ngón xoay, 2 ngón pinch-zoom
-let lastPinch = null;
 cv.addEventListener('touchstart', e=>{
-  if(e.touches.length===1){ dragging=true; px=e.touches[0].clientX; py=e.touches[0].clientY; }
-  if(e.touches.length===2){
-    const [a,b] = e.touches; lastPinch = Math.hypot(a.clientX-b.clientX, a.clientY-b.clientY);
+  if(e.touches.length===1){
+    dragging=true;
+    px=e.touches[0].clientX;
+    py=e.touches[0].clientY;
   }
-}, {passive:true});
+},{passive:true});
 
 cv.addEventListener('touchmove', e=>{
   if(e.touches.length===1 && dragging){
-    const t = e.touches[0];
-    const dx = t.clientX - px, dy = t.clientY - py; px = t.clientX; py = t.clientY;
-    userRotY += dx * 0.006;
-    userRotX += dy * 0.006;
-    userRotX = Math.max(-1.2, Math.min(1.2, userRotX));
+    const t0=e.touches[0];
+    const dx=t0.clientX-px, dy=t0.clientY-py;
+    px=t0.clientX; py=t0.clientY;
+    userRotY+=dx*0.006;
+    userRotX+=dy*0.006;
+    userRotX=Math.max(-1.2,Math.min(1.2,userRotX));
   }
-  if(e.touches.length===2){
-    const [a,b] = e.touches;
-    const d = Math.hypot(a.clientX-b.clientX, a.clientY-b.clientY);
-    if(lastPinch != null){
-      const delta = d - lastPinch; // >0 là tách ra (zoom in)
-      dist = Math.max(220, Math.min(920, dist - delta*0.6));
-    }
-    lastPinch = d;
-  }
-}, {passive:true});
+},{passive:true});
 
 cv.addEventListener('touchend', ()=>{
-  dragging=false; lastPinch=null;
-}, {passive:true});
+  dragging=false;
+},{passive:true});
 
-/* ========= Helpers ========= */
+/* ================== TOÁN CHIẾU 3D -> 2D ================== */
 function proj(x,y,z){
   const cY = Math.cos(userRotY), sY = Math.sin(userRotY);
   const cX = Math.cos(userRotX), sX = Math.sin(userRotX);
+
   let X = x*cY - z*sY;
   let Z = x*sY + z*cY;
   let Y = y*cX - Z*sX;
   Z = y*sX + Z*cX + dist;
+
   const f = 450 / Z;
-  return { x: innerWidth/2 + X*f, y: innerHeight/2 + Y*f, s: f, Z };
+  return {
+    x: innerWidth/2  + X*f,
+    y: innerHeight/2 + Y*f,
+    s: f
+  };
 }
 
-/* ========= ORB trung tâm động (pulsate + sparkle như GIF) ========= */
-const orbSparkles = Array.from({length: 80}, (_,i)=>({
-  a: Math.random()*Math.PI*2,    // góc
-  r: 40 + Math.random()*110,     // bán kính
-  s: 0.6 + Math.random()*1.6,    // kích thước cơ sở
-  o: Math.random()*1000 + i*13   // lệch pha nhấp nháy
-}));
-function drawOrb(t){
-  const cx0 = innerWidth/2, cy0 = innerHeight/2;
+/* ================== SPOTLIGHT LOGIC (CHU KỲ) ================== */
+/*
+  mode "orbit": tất cả ảnh quay quanh.
+  mode "spotlight": pause quay, chỉ show 1 ảnh giữa màn hình phóng to x3.
+*/
+let mode = "orbit";
+let tOrbit = 0;              // thời gian quay
+let orbitFrameCounter = 0;   // đếm frame trong chế độ orbit
+const ORBIT_FRAMES_BEFORE_SPOTLIGHT = 30; // ~4 giây quay trước khi phóng to
 
-  // pulsate radius + hue drift
-  const k = 0.5 + 0.5*Math.sin(t*0.07);
-  const R = 90 + 18*k;                         // bán kính động
-  const hue = (260 + 30*Math.sin(t*0.04))%360; // tím → xanh lam trôi nhẹ
+let spotlightFrameCounter = 0;
+const SPOTLIGHT_FRAMES = 10; // ~2 giây đứng im to
 
-  // lõi sáng
-  const g1 = cx.createRadialGradient(cx0, cy0, 0, cx0, cy0, R);
-  g1.addColorStop(0, 'rgba(255,255,255,0.95)');
-  g1.addColorStop(0.45, `hsla(${hue}, 90%, 70%, 0.85)`);
-  g1.addColorStop(1, 'rgba(255,255,255,0)');
-  cx.fillStyle = g1;
-  cx.beginPath(); cx.arc(cx0, cy0, R, 0, Math.PI*2); cx.fill();
+let spotlightSpriteIndex = 0; // sprite nào sẽ được phóng to kế tiếp
+let spotlightImageScale = 1;  // scale chụp lúc vào spotlight (để nhìn mượt)
 
-  // hào quang ngoài (screen)
-  const g2 = cx.createRadialGradient(cx0, cy0, R*0.9, cx0, cy0, R*1.9);
-  g2.addColorStop(0, `hsla(${(hue+40)%360}, 90%, 60%, 0.25)`);
-  g2.addColorStop(1, 'rgba(0,0,0,0)');
-  cx.globalCompositeOperation = 'screen';
-  cx.fillStyle = g2; cx.beginPath(); cx.arc(cx0, cy0, R*2, 0, Math.PI*2); cx.fill();
+/* ================== LOOP ================== */
+let sortToggle = 0;
+let pulsing = false;
 
-  // vài tia sáng quay chậm
-  cx.save();
-  cx.translate(cx0, cy0);
-  cx.rotate(t*0.01);
-  for(let i=0;i<6;i++){
-    cx.rotate(Math.PI/3);
-    const grd = cx.createLinearGradient(0, -R*1.6, 0, R*1.6);
-    grd.addColorStop(0, 'rgba(255,255,255,0)');
-    grd.addColorStop(0.5, `hsla(${(hue+20)%360}, 100%, 70%, 0.23)`);
-    grd.addColorStop(1, 'rgba(255,255,255,0)');
-    cx.fillStyle = grd;
-    cx.beginPath();
-    cx.moveTo(-2.2, -R*1.6);
-    cx.lineTo( 2.2, -R*1.6);
-    cx.lineTo( 0.8,  R*1.6);
-    cx.lineTo(-0.8,  R*1.6);
-    cx.closePath(); cx.fill();
-  }
-  cx.restore();
-
-  // sparkle hạt quanh orb (flicker)
-  cx.globalCompositeOperation = 'lighter';
-  for(const sp of orbSparkles){
-    const tw = 0.6 + 0.4*Math.sin((t+sp.o)*0.12);
-    const a = sp.a + t*0.005;
-    const x = cx0 + Math.cos(a)*sp.r;
-    const y = cy0 + Math.sin(a)*sp.r*0.85;
-    cx.globalAlpha = 0.5 + 0.5*tw;
-    cx.beginPath(); cx.arc(x, y, sp.s*tw, 0, Math.PI*2); cx.fillStyle = `hsla(${(hue+60)%360}, 100%, 70%, 0.9)`; cx.fill();
-  }
-  cx.globalAlpha = 1;
-  cx.globalCompositeOperation = 'source-over';
-}
-
-/* ========= Animation ========= */
-let t = 0, pulsing = false, running = true;
-document.addEventListener('visibilitychange', ()=>{ running = !document.hidden; });
-
-let sortToggle = 0; // giảm số lần sort cho nhẹ
 (function loop(){
   requestAnimationFrame(loop);
-  if(!running) return;
 
-  t += 1;
-  userRotY += autoSpeed;
+  // --- 1. cập nhật state (tăng tOrbit hay không) ---
+  if (mode === "orbit"){
+    tOrbit += 1;
+    userRotY += autoSpeed;
+    orbitFrameCounter++;
 
-  /* ===== NỀN: gradient vũ trụ tím–xanh (mystic) ===== */
-  const gx = innerWidth*0.6, gy = innerHeight*0.5, gr = Math.max(innerWidth,innerHeight);
-  const bg = cx.createRadialGradient(gx, gy, 0, gx, gy, gr);
-  bg.addColorStop(0,  'rgba(40, 70,130,0.40)');  // xanh đậm
-  bg.addColorStop(0.55,'rgba(20, 13, 34,0.75)'); // tím than
-  bg.addColorStop(1,  'rgba(0,  0,  0,1)');
-  cx.fillStyle = bg; cx.fillRect(0,0,innerWidth,innerHeight);
+    if (orbitFrameCounter >= ORBIT_FRAMES_BEFORE_SPOTLIGHT){
+      // chuyển sang spotlight
+      mode = "spotlight";
+      orbitFrameCounter = 0;
+      spotlightFrameCounter = 0;
 
-  // Sao xa
-  cx.globalCompositeOperation = 'source-over';
-  cx.fillStyle = '#fff';
+      // lấy sprite sẽ phóng to
+      const sp = sprites[spotlightSpriteIndex];
+
+      // tính scale hiện tại của sprite đó để dùng làm base
+      const angNow = sp.baseA + tOrbit*(0.028 + sp.s*0.004);
+      const px3 = Math.cos(angNow)*sp.r;
+      const pz3 = Math.sin(angNow)*sp.r;
+      const py3 = sp.y;
+      const screen = proj(px3, py3, pz3);
+
+      spotlightImageScale = sp.s * screen.s;
+
+      // sau lần này thì lần tới spotlight sẽ là sprite kế tiếp
+      spotlightSpriteIndex = (spotlightSpriteIndex + 1) % sprites.length;
+    }
+
+  } else if (mode === "spotlight"){
+    // KHÔNG tăng tOrbit => tất cả đứng im
+    spotlightFrameCounter++;
+    if (spotlightFrameCounter >= SPOTLIGHT_FRAMES){
+      // hết spotlight quay lại orbit
+      mode = "orbit";
+    }
+  }
+
+  // --- 2. vẽ nền ---
+  const gx = innerWidth*0.6;
+  const gy = innerHeight*0.5;
+  const gr = Math.max(innerWidth,innerHeight);
+  const bg = cx.createRadialGradient(gx,gy,0,gx,gy,gr);
+  bg.addColorStop(0,'rgba(20,30,60,0.55)');
+  bg.addColorStop(0.6,'rgba(10,8,20,0.9)');
+  bg.addColorStop(1,'rgba(0,0,0,1)');
+  cx.fillStyle = bg;
+  cx.fillRect(0,0,innerWidth,innerHeight);
+
+  // sao xa
   cx.globalAlpha = 0.7;
+  cx.fillStyle = '#ffffff';
   for(const s of stars){
-    const p = proj(s.x, s.y, s.z);
-    const r = Math.max(.4, 1.2*p.s);
-    cx.beginPath(); cx.arc(p.x, p.y, r, 0, Math.PI*2); cx.fill();
+    const p2 = proj(s.x, s.y, s.z);
+    const rStar = Math.max(.4, 1.2*p2.s);
+    cx.beginPath();
+    cx.arc(p2.x, p2.y, rStar, 0, Math.PI*2);
+    cx.fill();
   }
   cx.globalAlpha = 1;
 
-  // ORB trung tâm động (thay cho orb tĩnh cũ)
-  drawOrb(t);
-
-  // Xoáy galaxy (additive)
-  cx.globalCompositeOperation = 'lighter';
-
-  // chỉ sort mỗi 2 frame để tiết kiệm
+  // ngân hà
   let drawList = points;
-  if ((sortToggle^=1)) {
+  if((sortToggle ^= 1)){
     drawList = points.slice().sort((a,b)=>{
       const za = a.x*Math.sin(userRotY)+a.z*Math.cos(userRotY);
       const zb = b.x*Math.sin(userRotY)+b.z*Math.cos(userRotY);
@@ -280,60 +304,94 @@ let sortToggle = 0; // giảm số lần sort cho nhẹ
     });
   }
 
-  const pulse = pulsing ? (1 + Math.sin(t*0.06)*0.06) : 1;
+  const pulseAmt = pulsing ? (1 + Math.sin(tOrbit*0.06)*0.06) : 1;
 
-  for(const p of drawList){
-    const wobble = Math.sin((p.x+p.z+t*0.8)*0.01)*0.5;
-    const pr = proj(p.x * pulse, (p.y+wobble) * pulse, p.z * pulse);
+  for(const p0 of drawList){
+    const wobble = Math.sin((p0.x+p0.z+tOrbit*0.8)*0.01)*0.5;
+    const pr = proj(
+      p0.x * pulseAmt,
+      (p0.y + wobble) * pulseAmt,
+      p0.z * pulseAmt
+    );
 
-    // Trôi màu theo thời gian để “huyền bí”
-    const hue = (p.hueBase + 20*Math.sin(t*0.02)) % 360;
+    const hue  = (p0.hueBase + 20*Math.sin(tOrbit*0.02)) % 360;
     const size = Math.min(2.8, 1.8*pr.s + 0.6);
-    cx.fillStyle = `hsla(${hue}, ${p.sat}%, ${p.light}%, 0.95)`;
-    cx.beginPath(); cx.arc(pr.x, pr.y, size, 0, Math.PI*2); cx.fill();
+
+    cx.fillStyle = `hsla(${hue}, ${p0.sat}%, ${p0.light}%, 0.9)`;
+    cx.beginPath();
+    cx.arc(pr.x, pr.y, size, 0, Math.PI*2);
+    cx.fill();
   }
 
-  // Vòng ảnh
-  const ordered = sprites; // số lượng ít nên khỏi sort
-  for(const sp of ordered){
-    const a = sp.a + t*(0.028 + sp.s*0.004); // hơi chậm lại xíu để hợp không khí
-    const r = sp.r;
-    const p = proj(Math.cos(a)*r, sp.y, Math.sin(a)*r);
-    const w = 44*sp.s*p.s, h = w;
-    const rr = Math.min(10*p.s, w/4);
-    cx.save();
-    cx.translate(p.x, p.y);
-    cx.globalCompositeOperation = 'lighter';
-    cx.fillStyle = 'rgba(255,255,255,0.12)';
-    roundRect(cx, -w/2, -h/2, w, h, rr); cx.fill();
+  // --- 3. vẽ sprites ---
+  if (mode === "spotlight"){
+    // chỉ vẽ 1 ảnh: sprite spotlightSpriteIndex-1 (vì ta đã advance index sau khi chụp)
+    const idxToShow =
+      (spotlightSpriteIndex - 1 + sprites.length) % sprites.length;
+    const sp = sprites[idxToShow];
 
-    if (spriteImg.complete && w>2 && h>2) {
-      cx.globalCompositeOperation = 'source-over';
-      cx.save(); roundRect(cx, -w/2, -h/2, w, h, rr); cx.clip();
+    // scale phóng to x3
+    const scaleNow = spotlightImageScale * 4;
+    const w = 64 * scaleNow;
+    const h = w;
+    const rr = Math.min(10*scaleNow, w/4);
+
+    cx.save();
+    // ép nó ra đúng giữa màn hình
+    cx.translate(innerWidth/2, innerHeight/2);
+
+    cx.fillStyle = 'rgba(255,255,255,0.15)';
+    roundRect(cx, -w/2, -h/2, w, h, rr);
+    cx.fill();
+
+    if (spriteImg.complete && w>2 && h>2){
+      cx.save();
+      roundRect(cx, -w/2, -h/2, w, h, rr);
+      cx.clip();
       cx.drawImage(spriteImg, -w/2, -h/2, w, h);
       cx.restore();
     }
+
     cx.restore();
+
+  } else {
+    // orbit mode: vẽ tất cả quay quanh
+    for (let i=0;i<sprites.length;i++){
+      const sp = sprites[i];
+      const angNow = sp.baseA + tOrbit*(0.028 + sp.s*0.004);
+      const px3 = Math.cos(angNow)*sp.r;
+      const pz3 = Math.sin(angNow)*sp.r;
+      const py3 = sp.y;
+
+      const screen = proj(px3, py3, pz3);
+
+      const scaleNow = sp.s * screen.s;
+      const w = 44 * scaleNow;
+      const h = w;
+      const rr = Math.min(10*scaleNow, w/4);
+
+      cx.save();
+      cx.translate(screen.x, screen.y);
+
+      cx.fillStyle = 'rgba(255,255,255,0.15)';
+      roundRect(cx, -w/2, -h/2, w, h, rr);
+      cx.fill();
+
+      if (spriteImg.complete && w>2 && h>2){
+        cx.save();
+        roundRect(cx, -w/2, -h/2, w, h, rr);
+        cx.clip();
+        cx.drawImage(spriteImg, -w/2, -h/2, w, h);
+        cx.restore();
+      }
+
+      cx.restore();
+    }
   }
 
-  cx.globalCompositeOperation = 'source-over';
-})();
+})(); // end loop
 
-/* ========= UI Buttons ========= */
-document.getElementById('speed').addEventListener('click', ()=>{
-  if (autoSpeed >= 0.03) { autoSpeed = 0.006;  document.getElementById('speed').textContent = '⏳ Chậm'; }
-  else if (autoSpeed >= 0.017) { autoSpeed = 0.03; document.getElementById('speed').textContent = '🚀 Rất nhanh'; }
-  else { autoSpeed = 0.017; document.getElementById('speed').textContent = '⚡ Nhanh'; }
-});
-document.getElementById('pulse').addEventListener('click', ()=>{
-  pulsing = !pulsing;
-  document.getElementById('pulse').textContent = pulsing ? '✨ Pulse ✓' : '✨ Pulse';
-});
-document.getElementById('reset').addEventListener('click', ()=>{
-  userRotY = 0.0; userRotX = 0.18; dist = 520;
-});
-
-/* ========= Helper ========= */
+/* ================== HELPER ================== */
 function roundRect(ctx, x, y, w, h, r){
   ctx.beginPath();
   ctx.moveTo(x+r, y);
@@ -343,10 +401,6 @@ function roundRect(ctx, x, y, w, h, r){
   ctx.arcTo(x,   y,   x+w, y,   r);
   ctx.closePath();
 }
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js').catch(()=>{});
-}
-
 </script>
 </body>
 </html>
