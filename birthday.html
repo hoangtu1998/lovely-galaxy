@@ -52,7 +52,7 @@
           rgba(255,170,200,0.4),
           rgba(255,120,180,0.5)
         ),
-        url("assets/cute-cake.png"); /* fallback nền */
+        url("assets/cute-cake.png"); /* fallback */
       background-position:center;
       background-size:cover;
       background-repeat:no-repeat;
@@ -79,7 +79,7 @@
       pointer-events:none;
     }
 
-    /* ====== KHỐI CHỮ RƠI (3 DÒNG) ====== */
+    /* ====== CHỮ RƠI Ở GIỮA ====== */
     .rainAllWrap{
       position:fixed;
       left:50%;
@@ -91,66 +91,62 @@
       text-align:center;
       pointer-events:none;
     }
-
-    /* mỗi dòng */
-    .rainWrap {
-      opacity: 0; /* ẩn ban đầu, JS sẽ bật .show */
+    .rainWrap{
+      opacity:0;
       margin-bottom:12px;
     }
-    .rainWrap.show { opacity: 1; }
+    .rainWrap.show{opacity:1;}
 
-    .rain {
-      display: inline-block;
-      font-weight: 700;
-      font-size: clamp(20px, 3.5vw, 42px);
-      color: #ff2b2b;
+    .rain{
+      display:inline-block;
+      font-weight:700;
+      font-size:clamp(24px,3.5vw,42px);
+      color:#ff2b2b;
       text-shadow:
-        0 0 10px rgba(255, 50, 80, 0.9),
-        0 0 24px rgba(255, 0, 70, 0.8),
-        0 3px 8px rgba(0, 0, 0, 0.6);
-      font-family: "Dancing Script", cursive;
-      line-height: 1.1;
-      letter-spacing: 0.5px;
+        0 0 10px rgba(255,50,80,0.9),
+        0 0 24px rgba(255,0,70,0.8),
+        0 3px 8px rgba(0,0,0,0.6);
+      font-family:"Dancing Script",cursive;
+      line-height:1.1;
+      letter-spacing:.5px;
     }
 
-    /* dòng tuổi */
-    .line3 .rain {
-      font-family: "Playpen Sans", sans-serif;
-      font-size: clamp(20px, 3vw, 36px);
-      color: #ff2b2b;
-      font-weight: 700;
+    .line3 .rain{
+      font-family:"Playpen Sans",sans-serif;
+      font-size:clamp(20px,3vw,36px);
+      color:#ff2b2b;
+      font-weight:700;
       text-shadow:
-        0 0 8px rgba(255, 60, 90, 0.9),
-        0 0 22px rgba(255, 20, 70, 0.7),
-        0 3px 8px rgba(0, 0, 0, 0.6);
+        0 0 8px rgba(255,60,90,0.9),
+        0 0 22px rgba(255,20,70,0.7),
+        0 3px 8px rgba(0,0,0,0.6);
     }
 
-    .drop {
-      display: inline-block;
-      opacity: 0;
-      transform: translateY(-40px);
+    .drop{
+      display:inline-block;
+      opacity:0;
+      transform:translateY(-40px);
     }
-    @keyframes dropIn {
-      0%   { opacity:0; transform:translateY(-40px); }
-      60%  { opacity:1; transform:translateY(8px); }
-      80%  { transform:translateY(-4px); }
-      100% { opacity:1; transform:translateY(0); }
+    @keyframes dropIn{
+      0%{opacity:0;transform:translateY(-40px);}
+      60%{opacity:1;transform:translateY(8px);}
+      80%{transform:translateY(-4px);}
+      100%{opacity:1;transform:translateY(0);}
     }
-    .drop.animate { animation: dropIn 1.8s ease-out forwards; }
+    .drop.animate{animation:dropIn 1.8s ease-out forwards;}
 
-    /* ====== HỘP QUÀ (ĐƯA XUỐNG DƯỚI) ====== */
+    /* ====== HỘP QUÀ DƯỚI ====== */
     .giftWrap{
       position:fixed;
       left:0;
       right:0;
-      bottom:12vh;        /* thay vì top 50% */
+      bottom:12vh;
       transform:translateY(0);
       display:grid;
       place-items:center;
       z-index:6;
       text-align:center;
     }
-
     .giftEmoji{
       position:relative;
       font-size:clamp(80px,12vw,130px);
@@ -183,12 +179,11 @@
       font-weight:400;
       font-family:"Playpen Sans",sans-serif;
     }
-
-    .giftEmoji.open{ animation:none; }
+    .giftEmoji.open{animation:none;}
     .giftEmoji::before{
       content:"🎁";
       position:absolute;
-      left:0; right:0; top:0;
+      left:0;right:0;top:0;
       text-align:center;
       font-size:inherit;
       line-height:1;
@@ -202,9 +197,9 @@
       filter:drop-shadow(0 8px 12px rgba(255,105,180,.7));
     }
     @keyframes lidFlip{
-      0%  { transform:translateY(0) rotateX(0deg) scale(1); }
-      60% { transform:translateY(-40px) rotateX(70deg) scale(1.05); }
-      100%{ transform:translateY(-60px) rotateX(110deg) scale(1.05); }
+      0%{transform:translateY(0) rotateX(0deg) scale(1);}
+      60%{transform:translateY(-40px) rotateX(70deg) scale(1.05);}
+      100%{transform:translateY(-60px) rotateX(110deg) scale(1.05);}
     }
     @keyframes shake{
       0%,100% { transform: translateY(0) rotate(0deg) scale(1); }
@@ -231,9 +226,8 @@
   <canvas id="fireworks"></canvas>
   <canvas id="cuteLayer"></canvas>
 
-  <!-- KHỐI CHỮ RƠI CĂN GIỮA -->
+  <!-- chữ -->
   <div class="rainAllWrap">
-    <!-- dòng 1 -->
     <div class="rainWrap line1" aria-hidden="true">
       <div class="rain">
         <span class="drop">C</span>
@@ -259,7 +253,6 @@
       </div>
     </div>
 
-    <!-- dòng 2 -->
     <div class="rainWrap line2" aria-hidden="true">
       <div class="rain">
         <span class="drop">B</span>
@@ -271,7 +264,6 @@
       </div>
     </div>
 
-    <!-- dòng 3 -->
     <div class="rainWrap line3" aria-hidden="true">
       <div class="rain">
         <span class="drop">2</span>
@@ -281,7 +273,7 @@
     </div>
   </div>
 
-  <!-- hộp quà (xuống dưới) -->
+  <!-- hộp quà -->
   <div class="giftWrap">
     <div class="giftEmoji" id="giftEmoji">
       🎁
@@ -291,30 +283,11 @@
   </div>
 
 <script>
-/* =========== KEYS KHỚP VỚI settings.html =========== */
+/* KEYS */
 const LS_IMG_BIRTH_TOP  = 'img_birthday_top_dataurl';
 const LS_GREETING       = 'greeting_text';
 
-const LS_IMG_GALAXY_1   = 'img_galaxy_1';
-const LS_IMG_GALAXY_2   = 'img_galaxy_2';
-const LS_IMG_GALAXY_3   = 'img_galaxy_3';
-const LS_IMG_GALAXY_4   = 'img_galaxy_4';
-const LS_IMG_GALAXY_5   = 'img_galaxy_5';
-
-/*
-  Trước khi qua galaxy_2.html:
-  - gom tối đa 5 ảnh đã chọn Galaxy
-  - lưu vào localStorage.galaxy_imgs (mảng)
-  - lưu wish_text (lời chúc)
-*/
-
-
-  const greet = localStorage.getItem(LS_GREETING)
-    || "Chúc mừng sinh nhật 🎂 Chúc bạn luôn xinh đẹp, hạnh phúc và được yêu thương nhất vũ trụ 💖✨";
-  localStorage.setItem("wish_text", greet);
-}
-
-/* ========= đổi nền birthday_top nếu có ========= */
+/* ===== đổi nền birthday_top nếu có ===== */
 (function applyBirthdayTopBackground(){
   const bgLayer = document.getElementById("bgLayerDynamic");
   const topImg = localStorage.getItem(LS_IMG_BIRTH_TOP);
@@ -329,7 +302,7 @@ const LS_IMG_GALAXY_5   = 'img_galaxy_5';
   }
 })();
 
-/* ========= hiệu ứng chữ rơi lần lượt ========= */
+/* ===== hiệu ứng chữ rơi lần lượt ===== */
 function playLine(lineElem, callback){
   lineElem.classList.add('show');
   const letters = lineElem.querySelectorAll('.drop');
@@ -350,7 +323,7 @@ playLine(line1, () => {
   });
 });
 
-/* ========= matrix background chữ HappyBirthday ========= */
+/* ===== matrix text background ===== */
 const cvs = document.getElementById('matrix');
 const ctx = cvs.getContext('2d');
 const glyphs = 'HappyBirthday🎂✨';
@@ -394,7 +367,7 @@ resizeMatrix();
   }
 })();
 
-/* ========= pháo hoa ========= */
+/* ===== pháo hoa ===== */
 const fwCanvas = document.getElementById('fireworks');
 const fwCtx = fwCanvas.getContext('2d');
 let fwW, fwH, fireworks=[], particles=[];
@@ -486,7 +459,7 @@ function loopFW(){
 }
 loopFW();
 
-/* ========= tuyết + tim (mèo đổi thành tim hết) ========= */
+/* ===== tuyết + tim ===== */
 const cuteCanvas = document.getElementById('cuteLayer');
 const cuteCtx = cuteCanvas.getContext('2d');
 let cW, cH;
@@ -518,14 +491,13 @@ function initCritters(){
   critters = [];
   const EMOJIS = ['💖','💖','💖','💖','💖','💖'];
   for(let i=0;i<6;i++){
-    const emoji = EMOJIS[i % EMOJIS.length];
     critters.push({
-      emoji,
+      emoji:EMOJIS[i % EMOJIS.length],
       x:Math.random()*cW,
       y:Math.random()*cH,
       vx:(Math.random()<0.5?-1:1)*(1.5+Math.random()*1.5),
       vy:(Math.random()<0.5?-1:1)*(1.5+Math.random()*1.5),
-      size:28+Math.random()*8,
+      size:28+Math.random()*8
     });
   }
 }
@@ -579,28 +551,17 @@ function loopCute(){
 }
 loopCute();
 
-/* ========= nền birthday_top (chỉnh lại bằng localStorage) ========= */
-(function applyBirthdayTopBackgroundAgain(){
-  const bgLayer = document.getElementById("bgLayerDynamic");
-  const topImg = localStorage.getItem(LS_IMG_BIRTH_TOP);
-  if (topImg) {
-    bgLayer.style.background =
-      `linear-gradient(rgba(255,170,200,0.4),rgba(255,120,180,0.5)),url("${topImg}")`;
-    bgLayer.style.backgroundPosition = "center";
-    bgLayer.style.backgroundSize = "cover";
-    bgLayer.style.backgroundRepeat = "no-repeat";
-    bgLayer.style.backgroundAttachment = "fixed";
-    bgLayer.style.filter = "saturate(1.2) brightness(1.05)";
-  }
-})();
-
-/* ========= click mở quà -> chuẩn bị data galaxy và chuyển trang ========= */
+/* ===== click mở quà =====
+   galaxy_2.html sẽ tự đọc ảnh từ IndexedDB,
+   nên ở đây ta chỉ cần set wish_text để lời chúc hiện lên.
+*/
 const gift = document.getElementById('giftEmoji');
 gift.addEventListener('click', () => {
   gift.classList.add('open');
 
-  // Chuẩn bị dữ liệu ảnh galaxy + lời chúc
-  prepareGalaxyImages();
+  const greet = localStorage.getItem(LS_GREETING)
+    || "Chúc mừng sinh nhật 🎂 Chúc bạn luôn xinh đẹp, hạnh phúc và được yêu thương nhất vũ trụ 💖✨";
+  localStorage.setItem("wish_text", greet);
 
   setTimeout(() => {
     location.href = 'galaxy_2.html';
@@ -609,5 +570,3 @@ gift.addEventListener('click', () => {
 </script>
 </body>
 </html>
-
-
