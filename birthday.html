@@ -307,26 +307,7 @@ const LS_IMG_GALAXY_5   = 'img_galaxy_5';
   - lưu vào localStorage.galaxy_imgs (mảng)
   - lưu wish_text (lời chúc)
 */
-function prepareGalaxyImages() {
-  const imgs = [];
-  const g1 = localStorage.getItem(LS_IMG_GALAXY_1);
-  const g2 = localStorage.getItem(LS_IMG_GALAXY_2);
-  const g3 = localStorage.getItem(LS_IMG_GALAXY_3);
-  const g4 = localStorage.getItem(LS_IMG_GALAXY_4);
-  const g5 = localStorage.getItem(LS_IMG_GALAXY_5);
 
-  if (g1) imgs.push(g1);
-  if (g2) imgs.push(g2);
-  if (g3) imgs.push(g3);
-  if (g4) imgs.push(g4);
-  if (g5) imgs.push(g5);
-
-  // fallback nếu user chưa chọn gì
-  if (imgs.length === 0) {
-    imgs.push("assets/cute-cake.png");
-  }
-
-  localStorage.setItem("galaxy_imgs", JSON.stringify(imgs));
 
   const greet = localStorage.getItem(LS_GREETING)
     || "Chúc mừng sinh nhật 🎂 Chúc bạn luôn xinh đẹp, hạnh phúc và được yêu thương nhất vũ trụ 💖✨";
@@ -628,4 +609,5 @@ gift.addEventListener('click', () => {
 </script>
 </body>
 </html>
+
 
