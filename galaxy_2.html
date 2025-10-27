@@ -278,15 +278,69 @@ let pulsing = false;
   }
 
   // --- 2. vẽ nền ---
-  const gx = innerWidth*0.6;
-  const gy = innerHeight*0.5;
-  const gr = Math.max(innerWidth,innerHeight);
-  const bg = cx.createRadialGradient(gx,gy,0,gx,gy,gr);
-  bg.addColorStop(0,'rgba(20,30,60,0.55)');
-  bg.addColorStop(0.6,'rgba(10,8,20,0.9)');
-  bg.addColorStop(1,'rgba(0,0,0,1)');
-  cx.fillStyle = bg;
-  cx.fillRect(0,0,innerWidth,innerHeight);
+const gx = innerWidth*0.6;
+const gy = innerHeight*0.5;
+const gr = Math.max(innerWidth,innerHeight);
+const bg = cx.createRadialGradient(gx,gy,0,gx,gy,gr);
+bg.addColorStop(0,'rgba(20,30,60,0.55)');
+bg.addColorStop(0.6,'rgba(10,8,20,0.9)');
+bg.addColorStop(1,'rgba(0,0,0,1)');
+cx.fillStyle = bg;
+cx.fillRect(0,0,innerWidth,innerHeight);
+
+// >>> Thêm khối sáng giữa màn hình:
+(function drawCoreGlow(){
+  const cxMid = innerWidth/2;
+  const cyMid = innerHeight/2;
+
+  const g1 = cx.createRadialGradient(cxMid, cyMid, 0, cxMid, cyMid, innerWidth*0.35);
+  g1.addColorStop(0, 'rgba(180,200,255,0.9)');
+  g1.addColorStop(0.4,'rgba(140,100,255,0.6)');
+  g1.addColorStop(0.7,'rgba(50,20,80,0.15)');
+  g1.addColorStop(1, 'rgba(0,0,0,0)');
+  cx.fillStyle = g1;
+  cx.beginPath();
+  cx.arc(cxMid, cyMid, innerWidth*0.4, 0, Math.PI*2);
+  cx.fill();
+
+  cx.save();
+  cx.translate(cxMid, cyMid);
+  cx.globalAlpha = 0.6;
+
+  function starRay(angle, w, len){
+    cx.save();
+    cx.rotate(angle);
+    const grd = cx.createLinearGradient(0,0,0,len);
+    grd.addColorStop(0,'rgba(255,255,255,0.9)');
+    grd.addColorStop(1,'rgba(255,255,255,0)');
+    cx.fillStyle = grd;
+    cx.beginPath();
+    cx.moveTo(-w,0);
+    cx.lineTo(w,0);
+    cx.lineTo(0,len);
+    cx.closePath();
+    cx.fill();
+    cx.restore();
+  }
+
+  const baseLen = Math.min(innerWidth,innerHeight)*0.28;
+  const baseW   = baseLen*0.03;
+
+  starRay(0,             baseW,     baseLen);
+  starRay(Math.PI/2,     baseW,     baseLen);
+  starRay(Math.PI/4,     baseW*0.7, baseLen*0.7);
+  starRay(3*Math.PI/4,   baseW*0.7, baseLen*0.7);
+
+  cx.restore();
+
+  const g2 = cx.createRadialGradient(cxMid, cyMid, 0, cxMid, cyMid, 40);
+  g2.addColorStop(0,'rgba(255,255,255,1)');
+  g2.addColorStop(1,'rgba(255,255,255,0)');
+  cx.fillStyle = g2;
+  cx.beginPath();
+  cx.arc(cxMid, cyMid, 40, 0, Math.PI*2);
+  cx.fill();
+})();
 
   // sao xa
   cx.globalAlpha = 0.7;
@@ -410,5 +464,6 @@ function roundRect(ctx, x, y, w, h, r){
 </script>
 </body>
 </html>
+
 
 
