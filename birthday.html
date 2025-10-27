@@ -19,7 +19,6 @@
       overflow:hidden;
       color:#fff;
       font-family:"Playpen Sans",sans-serif;
-      /* fallback nền hồng tím, để dù ảnh chưa load cũng không bao giờ đen */
       background:
         radial-gradient(circle at 50% 30%,
           rgba(255,170,200,1) 0%,
@@ -28,7 +27,6 @@
       background-color:#ff7ab4;
     }
 
-    /* lớp nền hồng cố định ở dưới hết */
     #pinkBg{
       position:fixed;
       inset:0;
@@ -43,47 +41,37 @@
       user-select:none;
     }
 
-    /* lớp nền ảnh phủ tông hồng */
     .bgLayerImg{
       position:fixed;
       inset:0;
       z-index:0;
       pointer-events:none;
       user-select:none;
-
       background:
-        /* lớp phủ hồng để bảo đảm tông màu */
         linear-gradient(
           rgba(255,170,200,0.4),
           rgba(255,120,180,0.5)
         ),
-        /* Ảnh nền sinh nhật (đổi đường dẫn cho đúng file thật của bạn) */
-        url("cake-cute_2.jpg");
+        url("assets/cute-cake.png"); /* fallback nền */
       background-position:center;
       background-size:cover;
       background-repeat:no-repeat;
       background-attachment:fixed;
-
       filter:saturate(1.2) brightness(1.05);
     }
 
-    /* mưa chữ */
     #matrix{
       position:fixed;
       inset:0;
       z-index:1;
       pointer-events:none;
     }
-
-    /* pháo hoa */
     #fireworks{
       position:fixed;
       inset:0;
       z-index:2;
       pointer-events:none;
     }
-
-    /* tuyết + mèo tim */
     #cuteLayer{
       position:fixed;
       inset:0;
@@ -91,46 +79,72 @@
       pointer-events:none;
     }
 
-    /* text trên cùng */
-   .topTextWrap{
-  position:fixed;
-  top:20px;
-  left:50%;
-  transform:translateX(-50%);
-  text-align:center;
-  z-index:5;
-
-  /* màu chữ hồng tươi hợp nền */
-   color:#ff2b2b; /* đỏ tươi sáng */
-  text-shadow:
-    0 0 12px rgba(255,50,80,1),
-    0 0 30px rgba(255,0,70,0.8),
-    0 4px 10px rgba(0,0,0,0.6);
-
-  font-family:"Dancing Script",cursive;
-  line-height:1.15;
-  pointer-events:none;
-}
-.line{
-  white-space:nowrap;
-  font-weight:700;
-  font-size:clamp(32px,5vw,56px);
-  letter-spacing:1px;
-}
-    .line{
-      white-space:nowrap;
-      font-weight:700;
-      font-size:clamp(28px,4vw,48px);
-      letter-spacing:.3px;
+    /* ====== KHỐI CHỮ RƠI (3 DÒNG) ====== */
+    .rainAllWrap{
+      position:fixed;
+      left:50%;
+      top:50%;
+      transform:translate(-50%,-60%);
+      z-index:5;
+      width:100%;
+      max-width:90vw;
+      text-align:center;
+      pointer-events:none;
     }
 
-    /* cụm hộp quà */
+    /* mỗi dòng */
+    .rainWrap {
+      opacity: 0; /* ẩn ban đầu, JS sẽ bật .show */
+      margin-bottom:12px;
+    }
+    .rainWrap.show { opacity: 1; }
+
+    .rain {
+      display: inline-block;
+      font-weight: 700;
+      font-size: clamp(24px, 3.5vw, 42px);
+      color: #ff2b2b;
+      text-shadow:
+        0 0 10px rgba(255, 50, 80, 0.9),
+        0 0 24px rgba(255, 0, 70, 0.8),
+        0 3px 8px rgba(0, 0, 0, 0.6);
+      font-family: "Dancing Script", cursive;
+      line-height: 1.1;
+      letter-spacing: 0.5px;
+    }
+
+    /* dòng tuổi */
+    .line3 .rain {
+      font-family: "Playpen Sans", sans-serif;
+      font-size: clamp(20px, 3vw, 36px);
+      color: #ff2b2b;
+      font-weight: 700;
+      text-shadow:
+        0 0 8px rgba(255, 60, 90, 0.9),
+        0 0 22px rgba(255, 20, 70, 0.7),
+        0 3px 8px rgba(0, 0, 0, 0.6);
+    }
+
+    .drop {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(-40px);
+    }
+    @keyframes dropIn {
+      0%   { opacity:0; transform:translateY(-40px); }
+      60%  { opacity:1; transform:translateY(8px); }
+      80%  { transform:translateY(-4px); }
+      100% { opacity:1; transform:translateY(0); }
+    }
+    .drop.animate { animation: dropIn 1.8s ease-out forwards; }
+
+    /* ====== HỘP QUÀ (ĐƯA XUỐNG DƯỚI) ====== */
     .giftWrap{
       position:fixed;
       left:0;
       right:0;
-      top:50%;
-      transform:translateY(-50%);
+      bottom:12vh;        /* thay vì top 50% */
+      transform:translateY(0);
       display:grid;
       place-items:center;
       z-index:6;
@@ -147,7 +161,6 @@
       transform-origin:center bottom;
       filter:drop-shadow(0 4px 8px rgba(0,0,0,.8));
     }
-
     .giftText{
       position:absolute;
       top:60%;
@@ -160,26 +173,22 @@
       pointer-events:none;
       line-height:1.2;
       text-align:center;
+      font-family:"Playpen Sans",sans-serif;
     }
-
     .hintTap{
       margin-top:10px;
       color:#ffe4f1;
       text-shadow:0 2px 6px rgba(0,0,0,.8);
       font-size:15px;
       font-weight:400;
+      font-family:"Playpen Sans",sans-serif;
     }
 
-    /* trạng thái mở */
-    .giftEmoji.open{
-      animation:none;
-    }
+    .giftEmoji.open{ animation:none; }
     .giftEmoji::before{
       content:"🎁";
       position:absolute;
-      left:0;
-      right:0;
-      top:0;
+      left:0; right:0; top:0;
       text-align:center;
       font-size:inherit;
       line-height:1;
@@ -192,20 +201,11 @@
       animation:lidFlip .6s ease-out forwards;
       filter:drop-shadow(0 8px 12px rgba(255,105,180,.7));
     }
-
     @keyframes lidFlip{
-      0%{
-        transform:translateY(0) rotateX(0deg) scale(1);
-      }
-      60%{
-        transform:translateY(-40px) rotateX(70deg) scale(1.05);
-      }
-      100%{
-        transform:translateY(-60px) rotateX(110deg) scale(1.05);
-      }
+      0%  { transform:translateY(0) rotateX(0deg) scale(1); }
+      60% { transform:translateY(-40px) rotateX(70deg) scale(1.05); }
+      100%{ transform:translateY(-60px) rotateX(110deg) scale(1.05); }
     }
-
-    /* lắc hộp quà mạnh */
     @keyframes shake{
       0%,100% { transform: translateY(0) rotate(0deg) scale(1); }
       10%     { transform: translateY(-4px) rotate(-4deg) scale(1.03); }
@@ -219,35 +219,69 @@
       90%     { transform: translateY(-3px) rotate(-2deg) scale(1.03); }
     }
 
-    /* vẽ chữ mưa sắc nét */
     canvas{image-rendering:pixelated;}
   </style>
 </head>
 <body>
 
-  <!-- nền hồng cố định -->
   <div id="pinkBg"></div>
+  <div class="bgLayerImg" id="bgLayerDynamic"></div>
 
-  <!-- nền ảnh phủ tông hồng -->
-  <div class="bgLayerImg"></div>
-
-  <!-- mưa chữ -->
   <canvas id="matrix"></canvas>
-
-  <!-- pháo hoa -->
   <canvas id="fireworks"></canvas>
-
-  <!-- tuyết + mèo + tim -->
   <canvas id="cuteLayer"></canvas>
 
-  <!-- text chúc mừng -->
-  <div class="topTextWrap">
-    <div class="line">Chúc mừng sinh nhật</div>
-    <div class="line">Bạn iu</div>
-    <div class="line">29+</div>
+  <!-- KHỐI CHỮ RƠI CĂN GIỮA -->
+  <div class="rainAllWrap">
+    <!-- dòng 1 -->
+    <div class="rainWrap line1" aria-hidden="true">
+      <div class="rain">
+        <span class="drop">C</span>
+        <span class="drop">H</span>
+        <span class="drop">Ú</span>
+        <span class="drop">C</span>
+        <span class="drop">&nbsp;</span>
+        <span class="drop">M</span>
+        <span class="drop">Ừ</span>
+        <span class="drop">N</span>
+        <span class="drop">G</span>
+        <span class="drop">&nbsp;</span>
+        <span class="drop">S</span>
+        <span class="drop">I</span>
+        <span class="drop">N</span>
+        <span class="drop">H</span>
+        <span class="drop">&nbsp;</span>
+        <span class="drop">N</span>
+        <span class="drop">H</span>
+        <span class="drop">Ậ</span>
+        <span class="drop">T</span>
+        <span class="drop">!</span>
+      </div>
+    </div>
+
+    <!-- dòng 2 -->
+    <div class="rainWrap line2" aria-hidden="true">
+      <div class="rain">
+        <span class="drop">B</span>
+        <span class="drop">ạ</span>
+        <span class="drop">n</span>
+        <span class="drop">&nbsp;</span>
+        <span class="drop">i</span>
+        <span class="drop">u</span>
+      </div>
+    </div>
+
+    <!-- dòng 3 -->
+    <div class="rainWrap line3" aria-hidden="true">
+      <div class="rain">
+        <span class="drop">2</span>
+        <span class="drop">9</span>
+        <span class="drop">+</span>
+      </div>
+    </div>
   </div>
 
-  <!-- hộp quà -->
+  <!-- hộp quà (xuống dưới) -->
   <div class="giftWrap">
     <div class="giftEmoji" id="giftEmoji">
       🎁
@@ -257,12 +291,89 @@
   </div>
 
 <script>
-/* ================= MATRIX RAIN ================= */
+/* =========== KEYS KHỚP VỚI settings.html =========== */
+const LS_IMG_BIRTH_TOP  = 'img_birthday_top_dataurl';
+const LS_GREETING       = 'greeting_text';
+
+const LS_IMG_GALAXY_1   = 'img_galaxy_1';
+const LS_IMG_GALAXY_2   = 'img_galaxy_2';
+const LS_IMG_GALAXY_3   = 'img_galaxy_3';
+const LS_IMG_GALAXY_4   = 'img_galaxy_4';
+const LS_IMG_GALAXY_5   = 'img_galaxy_5';
+
+/*
+  Trước khi qua galaxy_2.html:
+  - gom tối đa 5 ảnh đã chọn Galaxy
+  - lưu vào localStorage.galaxy_imgs (mảng)
+  - lưu wish_text (lời chúc)
+*/
+function prepareGalaxyImages() {
+  const imgs = [];
+  const g1 = localStorage.getItem(LS_IMG_GALAXY_1);
+  const g2 = localStorage.getItem(LS_IMG_GALAXY_2);
+  const g3 = localStorage.getItem(LS_IMG_GALAXY_3);
+  const g4 = localStorage.getItem(LS_IMG_GALAXY_4);
+  const g5 = localStorage.getItem(LS_IMG_GALAXY_5);
+
+  if (g1) imgs.push(g1);
+  if (g2) imgs.push(g2);
+  if (g3) imgs.push(g3);
+  if (g4) imgs.push(g4);
+  if (g5) imgs.push(g5);
+
+  // fallback nếu user chưa chọn gì
+  if (imgs.length === 0) {
+    imgs.push("assets/cute-cake.png");
+  }
+
+  localStorage.setItem("galaxy_imgs", JSON.stringify(imgs));
+
+  const greet = localStorage.getItem(LS_GREETING)
+    || "Chúc mừng sinh nhật 🎂 Chúc bạn luôn xinh đẹp, hạnh phúc và được yêu thương nhất vũ trụ 💖✨";
+  localStorage.setItem("wish_text", greet);
+}
+
+/* ========= đổi nền birthday_top nếu có ========= */
+(function applyBirthdayTopBackground(){
+  const bgLayer = document.getElementById("bgLayerDynamic");
+  const topImg = localStorage.getItem(LS_IMG_BIRTH_TOP);
+  if (topImg) {
+    bgLayer.style.background =
+      `linear-gradient(rgba(255,170,200,0.4),rgba(255,120,180,0.5)),url("${topImg}")`;
+    bgLayer.style.backgroundPosition = "center";
+    bgLayer.style.backgroundSize = "cover";
+    bgLayer.style.backgroundRepeat = "no-repeat";
+    bgLayer.style.backgroundAttachment = "fixed";
+    bgLayer.style.filter = "saturate(1.2) brightness(1.05)";
+  }
+})();
+
+/* ========= hiệu ứng chữ rơi lần lượt ========= */
+function playLine(lineElem, callback){
+  lineElem.classList.add('show');
+  const letters = lineElem.querySelectorAll('.drop');
+  letters.forEach((span, idx) => {
+    const delay = 0.1 * (idx + 1);
+    span.style.animationDelay = delay + 's';
+    span.classList.add('animate');
+  });
+  const totalMs = (0.1 * letters.length + 1.8) * 1000;
+  setTimeout(() => { if (callback) callback(); }, totalMs);
+}
+const line1 = document.querySelector('.rainWrap.line1');
+const line2 = document.querySelector('.rainWrap.line2');
+const line3 = document.querySelector('.rainWrap.line3');
+playLine(line1, () => {
+  playLine(line2, () => {
+    playLine(line3, () => {});
+  });
+});
+
+/* ========= matrix background chữ HappyBirthday ========= */
 const cvs = document.getElementById('matrix');
 const ctx = cvs.getContext('2d');
 const glyphs = 'HappyBirthday🎂✨';
 let W,H,cols,drops,DPR;
-
 function resizeMatrix(){
   DPR = Math.max(1, window.devicePixelRatio || 1);
   W = cvs.width = Math.floor(innerWidth * DPR);
@@ -270,43 +381,30 @@ function resizeMatrix(){
   cvs.style.width = innerWidth + 'px';
   cvs.style.height = innerHeight + 'px';
   ctx.setTransform(DPR,0,0,DPR,0,0);
-
   const step = 22;
   cols = Math.floor(innerWidth / step);
   drops = Array(cols).fill(0);
 }
 addEventListener('resize', resizeMatrix);
 resizeMatrix();
-
 (function drawMatrix(){
   requestAnimationFrame(drawMatrix);
-
-  // nền trong suốt để thấy nền hồng phía sau
   ctx.clearRect(0,0,innerWidth,innerHeight);
-
   const step = 22;
   ctx.font = 'bold 18px monospace';
   ctx.globalCompositeOperation = 'source-over';
-
   for(let i=0;i<drops.length;i++){
     const ch = glyphs[Math.floor(Math.random()*glyphs.length)];
     const x = i*step;
     const y = drops[i]*step;
-
-    // viền trắng
     ctx.lineWidth = 3;
     ctx.strokeStyle = 'rgba(255,255,255,0.8)';
     ctx.strokeText(ch, x, y);
-
-    // chữ sáng hồng
     ctx.shadowColor = 'rgba(255,105,180,.8)';
     ctx.shadowBlur = 12;
     ctx.fillStyle = '#fff';
     ctx.fillText(ch, x, y);
-
     ctx.shadowBlur = 0;
-
-    // rơi chậm
     if (y > H && Math.random() > 0.97) {
       drops[i] = 0;
     } else {
@@ -315,7 +413,7 @@ resizeMatrix();
   }
 })();
 
-/* ================= PHÁO HOA ================= */
+/* ========= pháo hoa ========= */
 const fwCanvas = document.getElementById('fireworks');
 const fwCtx = fwCanvas.getContext('2d');
 let fwW, fwH, fireworks=[], particles=[];
@@ -335,7 +433,6 @@ class Firework {
     this.vx = (this.tx - this.x)/30;
     this.vy = (this.ty - this.y)/30;
     this.life = 30;
-    // mỗi pháo chọn màu cầu vồng riêng
     const rainbow = ['#ff3366','#ff9933','#ffff33','#33ff66','#33ccff','#9966ff','#ff33cc'];
     this.color = rainbow[Math.floor(Math.random()*rainbow.length)];
   }
@@ -356,7 +453,6 @@ class Firework {
     fwCtx.fill();
   }
 }
-
 class Particle {
   constructor(x,y){
     const angle = Math.random()*Math.PI*2;
@@ -385,30 +481,22 @@ class Particle {
     fwCtx.globalAlpha=1;
   }
 }
-
-
 function explode(x,y){
   for(let i=0;i<40;i++){
     particles.push(new Particle(x,y));
   }
 }
-
 function loopFW(){
   requestAnimationFrame(loopFW);
-  // thay fill mờ đen bằng clear trong suốt để KHÔNG phủ đen nền hồng
   fwCtx.clearRect(0,0,fwW,fwH);
-
-  // spawn pháo mới ngẫu nhiên
   if(Math.random()<0.08){
     fireworks.push(new Firework());
   }
-
   fireworks = fireworks.filter(fw=>{
     const alive = fw.update();
     fw.draw();
     return alive;
   });
-
   particles = particles.filter(p=>{
     const alive = p.update();
     p.draw();
@@ -417,18 +505,12 @@ function loopFW(){
 }
 loopFW();
 
-/* ================= TUYẾT RƠI + MÈO + TIM =================
-   Bản tối ưu mượt:
-   - Tuyết to hơn, rơi nhanh hơn chút
-   - Mèo + tim bay tự do, nảy khi chạm viền
-*/
+/* ========= tuyết + tim (mèo đổi thành tim hết) ========= */
 const cuteCanvas = document.getElementById('cuteLayer');
 const cuteCtx = cuteCanvas.getContext('2d');
 let cW, cH;
-
 let snowflakes=[];
 let critters=[];
-
 const ENABLE_SNOW = true;
 const ENABLE_CRITTERS = true;
 
@@ -439,24 +521,21 @@ function resizeCute(){
 addEventListener('resize', resizeCute);
 resizeCute();
 
-/* tạo tuyết */
 function initSnow(){
   snowflakes = [];
   for(let i=0;i<50;i++){
     snowflakes.push({
       x:Math.random()*cW,
       y:Math.random()*cH,
-      r:Math.random()*3+3,        // to rõ
-      spdY:Math.random()*1+0.8,   // tốc độ rơi
-      drift:(Math.random()*1-0.5) // lệch ngang
+      r:Math.random()*3+3,
+      spdY:Math.random()*1+0.8,
+      drift:(Math.random()*1-0.5)
     });
   }
 }
-
-/* tạo mèo + tim bay */
 function initCritters(){
   critters = [];
-  const EMOJIS = ['🐱','🐱','💖','💖','🐱','💖'];
+  const EMOJIS = ['💖','💖','💖','💖','💖','💖'];
   for(let i=0;i<6;i++){
     const emoji = EMOJIS[i % EMOJIS.length];
     critters.push({
@@ -469,7 +548,6 @@ function initCritters(){
     });
   }
 }
-
 if(ENABLE_SNOW) initSnow();
 if(ENABLE_CRITTERS) initCritters();
 
@@ -477,18 +555,15 @@ function loopCute(){
   requestAnimationFrame(loopCute);
   cuteCtx.clearRect(0,0,cW,cH);
 
-  // vẽ tuyết
   if(ENABLE_SNOW){
     cuteCtx.fillStyle = "#fff";
     for(const f of snowflakes){
       f.y += f.spdY;
       f.x += f.drift;
-
       if(f.y > cH){
         f.y = -10;
         f.x = Math.random()*cW;
       }
-
       cuteCtx.beginPath();
       cuteCtx.globalAlpha = 0.9;
       cuteCtx.arc(f.x,f.y,f.r,0,Math.PI*2);
@@ -497,13 +572,10 @@ function loopCute(){
     cuteCtx.globalAlpha = 1;
   }
 
-  // vẽ mèo và tim
   if(ENABLE_CRITTERS){
     for(const c of critters){
       c.x += c.vx;
       c.y += c.vy;
-
-      // đập tường thì bật lại
       if(c.x < 20){ c.x = 20; c.vx *= -1; }
       if(c.x > cW-20){ c.x = cW-20; c.vx *= -1; }
       if(c.y < 20){ c.y = 20; c.vy *= -1; }
@@ -511,17 +583,13 @@ function loopCute(){
 
       cuteCtx.save();
       cuteCtx.translate(c.x, c.y);
-
-      // lật ngang nếu chạy sang trái (để mèo quay đầu)
       if(c.vx < 0){
         cuteCtx.scale(-1,1);
       }
-
       cuteCtx.font = `${c.size}px "Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",sans-serif`;
       cuteCtx.textAlign = "center";
       cuteCtx.textBaseline = "middle";
       cuteCtx.fillText(c.emoji,0,0);
-
       cuteCtx.restore();
     }
   }
@@ -530,10 +598,29 @@ function loopCute(){
 }
 loopCute();
 
-/* ================= CLICK MỞ QUÀ ================= */
+/* ========= nền birthday_top (chỉnh lại bằng localStorage) ========= */
+(function applyBirthdayTopBackgroundAgain(){
+  const bgLayer = document.getElementById("bgLayerDynamic");
+  const topImg = localStorage.getItem(LS_IMG_BIRTH_TOP);
+  if (topImg) {
+    bgLayer.style.background =
+      `linear-gradient(rgba(255,170,200,0.4),rgba(255,120,180,0.5)),url("${topImg}")`;
+    bgLayer.style.backgroundPosition = "center";
+    bgLayer.style.backgroundSize = "cover";
+    bgLayer.style.backgroundRepeat = "no-repeat";
+    bgLayer.style.backgroundAttachment = "fixed";
+    bgLayer.style.filter = "saturate(1.2) brightness(1.05)";
+  }
+})();
+
+/* ========= click mở quà -> chuẩn bị data galaxy và chuyển trang ========= */
 const gift = document.getElementById('giftEmoji');
 gift.addEventListener('click', () => {
   gift.classList.add('open');
+
+  // Chuẩn bị dữ liệu ảnh galaxy + lời chúc
+  prepareGalaxyImages();
+
   setTimeout(() => {
     location.href = 'galaxy_2.html';
   }, 600);
@@ -541,4 +628,3 @@ gift.addEventListener('click', () => {
 </script>
 </body>
 </html>
-
