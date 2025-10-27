@@ -4,21 +4,24 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>💖 Mở Quà Bí Mật 💖</title>
+
   <!-- Font hỗn hợp: chữ mềm + số tròn -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@600&family=Bubblegum+Sans&display=swap" rel="stylesheet">
+
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
   <meta name="theme-color" content="#ffb6c1">
+
   <!-- Cho Android -->
-<meta name="mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
 
-<!-- Cho iOS -->
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <!-- Cho iOS -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-<!-- Khai báo manifest để bật chế độ standalone (full màn hình) -->
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icon-192.png">
+  <!-- manifest PWA -->
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon-192.png">
 
   <style>
     :root{
@@ -33,30 +36,31 @@
     *{ box-sizing:border-box; }
     html,body{ height:100%; margin:0; }
     body{
-  background: radial-gradient(circle at 70% 20%, #ffeaf2 0%, #ffd9e8 50%, #fff0f7 100%);
-  color:var(--ink);
-  font-family:'Quicksand', sans-serif;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  padding:16px 0;              /* thêm padding cho mobile không bị dính mép */
-  min-height:100vh;
-}
+      background: radial-gradient(circle at 70% 20%, #ffeaf2 0%, #ffd9e8 50%, #fff0f7 100%);
+      color:var(--ink);
+      font-family:'Quicksand', sans-serif;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      padding:16px 0;
+      min-height:100vh;
+    }
 
-h1{
-  font-family:'Pacifico', cursive;
-  font-size:clamp(24px,4vw,32px);  /* nhỏ hơn để không chiếm quá nhiều chiều cao */
-  color:#ff4081;
-  margin:8px 0 16px;              /* giảm khoảng trắng trên/dưới */
-  text-shadow:0 2px 4px rgba(255,105,180,.4);
-  letter-spacing:1px;
-  text-align:center;
-  max-width:90vw;
-  line-height:1.2;
-}
-     .wrap{
+    h1{
+      font-family:'Pacifico', cursive;
+      font-size:clamp(24px,4vw,32px);
+      color:#ff4081;
+      margin:8px 0 16px;
+      text-shadow:0 2px 4px rgba(255,105,180,.4);
+      letter-spacing:1px;
+      text-align:center;
+      max-width:90vw;
+      line-height:1.2;
+    }
+
+    .wrap{
       width:100%;
-      max-width:420px;            /* Giới hạn chiều ngang để vừa mọi điện thoại */
+      max-width:420px;
       display:grid;
       place-items:center;
       padding:0 16px;
@@ -74,102 +78,107 @@ h1{
       gap:16px;
       transition:transform .15s ease;
     }
+
     .left{ display:flex; justify-content:center; }
-.frame{
-  width:200px;               /* thu gọn lại từ ~360px */
-  max-width:70vw;
-  border-radius:16px;
-  border:3px solid #ffb6c1;
-  box-shadow:0 8px 20px rgba(255,182,193,.55);
-  overflow:hidden;
-}
-.frame img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  display:block;
-  aspect-ratio:1/1;
-}
-  .right{
-  display:grid;
-  gap:12px;
-  align-content:start;
-}
 
-.display{
-  height:48px;                     /* thấp hơn */
-  background:#fff;
-  border-radius:14px;
-  border:2px solid #ffb6c1;
-  box-shadow:inset 0 2px 6px rgba(255,182,193,.4);
-  display:flex;
-  align-items:center;
-  justify-content:flex-end;
-  padding:0 12px;
-  font-size:24px;                  /* nhỏ nhẹ hơn */
-  color:#ff4081;
-  letter-spacing:5px;
-  font-family:'Bubblegum Sans', cursive;
-}
+    .frame{
+      width:200px;
+      max-width:70vw;
+      border-radius:16px;
+      border:3px solid #ffb6c1;
+      box-shadow:0 8px 20px rgba(255,182,193,.55);
+      overflow:hidden;
+    }
+    .frame img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+      aspect-ratio:1/1;
+    }
 
-.pad{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:10px;
-  user-select:none;
-}
+    .right{
+      display:grid;
+      gap:12px;
+      align-content:start;
+    }
 
-button.key{
-  height:54px;                     /* từ 64px -> 54px để vừa ngón tay mà không quá chiếm chỗ */
-  border-radius:14px;
-  border:none;
-  background:#fff;
-  box-shadow:var(--shadow);
-  font-size:20px;
-  font-family:'Bubblegum Sans', cursive;
-  color:#ff69b4;
-  cursor:pointer;
-  transition:transform .1s, background .2s;
-}
-button.key:hover{ background:#ffe6f1; }
-button.key:active{ transform:scale(.96); }
+    .display{
+      height:48px;
+      background:#fff;
+      border-radius:14px;
+      border:2px solid #ffb6c1;
+      box-shadow:inset 0 2px 6px rgba(255,182,193,.4);
+      display:flex;
+      align-items:center;
+      justify-content:flex-end;
+      padding:0 12px;
+      font-size:24px;
+      color:#ff4081;
+      letter-spacing:5px;
+      font-family:'Bubblegum Sans', cursive;
+    }
 
-.key.ok{
-  background:linear-gradient(0deg,#ff6fb0,#ffa3cc);
-  color:#fff;
-  border:0;
-  font-size:20px;
-  box-shadow:0 4px 12px rgba(255,105,180,.4);
-}
-.key.del{
-  background:#fff4f7;
-  color:#d16a8d;
-  border:1px solid #ffd1df;
-  font-family:'Quicksand';
-}
+    .pad{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:10px;
+      user-select:none;
+    }
 
-.foot{
-  text-align:center;
-  color:var(--muted);
-  font-size:12px;         /* nhỏ hơn để bớt chiếm chỗ */
-  line-height:1.4;
-  font-family:'Quicksand', sans-serif;
-}
+    button.key{
+      height:54px;
+      border-radius:14px;
+      border:none;
+      background:#fff;
+      box-shadow:var(--shadow);
+      font-size:20px;
+      font-family:'Bubblegum Sans', cursive;
+      color:#ff69b4;
+      cursor:pointer;
+      transition:transform .1s, background .2s;
+    }
+    button.key:hover{ background:#ffe6f1; }
+    button.key:active{ transform:scale(.96); }
 
-.links{
-  text-align:center;
-  margin:12px 0 0;
-  font-size:14px;
-}
-.links a{
-  color:#ff4fa0;
-  text-decoration:none;
-}
-.links a:hover{
-  text-decoration:underline;
-}
+    .key.ok{
+      background:linear-gradient(0deg,#ff6fb0,#ffa3cc);
+      color:#fff;
+      border:0;
+      font-size:20px;
+      box-shadow:0 4px 12px rgba(255,105,180,.4);
+    }
+    .key.del{
+      background:#fff4f7;
+      color:#d16a8d;
+      border:1px solid #ffd1df;
+      font-family:'Quicksand';
+    }
 
-    @media(max-width:820px){ .card{ grid-template-columns:1fr; } }
+    .foot{
+      text-align:center;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.4;
+      font-family:'Quicksand', sans-serif;
+    }
+
+    .links{
+      text-align:center;
+      margin:12px 0 0;
+      font-size:14px;
+    }
+    .links a{
+      color:#ff4fa0;
+      text-decoration:none;
+    }
+    .links a:hover{
+      text-decoration:underline;
+    }
+
+    @media(max-width:820px){
+      .card{ grid-template-columns:1fr; }
+    }
   </style>
 </head>
 <body>
@@ -203,46 +212,127 @@ button.key:active{ transform:scale(.96); }
     <div class="links"><a href="settings.html">⚙️ Cài đặt</a></div>
   </section>
 
-  <script>
-  const LS_PW = 'userPassword';
-  const LS_IMG_INDEX = 'img_index_dataurl';
-  const pic = document.getElementById('indexPic');
-  const saved = localStorage.getItem(LS_IMG_INDEX);
-  if(saved) pic.src = saved;
+<script>
+/* ==== mật khẩu vẫn y như bạn đang dùng ==== */
+const LS_PW = 'userPassword';
 
-  const disp = document.getElementById('disp');
-  const card = document.getElementById('card');
-  let buf = "";
+const disp = document.getElementById('disp');
+const card = document.getElementById('card');
+let buf = "";
 
-  function getSecret(){ return (localStorage.getItem(LS_PW)||'').trim()||"1234"; }
-  function updateDisp(){ disp.textContent = buf.replace(/./g,'•'); }
-  function shake(){
-    card.style.transition='transform .08s';
-    card.style.transform='translateX(-5px)';
-    setTimeout(()=> card.style.transform='translateX(5px)',70);
-    setTimeout(()=> card.style.transform='translateX(0)',140);
+/* Lấy mật khẩu đang lưu */
+function getSecret(){
+  return (localStorage.getItem(LS_PW)||'').trim() || "1234";
+}
+
+/* cập nhật ô hiển thị pass (dùng dấu chấm) */
+function updateDisp(){
+  disp.textContent = buf.replace(/./g,'•');
+}
+
+/* hiệu ứng lắc khi sai pass */
+function shake(){
+  card.style.transition='transform .08s';
+  card.style.transform='translateX(-5px)';
+  setTimeout(()=> card.style.transform='translateX(5px)',70);
+  setTimeout(()=> card.style.transform='translateX(0)',140);
+}
+
+/* submit pass */
+function submit(){
+  if(buf===getSecret()){
+    localStorage.setItem('gift_unlocked','1');
+    location.href='birthday.html';
+  }else{
+    buf="";
+    updateDisp();
+    shake();
   }
-  function submit(){
-    if(buf===getSecret()){ localStorage.setItem('gift_unlocked','1'); location.href='birthday.html'; }
-    else{ buf=""; updateDisp(); shake(); }
+}
+
+/* xử lý bấm phím keypad */
+function press(k){
+  if(k==='ok') return submit();
+  if(k==='del'){
+    buf = buf.slice(0,-1);
+    return updateDisp();
   }
-  function press(k){
-    if(k==='ok')return submit();
-    if(k==='del'){ buf=buf.slice(0,-1); return updateDisp();}
-    if(/^[0-9]$/.test(k)&&buf.length<12){ buf+=k; updateDisp();}
+  if(/^[0-9]$/.test(k) && buf.length<12){
+    buf += k;
+    updateDisp();
   }
-  document.querySelectorAll('.key').forEach(b=>b.addEventListener('click',()=>press(b.dataset.k)));
-  addEventListener('keydown',e=>{
-    if(e.key>='0'&&e.key<='9')press(e.key);
-    if(e.key==='Backspace')press('del');
-    if(e.key==='Enter')press('ok');
+}
+
+/* gán click cho các nút */
+document.querySelectorAll('.key').forEach(b=>{
+  b.addEventListener('click',()=>press(b.dataset.k));
+});
+
+/* gán phím cứng bàn phím thật (desktop) */
+addEventListener('keydown',e=>{
+  if(e.key>='0'&&e.key<='9') press(e.key);
+  if(e.key==='Backspace')    press('del');
+  if(e.key==='Enter')        press('ok');
+});
+
+/* render ban đầu */
+updateDisp();
+
+/* ==== PHẦN MỚI: lấy ảnh Index từ IndexedDB thay vì localStorage ==== */
+
+/* tên DB/indexedDB giống settings và galaxy */
+const DB_NAME = 'birthdayDB';
+const DB_VER  = 1;
+const STORE   = 'images';
+const INDEX_KEY = 'img_index_main'; // ảnh index lưu bằng key này trong settings mới
+
+function openDB() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(DB_NAME, DB_VER);
+    req.onupgradeneeded = () => {
+      const db = req.result;
+      if (!db.objectStoreNames.contains(STORE)) {
+        db.createObjectStore(STORE);
+      }
+    };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror   = () => reject(req.error);
   });
-  updateDisp();
-  if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
-  </script>
+}
+
+async function getImageFromDB(key){
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE,'readonly');
+    const req = tx.objectStore(STORE).get(key);
+    req.onsuccess = () => resolve(req.result || null);
+    req.onerror   = () => reject(req.error);
+  });
+}
+
+/* load ảnh Index khi mở trang */
+(async function loadIndexPic(){
+  const imgEl = document.getElementById('indexPic');
+
+  try {
+    const blob = await getImageFromDB(INDEX_KEY);
+    if (blob) {
+      const url = URL.createObjectURL(blob);
+      imgEl.src = url;  // dùng ảnh user upload, dung lượng lớn ok
+    } else {
+      // nếu chưa có trong DB -> giữ fallback assets/OIP.webp
+      imgEl.src = "assets/OIP.webp";
+    }
+  } catch (err) {
+    console.error('Không load được ảnh Index từ IndexedDB:', err);
+    imgEl.src = "assets/OIP.webp";
+  }
+})();
+
+/* ==== optional: PWA service worker ==== */
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('./sw.js').catch(()=>{});
+}
+</script>
 </body>
 </html>
-
-
-
-
