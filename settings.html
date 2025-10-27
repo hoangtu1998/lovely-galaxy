@@ -14,52 +14,171 @@
     *{ box-sizing:border-box }
     html,body{ height:100% }
     body{
-      margin:0; background:radial-gradient(1200px 700px at 80% 10%, #141d2f, #0b0e14 60%);
-      color:var(--ink); font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      margin:0;
+      background:radial-gradient(1200px 700px at 80% 10%, #141d2f, #0b0e14 60%);
+      color:var(--ink);
+      font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
     }
-    h1{ text-align:center; font-size:clamp(22px,3vw,28px); margin:16px 0 6px }
-    p.sub{ text-align:center; color:var(--muted); margin:0 0 18px }
-    .wrap{ width:min(980px, 94vw); margin:0 auto 40px; display:grid; gap:18px }
-    .grid{ display:grid; grid-template-columns: repeat(3,1fr); gap:16px; }
+    h1{
+      text-align:center;
+      font-size:clamp(22px,3vw,28px);
+      margin:16px 0 6px
+    }
+    p.sub{
+      text-align:center;
+      color:var(--muted);
+      margin:0 0 18px
+    }
+    .wrap{
+      width:min(980px, 94vw);
+      margin:0 auto 40px;
+      display:grid;
+      gap:18px
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(3,1fr);
+      gap:16px;
+    }
     .card{
-      background:var(--card); border:1px solid var(--border); border-radius:14px; padding:14px;
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:14px;
       box-shadow:0 10px 30px rgba(0,0,0,.25);
     }
-    .title{ font-weight:700; margin:0 0 10px; letter-spacing:.2px }
+    .title{
+      font-weight:700;
+      margin:0 0 10px;
+      letter-spacing:.2px
+    }
     .preview{
-      width:100%; aspect-ratio:1/1; background:var(--box); border:1px dashed #2b3550;
-      border-radius:12px; display:grid; place-items:center; overflow:hidden; margin-bottom:10px;
+      width:100%;
+      aspect-ratio:1/1;
+      background:var(--box);
+      border:1px dashed #2b3550;
+      border-radius:12px;
+      display:grid;
+      place-items:center;
+      overflow:hidden;
+      margin-bottom:10px;
+      color:var(--muted);
+      font-size:12px;
+      text-align:center;
+      padding:8px;
     }
-    .preview img{ width:100%; height:100%; object-fit:cover }
-    .row{ display:flex; gap:10px; align-items:center; flex-wrap:wrap }
-    .row input[type="file"]{ flex:1; color:var(--muted) }
-    .row small{ color:var(--muted) }
-    .pad{ background:var(--card); border:1px solid var(--border); border-radius:14px; padding:14px }
-    label{ display:block; color:var(--muted); font-size:13px; margin:8px 0 6px }
+    .preview img{
+      width:100%;
+      height:100%;
+      object-fit:cover
+    }
+    .row{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap
+    }
+    .row input[type="file"]{
+      flex:1;
+      color:var(--muted)
+    }
+    .pad{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:14px
+    }
+    label.sectionLabel{
+      display:block;
+      font-weight:700;
+      color:var(--ink);
+      margin:24px 0 12px;
+      font-size:14px;
+      letter-spacing:.2px;
+      text-transform:uppercase;
+    }
+    label.fieldLabel{
+      display:block;
+      color:var(--muted);
+      font-size:13px;
+      margin:8px 0 6px
+    }
     input[type="password"], input[type="text"]{
-      width:100%; height:42px; background:var(--box); color:var(--ink); border:1px solid #2b3550;
-      border-radius:10px; padding:0 12px; outline:none;
+      width:100%;
+      height:42px;
+      background:var(--box);
+      color:var(--ink);
+      border:1px solid #2b3550;
+      border-radius:10px;
+      padding:0 12px;
+      outline:none;
     }
-    .actions{ display:flex; gap:10px; flex-wrap:wrap; margin-top:10px }
+    .actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:10px
+    }
     button{
-      height:40px; border-radius:10px; border:1px solid var(--border); background:#111829; color:#dfe6ff;
-      padding:0 14px; cursor:pointer;
+      height:40px;
+      border-radius:10px;
+      border:1px solid var(--border);
+      background:#111829;
+      color:#dfe6ff;
+      padding:0 14px;
+      cursor:pointer;
+      font-family:inherit;
     }
-    button.primary{ background:linear-gradient(0deg,#0ea5e9,#38bdf8); border:0; color:#00121a; font-weight:700 }
-    button.green{ background:linear-gradient(0deg,#34d399,#6ee7b7); border:0; color:#022b1e; font-weight:700 }
-    button.red{ background:linear-gradient(0deg,#fb7185,#fda4af); border:0; color:#33050e; font-weight:700 }
-    .hint{ color:var(--muted); font-size:12px; margin-top:6px }
-    .footer{ text-align:center; color:#8ea3c2; opacity:.85; margin-top:10px }
-    .ok{ color:var(--ok) } .warn{ color:var(--warn) }
+    button.primary{
+      background:linear-gradient(0deg,#0ea5e9,#38bdf8);
+      border:0;
+      color:#00121a;
+      font-weight:700
+    }
+    button.green{
+      background:linear-gradient(0deg,#34d399,#6ee7b7);
+      border:0;
+      color:#022b1e;
+      font-weight:700
+    }
+    button.red{
+      background:linear-gradient(0deg,#fb7185,#fda4af);
+      border:0;
+      color:#33050e;
+      font-weight:700
+    }
+    .hint{
+      color:var(--muted);
+      font-size:12px;
+      margin-top:6px
+    }
+    .footer{
+      text-align:center;
+      color:#8ea3c2;
+      opacity:.85;
+      margin-top:10px
+    }
+    .ok{ color:#62f3a2 }
+    .warn{ color:#ff7a7a }
     @media (max-width:1100px){ .grid{ grid-template-columns:1fr 1fr } }
     @media (max-width:900px){ .grid{ grid-template-columns:1fr } }
+    .galaxyGrid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(min(140px,45%),1fr));
+      gap:16px;
+    }
   </style>
 </head>
 <body>
   <h1>⚙️ Cài đặt ảnh & mật khẩu</h1>
-  <p class="sub">Chọn <b>3 ảnh</b> (Index, Birthday-Top, Birthday-Card) + 1 ảnh Galaxy và đặt mật khẩu 💝</p>
+  <p class="sub">
+    Chọn ảnh cho các màn + đặt mật khẩu 💝<br/>
+    Galaxy giờ cho tối đa 5 ảnh để quay trong vũ trụ ✨
+  </p>
 
   <section class="wrap">
+
+    <!-- NHÓM ẢNH CHÍNH -->
     <div class="grid">
       <!-- INDEX -->
       <div class="card">
@@ -73,40 +192,78 @@
 
       <!-- BIRTHDAY - TOP -->
       <div class="card">
-        <div class="title">Ảnh cho <u>Birthday — Top</u> (ảnh bánh/intro)</div>
-        <div class="preview" id="pv_birthday_top"><small>Mặc định: <code>assets/cute-cake.png</code></small></div>
+        <div class="title">Ảnh cho <u>Birthday — Top</u> (ảnh nền trang sinh nhật)</div>
+        <div class="preview" id="pv_birthday_top"><small>Mặc định: assets/cute-cake.png</small></div>
         <div class="row">
           <input type="file" id="f_birthday_top" accept="image/*">
         </div>
-        <small class="hint">Nếu không chọn, trang sẽ dùng <b>assets/cute-cake.PNG</b>.</small>
+        <small class="hint">Nếu không chọn, sẽ dùng assets/cute-cake.png.</small>
       </div>
 
       <!-- BIRTHDAY - CARD -->
       <div class="card">
         <div class="title">Ảnh cho <u>Birthday — Card</u> (thiệp bấm để mở quà)</div>
-        <div class="preview" id="pv_birthday_card"><small>Mặc định: <code>assets/card-cute.jpg</code></small></div>
+        <div class="preview" id="pv_birthday_card"><small>Mặc định: assets/card-cute.jpg</small></div>
         <div class="row">
           <input type="file" id="f_birthday_card" accept="image/*">
         </div>
-        <small class="hint">Nếu không chọn, trang sẽ dùng <b>assets/card-cute.jpg</b>.</small>
-      </div>
-
-      <!-- GALAXY -->
-      <div class="card">
-        <div class="title">Ảnh cho <u>Galaxy</u> (thẻ ảnh quay quanh)</div>
-        <div class="preview" id="pv_galaxy"><small>Chưa có ảnh</small></div>
-        <div class="row">
-          <input type="file" id="f_galaxy" accept="image/*">
-        </div>
-        <small class="hint">Sẽ được dùng làm card ảnh ở <code>galaxy.html</code>.</small>
+        <small class="hint">Nếu không chọn, sẽ dùng assets/card-cute.jpg.</small>
       </div>
     </div>
 
+    <!-- NHÓM GALAXY 5 ẢNH -->
+    <label class="sectionLabel">ẢNH GALAXY (tối đa 5 tấm quay xung quanh & spotlight)</label>
+    <div class="galaxyGrid">
+      <div class="card">
+        <div class="title">Galaxy 1</div>
+        <div class="preview" id="pv_galaxy1"><small>Chưa có ảnh</small></div>
+        <div class="row">
+          <input type="file" id="f_galaxy1" accept="image/*">
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="title">Galaxy 2</div>
+        <div class="preview" id="pv_galaxy2"><small>Chưa có ảnh</small></div>
+        <div class="row">
+          <input type="file" id="f_galaxy2" accept="image/*">
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="title">Galaxy 3</div>
+        <div class="preview" id="pv_galaxy3"><small>Chưa có ảnh</small></div>
+        <div class="row">
+          <input type="file" id="f_galaxy3" accept="image/*">
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="title">Galaxy 4</div>
+        <div class="preview" id="pv_galaxy4"><small>Chưa có ảnh</small></div>
+        <div class="row">
+          <input type="file" id="f_galaxy4" accept="image/*">
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="title">Galaxy 5</div>
+        <div class="preview" id="pv_galaxy5"><small>Chưa có ảnh</small></div>
+        <div class="row">
+          <input type="file" id="f_galaxy5" accept="image/*">
+        </div>
+      </div>
+    </div>
+
+    <!-- PASSWORD + GREETING -->
     <div class="pad">
-      <label for="pw">Mật khẩu mở quà</label>
+      <label class="fieldLabel" for="pw">Mật khẩu mở quà</label>
       <input type="password" id="pw" placeholder="Nhập mật khẩu... (ví dụ: 1234)">
-      <label for="greeting">Lời chúc khi mở quà</label>
-     <input type="text" id="greeting" placeholder="Ví dụ: Chúc bạn tuổi mới rực rỡ & hạnh phúc! 💖">
+
+      <label class="fieldLabel" for="greeting">Lời chúc khi mở quà</label>
+      <input type="text" id="greeting"
+        placeholder="Ví dụ: Chúc bạn tuổi mới rực rỡ & hạnh phúc! 💖">
+
       <div class="actions">
         <button class="primary" id="btnSave">💾 Lưu</button>
         <button class="red" id="btnClear">🗑 Xóa hết</button>
@@ -117,8 +274,10 @@
         <input id="imp" type="file" accept="application/json" style="display:none">
         <span id="msg" style="margin-left:auto;"></span>
       </div>
+
       <div class="footer">
-        Nếu ảnh quá nặng, hệ điều hành có thể giới hạn dung lượng lưu. Khuyến nghị &lt; 2MB mỗi ảnh.
+        Nếu ảnh quá nặng, trình duyệt có thể giới hạn dung lượng lưu.
+        Khuyến nghị &lt; 2MB mỗi ảnh.
       </div>
     </div>
 
@@ -128,25 +287,42 @@
   </section>
 
 <script>
-/* ====== Keys ====== */
+/* ====== Keys trong localStorage ====== */
 const LS_PW             = 'userPassword';
 const LS_IMG_INDEX      = 'img_index_dataurl';
-const LS_IMG_BIRTH_TOP  = 'img_birthday_top_dataurl';   // NEW
-const LS_IMG_BIRTH_CARD = 'img_birthday_card_dataurl';  // NEW
-const LS_IMG_GALAXY     = 'img_galaxy_dataurl';
-/* ====== Elements ====== */
-const pvIndex = document.getElementById('pv_index');
-const pvBirthTop = document.getElementById('pv_birthday_top');
-const pvBirthCard = document.getElementById('pv_birthday_card');
-const pvGala  = document.getElementById('pv_galaxy');
-const LS_GREETING = 'greeting_text'; // NEW
-const fIndex  = document.getElementById('f_index');
-const fBirthTop  = document.getElementById('f_birthday_top');
-const fBirthCard = document.getElementById('f_birthday_card');
-const fGala   = document.getElementById('f_galaxy');
+const LS_IMG_BIRTH_TOP  = 'img_birthday_top_dataurl';
+const LS_IMG_BIRTH_CARD = 'img_birthday_card_dataurl';
+const LS_GREETING       = 'greeting_text';
 
-const pwEl    = document.getElementById('pw');
-const msg     = document.getElementById('msg');
+/* 5 ảnh galaxy mới */
+const LS_IMG_GALAXY_1   = 'img_galaxy_1';
+const LS_IMG_GALAXY_2   = 'img_galaxy_2';
+const LS_IMG_GALAXY_3   = 'img_galaxy_3';
+const LS_IMG_GALAXY_4   = 'img_galaxy_4';
+const LS_IMG_GALAXY_5   = 'img_galaxy_5';
+
+/* ====== Elements ====== */
+const pvIndex      = document.getElementById('pv_index');
+const pvBirthTop   = document.getElementById('pv_birthday_top');
+const pvBirthCard  = document.getElementById('pv_birthday_card');
+const pvGalaxy1    = document.getElementById('pv_galaxy1');
+const pvGalaxy2    = document.getElementById('pv_galaxy2');
+const pvGalaxy3    = document.getElementById('pv_galaxy3');
+const pvGalaxy4    = document.getElementById('pv_galaxy4');
+const pvGalaxy5    = document.getElementById('pv_galaxy5');
+
+const fIndex       = document.getElementById('f_index');
+const fBirthTop    = document.getElementById('f_birthday_top');
+const fBirthCard   = document.getElementById('f_birthday_card');
+const fGalaxy1     = document.getElementById('f_galaxy1');
+const fGalaxy2     = document.getElementById('f_galaxy2');
+const fGalaxy3     = document.getElementById('f_galaxy3');
+const fGalaxy4     = document.getElementById('f_galaxy4');
+const fGalaxy5     = document.getElementById('f_galaxy5');
+
+const pwEl         = document.getElementById('pw');
+const greetEl      = document.getElementById('greeting');
+const msg          = document.getElementById('msg');
 
 /* ====== Helpers ====== */
 function showMsg(text, ok=true){
@@ -165,79 +341,125 @@ function toDataURL(file){
 }
 
 function setPreview(el, dataURL, fallbackLabel='Chưa có ảnh'){
-  el.innerHTML = dataURL ? `<img src="${dataURL}" alt="preview">` : `<small>${fallbackLabel}</small>`;
+  el.innerHTML = dataURL
+    ? `<img src="${dataURL}" alt="preview">`
+    : `<small>${fallbackLabel}</small>`;
 }
 
-/* ====== Load existing ====== */
+/* ====== Load tồn tại trong localStorage để xem lại ====== */
 function load(){
-  setPreview(pvIndex, localStorage.getItem(LS_IMG_INDEX) || '', 'Chưa có ảnh');
-  setPreview(pvBirthTop, localStorage.getItem(LS_IMG_BIRTH_TOP) || '', 'Mặc định: assets/cute-cake.png');
-  setPreview(pvBirthCard, localStorage.getItem(LS_IMG_BIRTH_CARD) || '', 'Mặc định: assets/card-cute.jpg');
-  setPreview(pvGala , localStorage.getItem(LS_IMG_GALAXY)|| '', 'Chưa có ảnh');
-  document.getElementById('greeting').value = localStorage.getItem(LS_GREETING) || '';
-  pwEl.value = localStorage.getItem(LS_PW) || '';
+  setPreview(pvIndex,
+    localStorage.getItem(LS_IMG_INDEX) || '',
+    'Chưa có ảnh'
+  );
+  setPreview(pvBirthTop,
+    localStorage.getItem(LS_IMG_BIRTH_TOP) || '',
+    'Mặc định: assets/cute-cake.png'
+  );
+  setPreview(pvBirthCard,
+    localStorage.getItem(LS_IMG_BIRTH_CARD) || '',
+    'Mặc định: assets/card-cute.jpg'
+  );
+
+  setPreview(pvGalaxy1,
+    localStorage.getItem(LS_IMG_GALAXY_1) || '',
+    'Chưa có ảnh'
+  );
+  setPreview(pvGalaxy2,
+    localStorage.getItem(LS_IMG_GALAXY_2) || '',
+    'Chưa có ảnh'
+  );
+  setPreview(pvGalaxy3,
+    localStorage.getItem(LS_IMG_GALAXY_3) || '',
+    'Chưa có ảnh'
+  );
+  setPreview(pvGalaxy4,
+    localStorage.getItem(LS_IMG_GALAXY_4) || '',
+    'Chưa có ảnh'
+  );
+  setPreview(pvGalaxy5,
+    localStorage.getItem(LS_IMG_GALAXY_5) || '',
+    'Chưa có ảnh'
+  );
+
+  greetEl.value = localStorage.getItem(LS_GREETING) || '';
+  pwEl.value    = localStorage.getItem(LS_PW) || '';
 }
 load();
 
-/* ====== Save ====== */
+/* ====== Save / Lưu ====== */
 document.getElementById('btnSave').addEventListener('click', async ()=>{
-  console.log('[SAVE] bắt đầu lưu...');
   try{
-    // password
-    console.log('[SAVE] set password/localStorage...', { LS_PW, pwEl });
+    // password + greeting
     localStorage.setItem(LS_PW, (pwEl.value||'').trim());
+    localStorage.setItem(LS_GREETING, (greetEl.value||'').trim());
 
-    console.log('[SAVE] set greeting/localStorage...', { LS_GREETING });
-    localStorage.setItem(LS_GREETING, (document.getElementById('greeting').value || '').trim());
-
-    // images (only when chosen)
-    console.log('[SAVE] check fIndex:', fIndex);
-    if (fIndex && fIndex.files && fIndex.files[0]) {
-      console.log('[SAVE] converting fIndex...');
+    // từng ảnh nếu user vừa chọn
+    if (fIndex.files[0]) {
       const d = await toDataURL(fIndex.files[0]);
       localStorage.setItem(LS_IMG_INDEX, d);
       setPreview(pvIndex, d);
     }
-
-    console.log('[SAVE] check fBirthTop:', fBirthTop);
-    if (fBirthTop && fBirthTop.files && fBirthTop.files[0]) {
-      console.log('[SAVE] converting fBirthTop...');
+    if (fBirthTop.files[0]) {
       const d = await toDataURL(fBirthTop.files[0]);
       localStorage.setItem(LS_IMG_BIRTH_TOP, d);
       setPreview(pvBirthTop, d);
     }
-
-    console.log('[SAVE] check fBirthCard:', fBirthCard);
-    if (fBirthCard && fBirthCard.files && fBirthCard.files[0]) {
-      console.log('[SAVE] converting fBirthCard...');
+    if (fBirthCard.files[0]) {
       const d = await toDataURL(fBirthCard.files[0]);
       localStorage.setItem(LS_IMG_BIRTH_CARD, d);
       setPreview(pvBirthCard, d);
     }
 
-    console.log('[SAVE] check fGala:', fGala);
-    if (fGala && fGala.files && fGala.files[0]) {
-      console.log('[SAVE] converting fGala...');
-      const d = await toDataURL(fGala.files[0]);
-       localStorage.removeItem(LS_IMG_GALAXY);
-      localStorage.setItem(LS_IMG_GALAXY, d);
-      setPreview(pvGala, d);
+    // Galaxy 1..5
+    if (fGalaxy1.files[0]) {
+      const d = await toDataURL(fGalaxy1.files[0]);
+      localStorage.setItem(LS_IMG_GALAXY_1, d);
+      setPreview(pvGalaxy1, d);
+    }
+    if (fGalaxy2.files[0]) {
+      const d = await toDataURL(fGalaxy2.files[0]);
+      localStorage.setItem(LS_IMG_GALAXY_2, d);
+      setPreview(pvGalaxy2, d);
+    }
+    if (fGalaxy3.files[0]) {
+      const d = await toDataURL(fGalaxy3.files[0]);
+      localStorage.setItem(LS_IMG_GALAXY_3, d);
+      setPreview(pvGalaxy3, d);
+    }
+    if (fGalaxy4.files[0]) {
+      const d = await toDataURL(fGalaxy4.files[0]);
+      localStorage.setItem(LS_IMG_GALAXY_4, d);
+      setPreview(pvGalaxy4, d);
+    }
+    if (fGalaxy5.files[0]) {
+      const d = await toDataURL(fGalaxy5.files[0]);
+      localStorage.setItem(LS_IMG_GALAXY_5, d);
+      setPreview(pvGalaxy5, d);
     }
 
-    console.log('[SAVE] DONE OK ✅');
     showMsg('Đã lưu ✓', true);
-
   }catch(e){
-    console.error('[SAVE] LỖI KHI LƯU ❌', e);
-    alert('Lỗi khi lưu: ' + e); // hiện popup luôn cho bạn thấy lỗi gì
-    showMsg('Lỗi khi lưu! '+ e, false);
+    console.error(e);
+    showMsg('Lỗi khi lưu!', false);
   }
 });
 
-/* ====== Clear ====== */
+/* ====== Clear / Xóa ====== */
 document.getElementById('btnClear').addEventListener('click', ()=>{
   if(!confirm('Xóa hết cài đặt (ảnh + mật khẩu)?')) return;
-  [LS_PW, LS_IMG_INDEX, LS_IMG_BIRTH_TOP, LS_IMG_BIRTH_CARD, LS_IMG_GALAXY].forEach(k=> localStorage.removeItem(k));
+  [
+    LS_PW,
+    LS_IMG_INDEX,
+    LS_IMG_BIRTH_TOP,
+    LS_IMG_BIRTH_CARD,
+    LS_GREETING,
+    LS_IMG_GALAXY_1,
+    LS_IMG_GALAXY_2,
+    LS_IMG_GALAXY_3,
+    LS_IMG_GALAXY_4,
+    LS_IMG_GALAXY_5
+  ].forEach(k=> localStorage.removeItem(k));
   load();
   showMsg('Đã xóa ✓', true);
 });
@@ -246,12 +468,15 @@ document.getElementById('btnClear').addEventListener('click', ()=>{
 document.getElementById('btnExport').addEventListener('click', ()=>{
   const data = {
     pw: localStorage.getItem(LS_PW) || '',
+    greeting: localStorage.getItem(LS_GREETING) || '',
     img_index: localStorage.getItem(LS_IMG_INDEX) || '',
     img_birthday_top: localStorage.getItem(LS_IMG_BIRTH_TOP) || '',
     img_birthday_card: localStorage.getItem(LS_IMG_BIRTH_CARD) || '',
-    greeting: localStorage.getItem(LS_GREETING) || '',
-    img_galaxy: localStorage.getItem(LS_IMG_GALAXY) || ''
-    
+    galaxy_1: localStorage.getItem(LS_IMG_GALAXY_1) || '',
+    galaxy_2: localStorage.getItem(LS_IMG_GALAXY_2) || '',
+    galaxy_3: localStorage.getItem(LS_IMG_GALAXY_3) || '',
+    galaxy_4: localStorage.getItem(LS_IMG_GALAXY_4) || '',
+    galaxy_5: localStorage.getItem(LS_IMG_GALAXY_5) || ''
   };
   const blob = new Blob([JSON.stringify(data)], {type:'application/json'});
   const a = document.createElement('a');
@@ -274,11 +499,17 @@ document.getElementById('imp').addEventListener('change', async (e)=>{
     if(typeof data !== 'object') throw new Error('Bad file');
 
     if('pw' in data) localStorage.setItem(LS_PW, data.pw||'');
+    if('greeting' in data) localStorage.setItem(LS_GREETING, data.greeting||'');
+
     if('img_index' in data) localStorage.setItem(LS_IMG_INDEX, data.img_index||'');
     if('img_birthday_top' in data) localStorage.setItem(LS_IMG_BIRTH_TOP, data.img_birthday_top||'');
     if('img_birthday_card' in data) localStorage.setItem(LS_IMG_BIRTH_CARD, data.img_birthday_card||'');
-    if('img_galaxy' in data) localStorage.setItem(LS_IMG_GALAXY, data.img_galaxy||'');
-    if ('greeting' in data) localStorage.setItem(LS_GREETING, data.greeting || '');
+
+    if('galaxy_1' in data) localStorage.setItem(LS_IMG_GALAXY_1, data.galaxy_1||'');
+    if('galaxy_2' in data) localStorage.setItem(LS_IMG_GALAXY_2, data.galaxy_2||'');
+    if('galaxy_3' in data) localStorage.setItem(LS_IMG_GALAXY_3, data.galaxy_3||'');
+    if('galaxy_4' in data) localStorage.setItem(LS_IMG_GALAXY_4, data.galaxy_4||'');
+    if('galaxy_5' in data) localStorage.setItem(LS_IMG_GALAXY_5, data.galaxy_5||'');
 
     load();
     showMsg('Đã import ✓', true);
@@ -287,10 +518,6 @@ document.getElementById('imp').addEventListener('change', async (e)=>{
     showMsg('File không hợp lệ!', false);
   }
 });
-
 </script>
 </body>
 </html>
-
-
-
