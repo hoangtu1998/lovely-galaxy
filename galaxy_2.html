@@ -15,13 +15,16 @@
       font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
     }
 
+    /* Canvas vũ trụ */
     #cv{
       position:fixed;
       inset:0;
       z-index:1;
       display:block;
+      background:#000;
     }
 
+    /* Lời chúc */
     #wishBox{
       position:fixed;
       inset:0;
@@ -60,36 +63,78 @@
   <canvas id="cv"></canvas>
 
 <script>
-/* ================== LOAD DATA TỪ LOCALSTORAGE ================== */
-const savedWish = localStorage.getItem("wish_text")
-  || "Chúc mừng sinh nhật 🎂 Chúc bạn luôn xinh đẹp, hạnh phúc và được yêu thương nhất vũ trụ 💖✨";
+/* =========================================================
+   ========== 1. IndexedDB helper (giống storage.js) ========
+   ========================================================= */
 
-document.getElementById('wishBox').textContent = savedWish;
-setTimeout(()=> {
-  document.getElementById('wishBox').style.opacity = 1;
-}, 10000);
+const DB_NAME = 'birthdayDB';
+const DB_VER  = 1;
+const STORE   = 'images';
 
-// Lấy danh sách ảnh nhiều tấm:
-let IMAGE_URLS = [];
-try {
-  const fromLS = JSON.parse(localStorage.getItem("galaxy_imgs"));
-  if (Array.isArray(fromLS) && fromLS.length > 0) {
-    IMAGE_URLS = fromLS;
-  } else {
-    // fallback nếu không có
-    IMAGE_URLS = [
-      "assets/cute-cake.png",
-      "assets/card-cute.jpg"
-    ];
-  }
-} catch(e){
-  IMAGE_URLS = [
-    "assets/cute-cake.png",
-    "assets/card-cute.jpg"
-  ];
+function openDB() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(DB_NAME, DB_VER);
+    req.onupgradeneeded = () => {
+      const db = req.result;
+      if (!db.objectStoreNames.contains(STORE)) {
+        db.createObjectStore(STORE); // simple key-value
+      }
+    };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror   = () => reject(req.error);
+  });
 }
 
-/* ================== CANVAS SETUP ================== */
+// get blob by key
+async function getImageFromDB(key) {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE, 'readonly');
+    const req = tx.objectStore(STORE).get(key);
+    req.onsuccess = () => resolve(req.result || null);
+    req.onerror   = () => reject(req.error);
+  });
+}
+
+// load all galaxy blobs -> array of objectURLs
+async function loadAllGalaxyImages() {
+  const keys = [
+    'img_galaxy_1',
+    'img_galaxy_2',
+    'img_galaxy_3',
+    'img_galaxy_4',
+    'img_galaxy_5'
+  ];
+  const out = [];
+  for (const k of keys) {
+    const blob = await getImageFromDB(k);
+    if (blob) {
+      out.push(URL.createObjectURL(blob));
+    }
+  }
+  if (out.length === 0) {
+    // fallback nếu user chưa chọn ảnh
+    out.push('assets/cute-cake.png');
+  }
+  return out;
+}
+
+/* =========================================================
+   ========== 2. Setup wish text / canvas / params =========
+   ========================================================= */
+
+const wishEl = document.getElementById('wishBox');
+
+// Lời chúc từ localStorage
+const savedWish = localStorage.getItem('wish_text')
+  || "Chúc mừng sinh nhật 🎂 Chúc bạn luôn xinh đẹp, hạnh phúc và được yêu thương nhất vũ trụ 💖✨";
+
+wishEl.textContent = savedWish;
+// delay hiện lời chúc để tạo moment
+setTimeout(()=> {
+  wishEl.style.opacity = 1;
+}, 10000);
+
 const cv = document.getElementById('cv');
 const cx = cv.getContext('2d', { alpha: false });
 
@@ -104,24 +149,26 @@ function resize(){
 addEventListener('resize', resize);
 resize();
 
-/* ================== PERF PRESET ================== */
+/* Perf preset */
 const mem = navigator.deviceMemory || 4;
 const LOW = mem <= 4 && innerWidth < 900;
 
 const STAR_COUNT    = LOW ? 1800 : 3200;
 const R_MAX         = 420;
 const THICKNESS     = 22;
+const ORBIT_SPRITES = 8;  // số "thẻ" bay quanh (slot hiển thị), chúng sẽ loop qua list ảnh
 
-// số khung ảnh quay quanh (có thể > số ảnh, sẽ lặp)
-const ORBIT_SPRITES = 8;
-
-/* ================== CAMERA / STATE ================== */
+/* camera-ish */
 let autoSpeed = 0.01;
 let userRotY = 0.0;
 let userRotX = 0.18;
 const dist = 520;
 
-/* ================== GALAXY POINT CLOUD ================== */
+/* =========================================================
+   ========== 3. Galaxy point cloud / stars =================
+   ========================================================= */
+
+// dải ngân hà (đám bụi màu)
 const points = [];
 for (let i=0; i<STAR_COUNT; i++){
   const radius    = Math.pow(Math.random(), 0.55) * R_MAX;
@@ -143,39 +190,25 @@ for (let i=0; i<STAR_COUNT; i++){
   points.push({x,y,z,hueBase,sat,light});
 }
 
-/* ================== BACKGROUND STARS ================== */
+// sao xa phía sau
 const stars = Array.from({length: LOW ? 900 : 1400}, () => ({
   x:(Math.random()-0.5)*2600,
   y:(Math.random()-0.5)*1600,
   z: Math.random()*2400 + 400
 }));
 
-/* ================== LOAD TẤT CẢ ẢNH THÀNH Image() ================== */
-const spriteImgs = IMAGE_URLS.map(url => {
-  const im = new Image();
-  im.src = url;
-  return im;
-});
+/* =========================================================
+   ========== 4. Sprites (ảnh quay quanh) ==================
+   =========================================================
+   Chúng ta sẽ khởi tạo SAU khi load ảnh (async)
+*/
 
-/* ================== TẠO DANH SÁCH SPRITES QUAY ================== */
-const sprites = [];
-for(let i=0;i<ORBIT_SPRITES;i++){
-  const a = i / ORBIT_SPRITES * Math.PI*2;
-  const r = 280 + Math.sin(i*0.7)*18;
+let spriteImgs = [];  // mảng Image() tương ứng các ảnh galaxy
+let sprites    = [];  // mỗi slot bay quanh có {imgIndex, baseA, r, y, s}
 
-  // lặp qua danh sách ảnh: 0..len-1..0..len-1...
-  const imgIndex = i % spriteImgs.length;
-
-  sprites.push({
-    baseA: a,
-    r,
-    y: (Math.random()-0.5)*30,
-    s: 0.9 + Math.random()*0.4,
-    imgIndex
-  });
-}
-
-/* ================== INTERACTION DRAG ================== */
+/* =========================================================
+   ========== 5. Input drag để xoay ========================
+   ========================================================= */
 let dragging=false, px=0, py=0;
 
 cv.addEventListener('mousedown', e=>{
@@ -210,11 +243,11 @@ cv.addEventListener('touchmove', e=>{
   }
 },{passive:true});
 
-cv.addEventListener('touchend', ()=>{
-  dragging=false;
-},{passive:true});
+cv.addEventListener('touchend', ()=>{ dragging=false; },{passive:true});
 
-/* ================== PROJECTION ================== */
+/* =========================================================
+   ========== 6. Math chiếu 3D -> 2D =======================
+   ========================================================= */
 function proj(x,y,z){
   const cY = Math.cos(userRotY), sY = Math.sin(userRotY);
   const cX = Math.cos(userRotX), sX = Math.sin(userRotX);
@@ -232,31 +265,148 @@ function proj(x,y,z){
   };
 }
 
-/* ================== SPOTLIGHT STATE ================== */
+/* =========================================================
+   ========== 7. Spotlight logic ===========================
+   =========================================================
+   mode "orbit": tất cả thẻ ảnh quay quanh
+   mode "spotlight": dừng quay, lấy 1 ảnh phóng to giữa màn hình.
+*/
+
 let mode = "orbit";
 let tOrbit = 0;
 let orbitFrameCounter = 0;
-const ORBIT_FRAMES_BEFORE_SPOTLIGHT = 20; // ~4s quay trước khi spotlight
+const ORBIT_FRAMES_BEFORE_SPOTLIGHT = 20; // khoảng ~4s nếu ~60fps
 
 let spotlightFrameCounter = 0;
-const SPOTLIGHT_FRAMES = 10; // ~2s spotlight
+const SPOTLIGHT_FRAMES = 10; // ~2s đứng im
 
-let spotlightSpriteIndex = 0;
-let spotlightSpriteIndexNext = 1;
+let spotlightSpriteIndex = 0;     // slot sprite đang được spotlight
+let nextSpotlightSpriteIndex = 1; // slot kế tiếp
+let spotlightImageScale = 1;      // scale tấm ảnh khi chụp spotlight
 
-let spotlightImageScale = 1;
+/* =========================================================
+   ========== 8. RoundRect helper ==========================
+   ========================================================= */
+function roundRect(ctx, x, y, w, h, r){
+  ctx.beginPath();
+  ctx.moveTo(x+r, y);
+  ctx.arcTo(x+w, y,   x+w, y+h, r);
+  ctx.arcTo(x+w, y+h, x,   y+h, r);
+  ctx.arcTo(x,   y+h, x,   y,   r);
+  ctx.arcTo(x,   y,   x+w, y,   r);
+  ctx.closePath();
+}
 
-/* ================== LOOP ================== */
+/* =========================================================
+   ========== 9. Main render loop ==========================
+   ========================================================= */
 let sortToggle = 0;
 let pulsing = false;
 
-(function loop(){
-  requestAnimationFrame(loop);
+function drawCoreGlow(){
+  const cxMid = innerWidth/2;
+  const cyMid = innerHeight/2;
 
-  // cập nhật logic orbit/spotlight
+  // ánh sáng trung tâm
+  const g1 = cx.createRadialGradient(cxMid, cyMid, 0, cxMid, cyMid, innerWidth*0.35);
+  g1.addColorStop(0, 'rgba(180,200,255,0.9)');
+  g1.addColorStop(0.4,'rgba(140,100,255,0.6)');
+  g1.addColorStop(0.7,'rgba(50,20,80,0.15)');
+  g1.addColorStop(1, 'rgba(0,0,0,0)');
+  cx.fillStyle = g1;
+  cx.beginPath();
+  cx.arc(cxMid, cyMid, innerWidth*0.4, 0, Math.PI*2);
+  cx.fill();
+
+  // tia sáng kiểu sao
+  cx.save();
+  cx.translate(cxMid, cyMid);
+  cx.globalAlpha = 0.6;
+
+  function starRay(angle, w, len){
+    cx.save();
+    cx.rotate(angle);
+    const grd = cx.createLinearGradient(0,0,0,len);
+    grd.addColorStop(0,'rgba(255,255,255,0.9)');
+    grd.addColorStop(1,'rgba(255,255,255,0)');
+    cx.fillStyle = grd;
+    cx.beginPath();
+    cx.moveTo(-w,0);
+    cx.lineTo(w,0);
+    cx.lineTo(0,len);
+    cx.closePath();
+    cx.fill();
+    cx.restore();
+  }
+
+  const baseLen = Math.min(innerWidth,innerHeight)*0.28;
+  const baseW   = baseLen*0.03;
+  starRay(0,             baseW,     baseLen);
+  starRay(Math.PI/2,     baseW,     baseLen);
+  starRay(Math.PI/4,     baseW*0.7, baseLen*0.7);
+  starRay(3*Math.PI/4,   baseW*0.7, baseLen*0.7);
+
+  cx.restore();
+
+  // lõi sáng trắng nhỏ
+  const g2 = cx.createRadialGradient(cxMid, cyMid, 0, cxMid, cyMid, 40);
+  g2.addColorStop(0,'rgba(255,255,255,1)');
+  g2.addColorStop(1,'rgba(255,255,255,0)');
+  cx.fillStyle = g2;
+  cx.beginPath();
+  cx.arc(cxMid, cyMid, 40, 0, Math.PI*2);
+  cx.fill();
+}
+
+// vẽ 1 card ảnh bo góc
+function drawCardImage(img, x, y, w, h, rr, border=false, scaleAlpha=1){
+  cx.save();
+  cx.translate(x, y);
+
+  // nền card
+  if (border) {
+    // spotlight card: nền tối + viền hồng
+    cx.fillStyle = 'rgba(0,0,0,0.6)';
+    roundRect(cx, -w/2, -h/2, w, h, rr);
+    cx.fill();
+
+    cx.lineWidth = Math.max(2, 4*scaleAlpha/3);
+    cx.strokeStyle = 'rgba(255,120,200,0.6)';
+    roundRect(cx, -w/2, -h/2, w, h, rr);
+    cx.stroke();
+  } else {
+    // orbit card: 1 lớp mờ nhẹ
+    cx.fillStyle = 'rgba(255,255,255,0.15)';
+    roundRect(cx, -w/2, -h/2, w, h, rr);
+    cx.fill();
+  }
+
+  // actual image
+  if (img && img.complete && w>2 && h>2){
+    cx.save();
+    roundRect(cx, -w/2, -h/2, w, h, rr);
+    cx.clip();
+    cx.drawImage(img, -w/2, -h/2, w, h);
+    cx.restore();
+  }
+
+  cx.restore();
+}
+
+function renderLoop(){
+  requestAnimationFrame(renderLoop);
+
+  if (!spriteImgs.length || !sprites.length) {
+    // nếu chưa load ảnh xong thì tạm clear nền đen cho đẹp
+    cx.fillStyle = "#000";
+    cx.fillRect(0,0,innerWidth,innerHeight);
+    return;
+  }
+
+  // === update state orbit/spotlight ===
   if (mode === "orbit"){
     tOrbit += 1;
-    userRotY += 0.01;
+    userRotY += autoSpeed;
     orbitFrameCounter++;
 
     if (orbitFrameCounter >= ORBIT_FRAMES_BEFORE_SPOTLIGHT){
@@ -264,30 +414,36 @@ let pulsing = false;
       orbitFrameCounter = 0;
       spotlightFrameCounter = 0;
 
-      const curIdx = spotlightSpriteIndex % sprites.length;
-      const sp = sprites[curIdx];
+      // sprite hiện tại (slot)
+      const curSlot = spotlightSpriteIndex % sprites.length;
+      const sp = sprites[curSlot];
 
-      // chụp scale tại vị trí hiện tại
+      // chụp scale và imgIndex lúc này
       const angNow = sp.baseA + tOrbit*(0.028 + sp.s*0.004);
       const px3 = Math.cos(angNow)*sp.r;
       const pz3 = Math.sin(angNow)*sp.r;
       const py3 = sp.y;
       const screen = proj(px3, py3, pz3);
+
       spotlightImageScale = sp.s * screen.s || 1;
 
-      spotlightSpriteIndex = curIdx;
-      spotlightSpriteIndexNext = (curIdx + 1) % sprites.length;
+      // không đổi spotlightSpriteIndex (vẫn là curSlot)
+      spotlightSpriteIndex = curSlot;
+
+      // tiếp theo sẽ là slot kế tiếp
+      nextSpotlightSpriteIndex = (curSlot + 1) % sprites.length;
     }
 
   } else if (mode === "spotlight"){
+    // đứng im
     spotlightFrameCounter++;
     if (spotlightFrameCounter >= SPOTLIGHT_FRAMES){
       mode = "orbit";
-      spotlightSpriteIndex = spotlightSpriteIndexNext;
+      spotlightSpriteIndex = nextSpotlightSpriteIndex;
     }
   }
 
-  // vẽ nền gradient galaxy
+  // === vẽ nền gradient vũ trụ ===
   const gx = innerWidth*0.6;
   const gy = innerHeight*0.5;
   const gr = Math.max(innerWidth,innerHeight);
@@ -298,64 +454,10 @@ let pulsing = false;
   cx.fillStyle = bg;
   cx.fillRect(0,0,innerWidth,innerHeight);
 
-  // glow lõi + tia sáng
-  (function drawCoreGlow(){
-    const cxMid = innerWidth/2;
-    const cyMid = innerHeight/2;
+  // tia sáng trung tâm + glow màu
+  drawCoreGlow();
 
-    const g1 = cx.createRadialGradient(
-      cxMid, cyMid, 0,
-      cxMid, cyMid, innerWidth*0.35
-    );
-    g1.addColorStop(0, 'rgba(180,200,255,0.9)');
-    g1.addColorStop(0.4,'rgba(140,100,255,0.6)');
-    g1.addColorStop(0.7,'rgba(50,20,80,0.15)');
-    g1.addColorStop(1, 'rgba(0,0,0,0)');
-    cx.fillStyle = g1;
-    cx.beginPath();
-    cx.arc(cxMid, cyMid, innerWidth*0.4, 0, Math.PI*2);
-    cx.fill();
-
-    cx.save();
-    cx.translate(cxMid, cyMid);
-    cx.globalAlpha = 0.6;
-
-    function starRay(angle, w, len){
-      cx.save();
-      cx.rotate(angle);
-      const grd = cx.createLinearGradient(0,0,0,len);
-      grd.addColorStop(0,'rgba(255,255,255,0.9)');
-      grd.addColorStop(1,'rgba(255,255,255,0)');
-      cx.fillStyle = grd;
-      cx.beginPath();
-      cx.moveTo(-w,0);
-      cx.lineTo(w,0);
-      cx.lineTo(0,len);
-      cx.closePath();
-      cx.fill();
-      cx.restore();
-    }
-
-    const baseLen = Math.min(innerWidth,innerHeight)*0.28;
-    const baseW   = baseLen*0.03;
-
-    starRay(0,             baseW,     baseLen);
-    starRay(Math.PI/2,     baseW,     baseLen);
-    starRay(Math.PI/4,     baseW*0.7, baseLen*0.7);
-    starRay(3*Math.PI/4,   baseW*0.7, baseLen*0.7);
-
-    cx.restore();
-
-    const g2 = cx.createRadialGradient(cxMid, cyMid, 0, cxMid, cyMid, 40);
-    g2.addColorStop(0,'rgba(255,255,255,1)');
-    g2.addColorStop(1,'rgba(255,255,255,0)');
-    cx.fillStyle = g2;
-    cx.beginPath();
-    cx.arc(cxMid, cyMid, 40, 0, Math.PI*2);
-    cx.fill();
-  })();
-
-  // sao nền xa
+  // sao xa
   cx.globalAlpha = 0.7;
   cx.fillStyle = '#ffffff';
   for(const s of stars){
@@ -367,7 +469,7 @@ let pulsing = false;
   }
   cx.globalAlpha = 1;
 
-  // ngân hà hạt
+  // dải ngân hà (bụi màu)
   let drawList = points;
   if((sortToggle ^= 1)){
     drawList = points.slice().sort((a,b)=>{
@@ -376,9 +478,7 @@ let pulsing = false;
       return za - zb;
     });
   }
-
   const pulseAmt = pulsing ? (1 + Math.sin(tOrbit*0.06)*0.06) : 1;
-
   for(const p0 of drawList){
     const wobble = Math.sin((p0.x+p0.z+tOrbit*0.8)*0.01)*0.5;
     const pr = proj(
@@ -386,7 +486,6 @@ let pulsing = false;
       (p0.y + wobble) * pulseAmt,
       p0.z * pulseAmt
     );
-
     const hue  = (p0.hueBase + 20*Math.sin(tOrbit*0.02)) % 360;
     const size = Math.min(2.8, 1.8*pr.s + 0.6);
 
@@ -396,49 +495,38 @@ let pulsing = false;
     cx.fill();
   }
 
-  // vẽ sprite: orbit vs spotlight
+  // === vẽ sprites (ảnh quay / spotlight) ===
   if (mode === "spotlight"){
-    // nền tối phủ mờ
+    // overlay tối nhẹ để làm nổi tấm ảnh spotlight
     cx.save();
     cx.fillStyle = 'rgba(0,0,0,0.4)';
     cx.fillRect(0,0,innerWidth,innerHeight);
     cx.restore();
 
-    const sp = sprites[spotlightSpriteIndex];
-    const img = spriteImgs[sp.imgIndex];
+    // sprite slot được spotlight
+    const slot = sprites[spotlightSpriteIndex];
+    const img  = spriteImgs[slot.imgIndex % spriteImgs.length];
 
     const scaleNow = (spotlightImageScale || 1) * 3;
     const w = 110 * scaleNow;
     const h = w;
     const rr = Math.min(18*scaleNow, w/4);
 
-    cx.save();
-    cx.translate(innerWidth/2, innerHeight/2);
-
-    cx.fillStyle = 'rgba(0,0,0,0.6)';
-    roundRect(cx, -w/2, -h/2, w, h, rr);
-    cx.fill();
-
-    cx.lineWidth = Math.max(2, 4*scaleNow/3);
-    cx.strokeStyle = 'rgba(255,120,200,0.6)';
-    roundRect(cx, -w/2, -h/2, w, h, rr);
-    cx.stroke();
-
-    if (img && img.complete && w>2 && h>2){
-      cx.save();
-      roundRect(cx, -w/2, -h/2, w, h, rr);
-      cx.clip();
-      cx.drawImage(img, -w/2, -h/2, w, h);
-      cx.restore();
-    }
-
-    cx.restore();
+    drawCardImage(
+      img,
+      innerWidth/2,
+      innerHeight/2,
+      w,
+      h,
+      rr,
+      true,          // border mode spotlight
+      scaleNow
+    );
 
   } else {
-    // orbit mode: tất cả quay quanh
+    // orbit mode
     for (let i=0;i<sprites.length;i++){
       const sp = sprites[i];
-      const img = spriteImgs[sp.imgIndex];
 
       const angNow = sp.baseA + tOrbit*(0.028 + sp.s*0.004);
       const px3 = Math.cos(angNow)*sp.r;
@@ -452,37 +540,55 @@ let pulsing = false;
       const h = w;
       const rr = Math.min(10*scaleNow, w/4);
 
-      cx.save();
-      cx.translate(screen.x, screen.y);
+      const img = spriteImgs[sp.imgIndex % spriteImgs.length];
 
-      cx.fillStyle = 'rgba(255,255,255,0.15)';
-      roundRect(cx, -w/2, -h/2, w, h, rr);
-      cx.fill();
-
-      if (img && img.complete && w>2 && h>2){
-        cx.save();
-        roundRect(cx, -w/2, -h/2, w, h, rr);
-        cx.clip();
-        cx.drawImage(img, -w/2, -h/2, w, h);
-        cx.restore();
-      }
-
-      cx.restore();
+      drawCardImage(
+        img,
+        screen.x,
+        screen.y,
+        w,
+        h,
+        rr,
+        false,
+        scaleNow
+      );
     }
   }
-
-})(); // end loop
-
-/* ================== HELPER ================== */
-function roundRect(ctx, x, y, w, h, r){
-  ctx.beginPath();
-  ctx.moveTo(x+r, y);
-  ctx.arcTo(x+w, y,   x+w, y+h, r);
-  ctx.arcTo(x+w, y+h, x,   y+h, r);
-  ctx.arcTo(x,   y+h, x,   y,   r);
-  ctx.arcTo(x,   y,   x+w, y,   r);
-  ctx.closePath();
 }
+
+/* =========================================================
+   ========== 10. Khởi tạo sprites sau khi load ảnh =========
+   ========================================================= */
+async function init() {
+  // 1) load ảnh người dùng từ indexedDB
+  const galaxyURLs = await loadAllGalaxyImages(); // mảng URL objectURL/string
+  // 2) tạo Image() objects
+  spriteImgs = galaxyURLs.map(src => {
+    const im = new Image();
+    im.src = src;
+    return im;
+  });
+
+  // 3) tạo mảng sprites (các "thẻ" bay quanh)
+  //    mỗi sprite trỏ tới 1 imgIndex, lặp lại qua danh sách ảnh
+  sprites = [];
+  for(let i=0;i<ORBIT_SPRITES;i++){
+    const a = i / ORBIT_SPRITES * Math.PI*2;
+    const r = 280 + Math.sin(i*0.7)*18;
+    sprites.push({
+      imgIndex: i % spriteImgs.length,
+      baseA: a,
+      r,
+      y: (Math.random()-0.5)*30,
+      s: 0.9 + Math.random()*0.4
+    });
+  }
+
+  // 4) start render loop
+  renderLoop();
+}
+
+init();
 </script>
 </body>
 </html>
