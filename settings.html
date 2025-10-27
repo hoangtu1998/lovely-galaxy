@@ -412,29 +412,35 @@ document.getElementById('btnSave').addEventListener('click', async ()=>{
     }
 
     // Galaxy 1..5
-    if (fGalaxy1.files[0]) {
-      const d = await toDataURL(fGalaxy1.files[0]);
-      localStorage.setItem(LS_IMG_GALAXY_1, d);
-      setPreview(pvGalaxy1, d);
+   if (fGalaxy1.files[0]) {
+  const file = fGalaxy1.files[0];
+  await saveImageToDB('img_galaxy_1', file); // lưu blob thẳng
+  const url = URL.createObjectURL(file);
+  setPreview(pvGalaxy1, url);
     }
+
     if (fGalaxy2.files[0]) {
-      const d = await toDataURL(fGalaxy2.files[0]);
-      localStorage.setItem(LS_IMG_GALAXY_2, d);
+      const file = fGalaxy2.files[0];
+  await saveImageToDB('img_galaxy_2', file); // lưu blob thẳng
+  const url = URL.createObjectURL(file);
       setPreview(pvGalaxy2, d);
     }
     if (fGalaxy3.files[0]) {
-      const d = await toDataURL(fGalaxy3.files[0]);
-      localStorage.setItem(LS_IMG_GALAXY_3, d);
+     const file = fGalaxy3.files[0];
+  await saveImageToDB('img_galaxy_3', file); // lưu blob thẳng
+  const url = URL.createObjectURL(file);
       setPreview(pvGalaxy3, d);
     }
     if (fGalaxy4.files[0]) {
-      const d = await toDataURL(fGalaxy4.files[0]);
-      localStorage.setItem(LS_IMG_GALAXY_4, d);
+       const file = fGalaxy4.files[0];
+  await saveImageToDB('img_galaxy_4', file); // lưu blob thẳng
+  const url = URL.createObjectURL(file);
       setPreview(pvGalaxy4, d);
     }
     if (fGalaxy5.files[0]) {
-      const d = await toDataURL(fGalaxy5.files[0]);
-      localStorage.setItem(LS_IMG_GALAXY_5, d);
+      const file = fGalaxy5.files[0];
+  await saveImageToDB('img_galaxy_5', file); // lưu blob thẳng
+  const url = URL.createObjectURL(file);
       setPreview(pvGalaxy5, d);
     }
 
@@ -521,3 +527,4 @@ document.getElementById('imp').addEventListener('change', async (e)=>{
 </script>
 </body>
 </html>
+
