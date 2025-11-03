@@ -30,60 +30,30 @@
     #pinkBg{
       position:fixed;
       inset:0;
-      background:linear-gradient(
-        180deg,
-        #ffc0cb 0%,
-        #ff99cc 50%,
-        #ff66b2 100%
-      );
+      background:linear-gradient(180deg,#ffc0cb 0%,#ff99cc 50%,#ff66b2 100%);
       z-index:-1;
       pointer-events:none;
       user-select:none;
     }
 
     .bgLayerImg{
-      position:fixed;
-      inset:0;
-      z-index:0;
-      pointer-events:none;
-      user-select:none;
-      background:
-        linear-gradient(
-          rgba(255,170,200,0.4),
-          rgba(255,120,180,0.5)
-        ),
-        url("assets/cute-cake.png"); /* fallback */
-      background-position:center;
-      background-size:cover;
-      background-repeat:no-repeat;
-      background-attachment:fixed;
+      position:fixed; inset:0; z-index:0; pointer-events:none; user-select:none;
+      background: linear-gradient(rgba(255,170,200,0.4),rgba(255,120,180,0.5)), url("assets/cute-cake.png");
+      background-position:center; background-size:cover; background-repeat:no-repeat; background-attachment:fixed;
       filter:saturate(1.2) brightness(1.05);
     }
 
-    #matrix{
-      position:fixed;
-      inset:0;
-      z-index:1;
-      pointer-events:none;
+    #matrix,#fireworks,#cuteLayer{
+      position:fixed; inset:0; pointer-events:none;
     }
-    #fireworks{
-      position:fixed;
-      inset:0;
-      z-index:2;
-      pointer-events:none;
-    }
-    #cuteLayer{
-      position:fixed;
-      inset:0;
-      z-index:3;
-      pointer-events:none;
-    }
+    #matrix{ z-index:1; }
+    #fireworks{ z-index:2; }
+    #cuteLayer{ z-index:3; }
 
     /* ====== CHỮ RƠI Ở GIỮA ====== */
     .rainAllWrap{
       position:fixed;
-      left:50%;
-      top:50%;
+      left:50%; top:50%;
       transform:translate(-50%,-60%);
       z-index:5;
       width:100%;
@@ -93,7 +63,8 @@
     }
     .rainWrap{
       opacity:0;
-      margin-bottom:12px;
+      margin-bottom:18px; /* giãn dòng thêm một chút */
+      transition:opacity .3s ease;
     }
     .rainWrap.show{opacity:1;}
 
@@ -107,25 +78,28 @@
         0 0 24px rgba(255,0,70,0.8),
         0 3px 8px rgba(0,0,0,0.6);
       font-family:"Dancing Script",cursive;
-      line-height:1.1;
-      letter-spacing:.5px;
+      line-height:1.15;
+      letter-spacing:0.15em;   /* << tăng khoảng cách chữ */
+      word-spacing:0.2em;      /* << tăng khoảng cách giữa từ */
     }
 
     .line3 .rain{
       font-family:"Playpen Sans",sans-serif;
-      font-size:clamp(20px,3vw,36px);
+      font-size:clamp(22px,3.2vw,38px);
       color:#ff2b2b;
       font-weight:700;
       text-shadow:
         0 0 8px rgba(255,60,90,0.9),
         0 0 22px rgba(255,20,70,0.7),
         0 3px 8px rgba(0,0,0,0.6);
+      letter-spacing:0.18em; /* 29+ cho giãn nhẹ hơn tẹo */
     }
 
     .drop{
       display:inline-block;
       opacity:0;
       transform:translateY(-40px);
+      margin-right:0.02em; /* đệm nhẹ giữa từng span */
     }
     @keyframes dropIn{
       0%{opacity:0;transform:translateY(-40px);}
@@ -137,16 +111,22 @@
 
     /* ====== HỘP QUÀ DƯỚI ====== */
     .giftWrap{
-      position:fixed;
-      left:0;
-      right:0;
-      bottom:12vh;
-      transform:translateY(0);
-      display:grid;
-      place-items:center;
-      z-index:6;
-      text-align:center;
+      position:fixed; left:0; right:0; bottom:12vh;
+      display:grid; place-items:center;
+      z-index:6; text-align:center;
+
+      /* ẨN lúc đầu – chỉ SHOW sau khi chữ rơi xong */
+      opacity:0;
+      transform:translateY(10px) scale(.98);
+      pointer-events:none;
+      transition: opacity .6s ease, transform .6s ease;
     }
+    .giftWrap.show{
+      opacity:1;
+      transform:translateY(0) scale(1);
+      pointer-events:auto;
+    }
+
     .giftEmoji{
       position:relative;
       font-size:clamp(80px,12vw,130px);
@@ -158,42 +138,19 @@
       filter:drop-shadow(0 4px 8px rgba(0,0,0,.8));
     }
     .giftText{
-      position:absolute;
-      top:60%;
-      left:50%;
-      transform:translate(-50%,-50%);
-      color:#fff;
-      font-size:clamp(20px,3vw,28px);
-      font-weight:700;
+      position:absolute; top:60%; left:50%; transform:translate(-50%,-50%);
+      color:#fff; font-size:clamp(20px,3vw,28px); font-weight:700;
       text-shadow:0 2px 6px rgba(0,0,0,.7);
-      pointer-events:none;
-      line-height:1.2;
-      text-align:center;
-      font-family:"Playpen Sans",sans-serif;
-    }
-    .hintTap{
-      margin-top:10px;
-      color:#ffe4f1;
-      text-shadow:0 2px 6px rgba(0,0,0,.8);
-      font-size:15px;
-      font-weight:400;
+      pointer-events:none; line-height:1.2; text-align:center;
       font-family:"Playpen Sans",sans-serif;
     }
     .giftEmoji.open{animation:none;}
     .giftEmoji::before{
-      content:"🎁";
-      position:absolute;
-      left:0;right:0;top:0;
-      text-align:center;
-      font-size:inherit;
-      line-height:1;
-      transform-origin:center bottom;
-      pointer-events:none;
-      opacity:0;
+      content:"🎁"; position:absolute; left:0;right:0;top:0; text-align:center;
+      font-size:inherit; line-height:1; transform-origin:center bottom; pointer-events:none; opacity:0;
     }
     .giftEmoji.open::before{
-      opacity:1;
-      animation:lidFlip .6s ease-out forwards;
+      opacity:1; animation:lidFlip .6s ease-out forwards;
       filter:drop-shadow(0 8px 12px rgba(255,105,180,.7));
     }
     @keyframes lidFlip{
@@ -230,56 +187,33 @@
   <div class="rainAllWrap">
     <div class="rainWrap line1" aria-hidden="true">
       <div class="rain">
-        <span class="drop">C</span>
-        <span class="drop">H</span>
-        <span class="drop">Ú</span>
-        <span class="drop">C</span>
-        <span class="drop">&nbsp;</span>
-        <span class="drop">M</span>
-        <span class="drop">Ừ</span>
-        <span class="drop">N</span>
-        <span class="drop">G</span>
-        <span class="drop">&nbsp;</span>
-        <span class="drop">S</span>
-        <span class="drop">I</span>
-        <span class="drop">N</span>
-        <span class="drop">H</span>
-        <span class="drop">&nbsp;</span>
-        <span class="drop">N</span>
-        <span class="drop">H</span>
-        <span class="drop">Ậ</span>
-        <span class="drop">T</span>
-        <span class="drop">!</span>
+        <span class="drop">C</span><span class="drop">H</span><span class="drop">Ú</span><span class="drop">C</span><span class="drop">&nbsp;</span>
+        <span class="drop">M</span><span class="drop">Ừ</span><span class="drop">N</span><span class="drop">G</span><span class="drop">&nbsp;</span>
+        <span class="drop">S</span><span class="drop">I</span><span class="drop">N</span><span class="drop">H</span><span class="drop">&nbsp;</span>
+        <span class="drop">N</span><span class="drop">H</span><span class="drop">Ậ</span><span class="drop">T</span><span class="drop">!</span>
       </div>
     </div>
 
     <div class="rainWrap line2" aria-hidden="true">
       <div class="rain">
-        <span class="drop">B</span>
-        <span class="drop">ạ</span>
-        <span class="drop">n</span>
-        <span class="drop">&nbsp;</span>
-        <span class="drop">i</span>
-        <span class="drop">u</span>
+        <span class="drop">B</span><span class="drop">ạ</span><span class="drop">n</span><span class="drop">&nbsp;</span>
+        <span class="drop">i</span><span class="drop">u</span>
       </div>
     </div>
 
     <div class="rainWrap line3" aria-hidden="true">
       <div class="rain">
-        <span class="drop">2</span>
-        <span class="drop">9</span>
-        <span class="drop">+</span>
+        <span class="drop">2</span><span class="drop">9</span><span class="drop">+</span>
       </div>
     </div>
   </div>
 
-  <!-- hộp quà -->
-  <div class="giftWrap">
+  <!-- hộp quà (ẩn trước, chỉ show sau khi chữ xong) -->
+  <div class="giftWrap" id="giftWrap">
     <div class="giftEmoji" id="giftEmoji">
       🎁
       <div class="giftText">Mở quà</div>
     </div>
-    <div class="hintTap">(chạm để mở)</div>
   </div>
 
 <script>
@@ -311,15 +245,22 @@ function playLine(lineElem, callback){
     span.style.animationDelay = delay + 's';
     span.classList.add('animate');
   });
-  const totalMs = (0.1 * letters.length + 1.8) * 1000;
+  const totalMs = (0.1 * letters.length + 1.8) * 1000; // 1.8s anim + delay chuỗi
   setTimeout(() => { if (callback) callback(); }, totalMs);
 }
+
 const line1 = document.querySelector('.rainWrap.line1');
 const line2 = document.querySelector('.rainWrap.line2');
 const line3 = document.querySelector('.rainWrap.line3');
+
+const giftWrap = document.getElementById('giftWrap');
+
 playLine(line1, () => {
   playLine(line2, () => {
-    playLine(line3, () => {});
+    playLine(line3, () => {
+      // >>> Chỉ khi toàn bộ 3 dòng rơi xong mới show hộp quà
+      giftWrap.classList.add('show');
+    });
   });
 });
 
@@ -359,11 +300,7 @@ resizeMatrix();
     ctx.fillStyle = '#fff';
     ctx.fillText(ch, x, y);
     ctx.shadowBlur = 0;
-    if (y > H && Math.random() > 0.97) {
-      drops[i] = 0;
-    } else {
-      drops[i] += 0.5;
-    }
+    if (y > H && Math.random() > 0.97) { drops[i] = 0; } else { drops[i] += 0.5; }
   }
 })();
 
@@ -371,134 +308,58 @@ resizeMatrix();
 const fwCanvas = document.getElementById('fireworks');
 const fwCtx = fwCanvas.getContext('2d');
 let fwW, fwH, fireworks=[], particles=[];
-function resizeFW(){
-  fwW = fwCanvas.width = innerWidth;
-  fwH = fwCanvas.height = innerHeight;
-}
-addEventListener('resize', resizeFW);
-resizeFW();
+function resizeFW(){ fwW = fwCanvas.width = innerWidth; fwH = fwCanvas.height = innerHeight; }
+addEventListener('resize', resizeFW); resizeFW();
 
 class Firework {
-  constructor(){
-    this.x = Math.random()*fwW;
-    this.y = fwH;
-    this.tx = Math.random()*fwW;
-    this.ty = Math.random()*fwH*0.4 + fwH*0.1;
-    this.vx = (this.tx - this.x)/30;
-    this.vy = (this.ty - this.y)/30;
-    this.life = 30;
-    const rainbow = ['#ff3366','#ff9933','#ffff33','#33ff66','#33ccff','#9966ff','#ff33cc'];
-    this.color = rainbow[Math.floor(Math.random()*rainbow.length)];
+  constructor(){ this.x=Math.random()*fwW; this.y=fwH; this.tx=Math.random()*fwW; this.ty=Math.random()*fwH*0.4+fwH*0.1;
+    this.vx=(this.tx-this.x)/30; this.vy=(this.ty-this.y)/30; this.life=30;
+    const rainbow=['#ff3366','#ff9933','#ffff33','#33ff66','#33ccff','#9966ff','#ff33cc'];
+    this.color=rainbow[Math.floor(Math.random()*rainbow.length)];
   }
-  update(){
-    this.x += this.vx;
-    this.y += this.vy;
-    this.life--;
-    if(this.life<=0){
-      explode(this.x,this.y);
-      return false;
-    }
-    return true;
-  }
-  draw(){
-    fwCtx.beginPath();
-    fwCtx.fillStyle = this.color;
-    fwCtx.arc(this.x,this.y,2,0,Math.PI*2);
-    fwCtx.fill();
-  }
+  update(){ this.x+=this.vx; this.y+=this.vy; this.life--; if(this.life<=0){ explode(this.x,this.y); return false;} return true; }
+  draw(){ fwCtx.beginPath(); fwCtx.fillStyle=this.color; fwCtx.arc(this.x,this.y,2,0,Math.PI*2); fwCtx.fill(); }
 }
 class Particle {
-  constructor(x,y){
-    const angle = Math.random()*Math.PI*2;
-    const speed = Math.random()*3+1;
-    this.x=x;this.y=y;
-    this.vx = Math.cos(angle)*speed;
-    this.vy = Math.sin(angle)*speed;
-    this.alpha=1;
-    this.decay = Math.random()*0.02+0.015;
-    const rainbow = ['#ff3366','#ff9933','#ffff33','#33ff66','#33ccff','#9966ff','#ff33cc'];
-    this.color = rainbow[Math.floor(Math.random()*rainbow.length)];
+  constructor(x,y){ const angle=Math.random()*Math.PI*2; const speed=Math.random()*3+1;
+    this.x=x; this.y=y; this.vx=Math.cos(angle)*speed; this.vy=Math.sin(angle)*speed;
+    this.alpha=1; this.decay=Math.random()*0.02+0.015;
+    const rainbow=['#ff3366','#ff9933','#ffff33','#33ff66','#33ccff','#9966ff','#ff33cc'];
+    this.color=rainbow[Math.floor(Math.random()*rainbow.length)];
   }
-  update(){
-    this.x+=this.vx;
-    this.y+=this.vy;
-    this.vy+=0.03;
-    this.alpha-=this.decay;
-    return this.alpha>0;
-  }
-  draw(){
-    fwCtx.globalAlpha=this.alpha;
-    fwCtx.beginPath();
-    fwCtx.fillStyle=this.color;
-    fwCtx.arc(this.x,this.y,2,0,Math.PI*2);
-    fwCtx.fill();
-    fwCtx.globalAlpha=1;
-  }
+  update(){ this.x+=this.vx; this.y+=this.vy; this.vy+=0.03; this.alpha-=this.decay; return this.alpha>0; }
+  draw(){ fwCtx.globalAlpha=this.alpha; fwCtx.beginPath(); fwCtx.fillStyle=this.color; fwCtx.arc(this.x,this.y,2,0,Math.PI*2); fwCtx.fill(); fwCtx.globalAlpha=1; }
 }
-function explode(x,y){
-  for(let i=0;i<40;i++){
-    particles.push(new Particle(x,y));
-  }
-}
+function explode(x,y){ for(let i=0;i<40;i++){ particles.push(new Particle(x,y)); } }
 function loopFW(){
   requestAnimationFrame(loopFW);
   fwCtx.clearRect(0,0,fwW,fwH);
-  if(Math.random()<0.08){
-    fireworks.push(new Firework());
-  }
-  fireworks = fireworks.filter(fw=>{
-    const alive = fw.update();
-    fw.draw();
-    return alive;
-  });
-  particles = particles.filter(p=>{
-    const alive = p.update();
-    p.draw();
-    return alive;
-  });
+  if(Math.random()<0.08){ fireworks.push(new Firework()); }
+  fireworks = fireworks.filter(fw=>{ const alive=fw.update(); fw.draw(); return alive; });
+  particles = particles.filter(p=>{ const alive=p.update(); p.draw(); return alive; });
 }
 loopFW();
 
 /* ===== tuyết + tim ===== */
 const cuteCanvas = document.getElementById('cuteLayer');
 const cuteCtx = cuteCanvas.getContext('2d');
-let cW, cH;
-let snowflakes=[];
-let critters=[];
-const ENABLE_SNOW = true;
-const ENABLE_CRITTERS = true;
+let cW, cH, snowflakes=[], critters=[];
+const ENABLE_SNOW = true, ENABLE_CRITTERS = true;
 
-function resizeCute(){
-  cW = cuteCanvas.width = innerWidth;
-  cH = cuteCanvas.height = innerHeight;
-}
-addEventListener('resize', resizeCute);
-resizeCute();
+function resizeCute(){ cW = cuteCanvas.width = innerWidth; cH = cuteCanvas.height = innerHeight; }
+addEventListener('resize', resizeCute); resizeCute();
 
 function initSnow(){
   snowflakes = [];
   for(let i=0;i<50;i++){
-    snowflakes.push({
-      x:Math.random()*cW,
-      y:Math.random()*cH,
-      r:Math.random()*3+3,
-      spdY:Math.random()*1+0.8,
-      drift:(Math.random()*1-0.5)
-    });
+    snowflakes.push({ x:Math.random()*cW, y:Math.random()*cH, r:Math.random()*3+3, spdY:Math.random()*1+0.8, drift:(Math.random()*1-0.5) });
   }
 }
 function initCritters(){
   critters = [];
   const EMOJIS = ['💖','💖','💖','💖','💖','💖'];
   for(let i=0;i<6;i++){
-    critters.push({
-      emoji:EMOJIS[i % EMOJIS.length],
-      x:Math.random()*cW,
-      y:Math.random()*cH,
-      vx:(Math.random()<0.5?-1:1)*(1.5+Math.random()*1.5),
-      vy:(Math.random()<0.5?-1:1)*(1.5+Math.random()*1.5),
-      size:28+Math.random()*8
-    });
+    critters.push({ emoji:EMOJIS[i%EMOJIS.length], x:Math.random()*cW, y:Math.random()*cH, vx:(Math.random()<0.5?-1:1)*(1.5+Math.random()*1.5), vy:(Math.random()<0.5?-1:1)*(1.5+Math.random()*1.5), size:28+Math.random()*8 });
   }
 }
 if(ENABLE_SNOW) initSnow();
@@ -511,24 +372,16 @@ function loopCute(){
   if(ENABLE_SNOW){
     cuteCtx.fillStyle = "#fff";
     for(const f of snowflakes){
-      f.y += f.spdY;
-      f.x += f.drift;
-      if(f.y > cH){
-        f.y = -10;
-        f.x = Math.random()*cW;
-      }
-      cuteCtx.beginPath();
-      cuteCtx.globalAlpha = 0.9;
-      cuteCtx.arc(f.x,f.y,f.r,0,Math.PI*2);
-      cuteCtx.fill();
+      f.y += f.spdY; f.x += f.drift;
+      if(f.y > cH){ f.y = -10; f.x = Math.random()*cW; }
+      cuteCtx.beginPath(); cuteCtx.globalAlpha = 0.9; cuteCtx.arc(f.x,f.y,f.r,0,Math.PI*2); cuteCtx.fill();
     }
     cuteCtx.globalAlpha = 1;
   }
 
   if(ENABLE_CRITTERS){
     for(const c of critters){
-      c.x += c.vx;
-      c.y += c.vy;
+      c.x += c.vx; c.y += c.vy;
       if(c.x < 20){ c.x = 20; c.vx *= -1; }
       if(c.x > cW-20){ c.x = cW-20; c.vx *= -1; }
       if(c.y < 20){ c.y = 20; c.vy *= -1; }
@@ -536,9 +389,7 @@ function loopCute(){
 
       cuteCtx.save();
       cuteCtx.translate(c.x, c.y);
-      if(c.vx < 0){
-        cuteCtx.scale(-1,1);
-      }
+      if(c.vx < 0){ cuteCtx.scale(-1,1); }
       cuteCtx.font = `${c.size}px "Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",sans-serif`;
       cuteCtx.textAlign = "center";
       cuteCtx.textBaseline = "middle";
@@ -546,15 +397,11 @@ function loopCute(){
       cuteCtx.restore();
     }
   }
-
   cuteCtx.globalAlpha = 1;
 }
 loopCute();
 
-/* ===== click mở quà =====
-   galaxy_2.html sẽ tự đọc ảnh từ IndexedDB,
-   nên ở đây ta chỉ cần set wish_text để lời chúc hiện lên.
-*/
+/* ===== click mở quà ===== */
 const gift = document.getElementById('giftEmoji');
 gift.addEventListener('click', () => {
   gift.classList.add('open');
@@ -563,11 +410,8 @@ gift.addEventListener('click', () => {
     || "Chúc mừng sinh nhật 🎂 Chúc bạn luôn xinh đẹp, hạnh phúc và được yêu thương nhất vũ trụ 💖✨";
   localStorage.setItem("wish_text", greet);
 
-  setTimeout(() => {
-    location.href = 'galaxy_2.html';
-  }, 600);
+  setTimeout(() => { location.href = 'galaxy_2.html'; }, 600);
 });
 </script>
 </body>
 </html>
-
