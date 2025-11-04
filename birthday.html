@@ -474,9 +474,22 @@ gift.addEventListener('click', () => {
   if(allowed) tryPlay();
 })();
 </script>
+<script>
+// Khi bấm hộp quà
+document.getElementById('giftWrap').addEventListener('click', () => {
+  // đánh dấu rằng user vừa tương tác thật
+  sessionStorage.setItem('galaxy_autoplay', '1');
+  localStorage.setItem('galaxy_music_enabled', '1'); // hỗ trợ Chrome nhớ đã cho phép
+
+  // chuyển sang trang Galaxy
+  // 👉 chỉnh lại đường dẫn cho đúng file của bạn
+  window.location.href = "galaxy_2.html?autoplay=1";
+});
+</script>
 
 </body>
 </html>
+
 
 
 
