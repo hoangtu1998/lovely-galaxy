@@ -50,64 +50,83 @@
     #fireworks{ z-index:2; }
     #cuteLayer{ z-index:3; }
 
-    /* ====== CHỮ RƠI Ở GIỮA ====== */
-    .rainAllWrap{
-      position:fixed;
-      left:50%; top:50%;
-      transform:translate(-50%,-60%);
-      z-index:5;
-      width:100%;
-      max-width:90vw;
-      text-align:center;
-      pointer-events:none;
-    }
-    .rainWrap{
-      opacity:0;
-      margin-bottom:18px; /* giãn dòng thêm một chút */
-      transition:opacity .3s ease;
-    }
-    .rainWrap.show{opacity:1;}
+    /* ====== CHỮ RƠI Ở GIỮA (spacing mới) ====== */
+.rainAllWrap{
+  position:fixed;
+  left:50%; top:50%;
+  transform:translate(-50%,-60%);
+  z-index:5;
+  width:100%;
+  max-width:90vw;
+  text-align:center;
+  pointer-events:none;
+}
 
-    .rain{
-      display:inline-block;
-      font-weight:700;
-      font-size:clamp(20px,3.5vw,42px);
-      color:#ff2b2b;
-      text-shadow:
-        0 0 10px rgba(255,50,80,0.9),
-        0 0 24px rgba(255,0,70,0.8),
-        0 3px 8px rgba(0,0,0,0.6);
-      font-family:"Dancing Script",cursive;
-      line-height:1.15;
-      letter-spacing:0.15em;   /* << tăng khoảng cách chữ */
-      word-spacing:0.2em;      /* << tăng khoảng cách giữa từ */
-    }
+/* Giãn khoảng cách giữa các dòng chữ */
+.rainWrap{
+  opacity:0;
+  /* trước là 12–18px, tăng lên cho cân đối hơn */
+  margin-bottom: clamp(14px, 2.5vw, 24px);
+  transition:opacity .3s ease;
+}
+.rainWrap.show{opacity:1;}
 
-    .line3 .rain{
-      font-family:"Playpen Sans",sans-serif;
-      font-size:clamp(22px,3.2vw,38px);
-      color:#ff2b2b;
-      font-weight:700;
-      text-shadow:
-        0 0 8px rgba(255,60,90,0.9),
-        0 0 22px rgba(255,20,70,0.7),
-        0 3px 8px rgba(0,0,0,0.6);
-      letter-spacing:0.18em; /* 29+ cho giãn nhẹ hơn tẹo */
-    }
+.rain{
+  display:inline-block;
+  font-weight:700;
+  font-size:clamp(20px,3.5vw,42px);
+  color:#ff2b2b;
+  text-shadow:
+    0 0 10px rgba(255,50,80,0.9),
+    0 0 24px rgba(255,0,70,0.8),
+    0 3px 8px rgba(0,0,0,0.6);
+  font-family:"Dancing Script",cursive;
 
-    .drop{
-      display:inline-block;
-      opacity:0;
-      transform:translateY(-40px);
-      margin-right:0.02em; /* đệm nhẹ giữa từng span */
-    }
-    @keyframes dropIn{
-      0%{opacity:0;transform:translateY(-40px);}
-      60%{opacity:1;transform:translateY(8px);}
-      80%{transform:translateY(-4px);}
-      100%{opacity:1;transform:translateY(0);}
-    }
-    .drop.animate{animation:dropIn 1.8s ease-out forwards;}
+  /* === spacing mới, đều & thoáng hơn === */
+  line-height:1.2;
+  letter-spacing: clamp(0.10em, 0.6vw, 0.24em);
+  word-spacing:   clamp(0.12em, 0.8vw, 0.28em);
+}
+
+/* Hàng 29+ dùng font khác → cho giãn nhẹ thêm để cân */
+.line3 .rain{
+  font-family:"Playpen Sans",sans-serif;
+  font-size:clamp(22px,3.2vw,38px);
+  color:#ff2b2b; font-weight:700;
+  text-shadow:
+    0 0 8px rgba(255,60,90,0.9),
+    0 0 22px rgba(255,20,70,0.7),
+    0 3px 8px rgba(0,0,0,0.6);
+
+  /* spacing riêng cho hàng số */
+  letter-spacing: clamp(0.12em, 0.7vw, 0.26em);
+  word-spacing:   clamp(0.14em, 0.9vw, 0.30em);
+}
+
+/* Đệm nhỏ giữa từng ký tự rơi để nhìn cân mắt hơn */
+.drop{
+  display:inline-block;
+  opacity:0;
+  transform:translateY(-40px);
+
+  /* tăng nhẹ từ 0.02em lên 0.06em */
+  margin-right: 0.06em;
+}
+@keyframes dropIn{
+  0%{opacity:0;transform:translateY(-40px);}
+  60%{opacity:1;transform:translateY(8px);}
+  80%{transform:translateY(-4px);}
+  100%{opacity:1;transform:translateY(0);}
+}
+.drop.animate{animation:dropIn 1.8s ease-out forwards;}
+
+/* Nhỏ màn hình: thu bớt spacing để không bị tràn */
+@media (max-width: 390px){
+  .rain{ letter-spacing: 0.10em; word-spacing: 0.14em; }
+  .line3 .rain{ letter-spacing: 0.12em; word-spacing: 0.16em; }
+  .drop{ margin-right: 0.04em; }
+}
+
 
     /* ====== HỘP QUÀ DƯỚI ====== */
     .giftWrap{
@@ -493,5 +512,6 @@ function getFromDB(key){
 
 </body>
 </html>
+
 
 
