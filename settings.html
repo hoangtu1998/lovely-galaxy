@@ -181,7 +181,17 @@
         Các ảnh này KHÔNG nằm trong file export JSON.
       </div>
     </div>
-
+    <section style="margin-top:16px">
+  <h3>🎵 Nhạc nền</h3>
+  <input id="bgmInput" type="file" accept="audio/*">
+  <div style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap">
+    <button id="saveBgm">Lưu nhạc</button>
+    <button id="previewBgm">Nghe thử</button>
+    <button id="clearBgm">Xóa nhạc</button>
+  </div>
+  <small id="bgmName" style="display:block;margin-top:6px;color:#666"></small>
+  <audio id="bgmPreview" controls style="display:none;margin-top:8px"></audio>
+</section>
     <!-- ACTIONS -->
     <div class="card">
       <div class="title">Lưu / Xuất / Nhập</div>
@@ -410,7 +420,104 @@ document.getElementById('btnSave').addEventListener('click', async ()=>{
     showMsg('Lỗi khi lưu!', false);
   }
 });
+/*** Dùng chung IndexedDB của bạn ***/
+const DB_NAME = 'birthdayDB';
+const DB_VER  = 1;            // GIỮ NGUYÊN phiên bản bạn đang dùng
+const STORE   = 'images';     // Tận dụng cùng store với ảnh (đã có)
+const KEY_BGM = 'bgm_blob';   // Khóa để lưu file nhạc
 
+function openDB() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(DB_NAME, DB_VER);
+    req.onupgradeneeded = () => {
+      const db = req.result;
+      if (!db.objectStoreNames.contains(STORE)) {
+        db.createObjectStore(STORE);
+      }
+    };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror   = () => reject(req.error);
+  });
+}
+function putToDB(key, value){
+  return openDB().then(db => new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE, 'readwrite');
+    tx.objectStore(STORE).put(value, key);
+    tx.oncomplete = () => resolve(true);
+    tx.onerror    = () => reject(tx.error);
+  }));
+}
+function getFromDB(key){
+  return openDB().then(db => new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE, 'readonly');
+    const req = tx.objectStore(STORE).get(key);
+    req.onsuccess = () => resolve(req.result || null);
+    req.onerror   = () => reject(req.error);
+  }));
+}
+function delFromDB(key){
+  return openDB().then(db => new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE, 'readwrite');
+    tx.objectStore(STORE).delete(key);
+    tx.oncomplete = () => resolve(true);
+    tx.onerror    = () => reject(tx.error);
+  }));
+}
+
+/*** UI events ***/
+const input   = document.getElementById('bgmInput');
+const btnSave = document.getElementById('saveBgm');
+const btnPrev = document.getElementById('previewBgm');
+const btnDel  = document.getElementById('clearBgm');
+const nameEl  = document.getElementById('bgmName');
+const audioEl = document.getElementById('bgmPreview');
+
+btnSave.addEventListener('click', async () => {
+  const f = input.files && input.files[0];
+  if (!f) { alert('Chọn 1 file audio trước nhé'); return; }
+  try {
+    // Lưu blob gốc vào IndexedDB
+    await putToDB(KEY_BGM, f);
+    nameEl.textContent = 'Đã lưu: ' + f.name;
+    alert('Lưu nhạc thành công!');
+  } catch (e) {
+    console.error(e);
+    alert('Không lưu được nhạc. Thử lại nhé!');
+  }
+});
+
+btnPrev.addEventListener('click', async () => {
+  try {
+    const blob = await getFromDB(KEY_BGM);
+    if (!blob) { alert('Chưa có nhạc nào được lưu'); return; }
+    const url = URL.createObjectURL(blob);
+    audioEl.src = url;
+    audioEl.style.display = 'block';
+    audioEl.play().finally(() => {
+      // Giải phóng URL khi không cần nữa
+      audioEl.onended = () => { URL.revokeObjectURL(url); };
+    });
+    nameEl.textContent = 'Đang nghe: ' + (blob.name || '(tệp đã lưu)');
+  } catch (e) {
+    console.error(e);
+  }
+});
+
+btnDel.addEventListener('click', async () => {
+  await delFromDB(KEY_BGM);
+  audioEl.pause();
+  audioEl.removeAttribute('src');
+  audioEl.style.display = 'none';
+  input.value = '';
+  nameEl.textContent = 'Đã xóa nhạc nền.';
+  alert('Đã xóa nhạc.');
+});
+
+// Hiển thị tên nhạc đã lưu (nếu có)
+(async function initBgmName(){
+  const blob = await getFromDB(KEY_BGM);
+  if (blob) nameEl.textContent = 'Đang lưu: ' + (blob.name || '(tệp đã lưu)');
+})();
 /* ===== CLEAR ===== */
 document.getElementById('btnClear').addEventListener('click', async ()=>{
   if(!confirm('Xóa hết cài đặt (ảnh + mật khẩu)?')) return;
@@ -474,3 +581,4 @@ document.getElementById('imp').addEventListener('change', async (e)=>{
 </script>
 </body>
 </html>
+
