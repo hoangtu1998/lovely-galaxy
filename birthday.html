@@ -475,20 +475,32 @@ gift.addEventListener('click', () => {
 })();
 </script>
 <script>
-// Khi bấm hộp quà
-document.getElementById('giftWrap').addEventListener('click', () => {
-  // đánh dấu rằng user vừa tương tác thật
-  sessionStorage.setItem('galaxy_autoplay', '1');
-  localStorage.setItem('galaxy_music_enabled', '1'); // hỗ trợ Chrome nhớ đã cho phép
+(function(){
+  const giftWrap  = document.getElementById('giftWrap');
+  const giftEmoji = document.getElementById('giftEmoji');
 
-  // chuyển sang trang Galaxy
-  // 👉 chỉnh lại đường dẫn cho đúng file của bạn
-  window.location.href = "galaxy_2.html?autoplay=1";
-});
+  function goNext(){
+    // đánh dấu đã tương tác để trang sau auto-play
+    sessionStorage.setItem('allow_music', '1');       // galaxy_2 sẽ đọc cờ này
+    sessionStorage.setItem('galaxy_autoplay', '1');   // tương thích code cũ
+    localStorage.setItem('galaxy_music_enabled','1'); // nếu bạn có dùng ở trang sau
+
+    // hiệu ứng mở nắp hộp
+    giftEmoji.classList.add('open');
+
+    // chuyển trang
+    setTimeout(()=>{ window.location.href = 'galaxy_2.html?autoplay=1'; }, 600);
+  }
+
+  giftEmoji.addEventListener('click', goNext);
+  giftWrap.addEventListener('click', goNext);
+})();
 </script>
+
 
 </body>
 </html>
+
 
 
 
