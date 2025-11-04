@@ -62,7 +62,58 @@
 
   <div id="wishBox"></div>
   <canvas id="cv"></canvas>
+<audio id="bgm" preload="auto" loop playsinline style="display:none"></audio>
+<script>
+(async () => {
+  const DEFAULT_BGM_URL = 'hpbd.mp3';    // đổi nếu file bạn tên khác
+  const KEY_BGM = 'bgm_blob';
+  const audio = document.getElementById('bgm');
+  audio.volume = 0.4;
 
+  // IndexedDB helpers
+  function openDB(){
+    return new Promise((resolve,reject)=>{
+      const req = indexedDB.open('birthdayDB',1);
+      req.onupgradeneeded = () => req.result.createObjectStore('images');
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
+  }
+  async function dbGet(key){
+    const db = await openDB();
+    return new Promise((resolve,reject)=>{
+      const tx = db.transaction('images','readonly');
+      const req = tx.objectStore('images').get(key);
+      req.onsuccess = () => resolve(req.result || null);
+      req.onerror = () => reject(req.error);
+    });
+  }
+
+  // Lấy nhạc user nếu có, không thì dùng mặc định
+  const blob = await dbGet(KEY_BGM);
+  audio.src = blob ? URL.createObjectURL(blob) : DEFAULT_BGM_URL;
+
+  // Cho phép auto-play nếu đi từ hộp quà / có query
+  const allow = sessionStorage.getItem('allow_music') === '1'
+             || new URLSearchParams(location.search).get('autoplay') === '1'
+             || sessionStorage.getItem('galaxy_autoplay') === '1';
+
+  function tryPlay(){
+    audio.play().catch(() => {
+      // nếu vẫn bị chặn, phát ở lần tương tác tiếp theo
+      const kick = ()=>audio.play();
+      window.addEventListener('pointerdown', kick, { once:true });
+      window.addEventListener('keydown',     kick, { once:true });
+    });
+  }
+
+  if (allow) tryPlay();
+
+  // dọn cờ để refresh lại trang không tự phát ngoài ý muốn
+  sessionStorage.removeItem('allow_music');
+  sessionStorage.removeItem('galaxy_autoplay');
+})();
+</script>
 <script>
 /* =========================================================
    ========== 1. IndexedDB helper (giống storage.js) ========
@@ -71,7 +122,6 @@
 const DB_NAME = 'birthdayDB';
 const DB_VER  = 1;
 const STORE   = 'images';
-const bgm = document.getElementById('bgm');
 
 
 function openDB() {
@@ -87,38 +137,7 @@ function openDB() {
     req.onerror   = () => reject(req.error);
   });
 }
-// detect click gift -> allow auto sound
-const FROM_GIFT =
-  sessionStorage.getItem('galaxy_autoplay') === '1' ||
-  new URLSearchParams(location.search).get('autoplay') === '1';
 
-async function autoplayFromGift(){
-  try{
-    if(bgm.paused){
-      bgm.volume = 0;
-      await bgm.play(); // policy may block
-    }
-    bgm.muted = false;
-
-    const targetVol = parseFloat(localStorage.getItem('galaxy_music_volume') || '0.6');
-
-    const t0 = performance.now(), start = bgm.volume, end = targetVol, dur = 900;
-    (function step(now){
-      let p = Math.min(1, (now - t0)/dur);
-      p = 1 - Math.pow(1 - p, 3);
-      bgm.volume = start + (end - start)*p;
-      if(p < 1) requestAnimationFrame(step);
-    })(t0);
-  }catch(e){
-    // nếu bị chặn (iOS), vẫn play muted & chờ chạm lần 1
-  }finally{
-    sessionStorage.removeItem('galaxy_autoplay');
-  }
-}
-
-window.addEventListener("load", () => {
-  if(FROM_GIFT) autoplayFromGift();
-});
 
 // get blob by key
 async function getImageFromDB(key) {
@@ -633,4 +652,5 @@ init();
 </script>
 </body>
 </html>
+
 
