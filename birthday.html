@@ -411,17 +411,6 @@ function loopCute(){
 }
 loopCute();
 
-/* ===== click mở quà ===== */
-const gift = document.getElementById('giftEmoji');
-gift.addEventListener('click', () => {
-  gift.classList.add('open');
-
-  const greet = localStorage.getItem(LS_GREETING)
-    || "Chúc mừng sinh nhật 🎂 Chúc bạn luôn xinh đẹp, hạnh phúc và được yêu thương nhất vũ trụ 💖✨";
-  localStorage.setItem("wish_text", greet);
-
-  setTimeout(() => { location.href = 'galaxy_2.html'; }, 600);
-});
 </script>
   <!-- === BGM Player (Birthday) — START === -->
 <!-- Background music -->
@@ -480,15 +469,20 @@ gift.addEventListener('click', () => {
   const giftEmoji = document.getElementById('giftEmoji');
 
   function goNext(){
-    // đánh dấu đã tương tác để trang sau auto-play
+    // ✅ LƯU LỜI CHÚC (GIỮ LẠI ĐOẠN NÀY)
+    const greet = localStorage.getItem(LS_GREETING)
+      || "Chúc mừng sinh nhật 🎂 Chúc bạn luôn xinh đẹp, hạnh phúc và được yêu thương nhất vũ trụ 💖✨";
+    localStorage.setItem("wish_text", greet);
+
+    // ✅ ĐẶT CỜ để trang Galaxy tự phát nhạc
     sessionStorage.setItem('allow_music', '1');       // galaxy_2 sẽ đọc cờ này
     sessionStorage.setItem('galaxy_autoplay', '1');   // tương thích code cũ
-    localStorage.setItem('galaxy_music_enabled','1'); // nếu bạn có dùng ở trang sau
+    localStorage.setItem('galaxy_music_enabled','1'); // nếu trang sau có dùng
 
     // hiệu ứng mở nắp hộp
     giftEmoji.classList.add('open');
 
-    // chuyển trang
+    // ✅ chuyển trang có kèm query autoplay
     setTimeout(()=>{ window.location.href = 'galaxy_2.html?autoplay=1'; }, 600);
   }
 
@@ -498,8 +492,10 @@ gift.addEventListener('click', () => {
 </script>
 
 
+
 </body>
 </html>
+
 
 
 
