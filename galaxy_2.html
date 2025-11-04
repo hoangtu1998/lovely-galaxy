@@ -159,7 +159,7 @@ const THICKNESS     = 22;
 const ORBIT_SPRITES = 8;  // số "thẻ" bay quanh (slot hiển thị), chúng sẽ loop qua list ảnh
 
 /* camera-ish */
-let autoSpeed = 0.01;
+let autoSpeed = 0.05;
 let userRotY = 0.0;
 let userRotX = 0.18;
 const dist = 520;
@@ -419,7 +419,7 @@ function renderLoop(){
       const sp = sprites[curSlot];
 
       // chụp scale và imgIndex lúc này
-      const angNow = sp.baseA + tOrbit*(0.028 + sp.s*0.004);
+      const angNow = sp.baseA + tOrbit*(0.015 + sp.s*0.002);
       const px3 = Math.cos(angNow)*sp.r;
       const pz3 = Math.sin(angNow)*sp.r;
       const py3 = sp.y;
@@ -592,3 +592,4 @@ init();
 </script>
 </body>
 </html>
+
