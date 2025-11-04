@@ -112,6 +112,16 @@
   // dọn cờ để refresh lại trang không tự phát ngoài ý muốn
   sessionStorage.removeItem('allow_music');
   sessionStorage.removeItem('galaxy_autoplay');
+  // ✅ khi trang hiển thị lại (Android/Chrome/Safari hay chặn autoplay)
+window.addEventListener('pageshow', () => {
+  if (document.visibilityState === 'visible') tryPlay();
+}, { once: true });
+
+// ✅ khi tab được focus trở lại
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') tryPlay();
+}, { once: true });
+
 })();
 </script>
 <script>
@@ -652,5 +662,6 @@ init();
 </script>
 </body>
 </html>
+
 
 
