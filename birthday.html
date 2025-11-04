@@ -413,5 +413,84 @@ gift.addEventListener('click', () => {
   setTimeout(() => { location.href = 'galaxy_2.html'; }, 600);
 });
 </script>
+  <!-- === BGM Player (Birthday) — START === -->
+<audio id="bgm" preload="auto" loop playsinline style="display:none"></audio>
+
+<script>
+/** URL bài nhạc MẶC ĐỊNH của bạn (host sẵn) **/
+const DEFAULT_BGM_URL = 'assets/hpbd.mp3'; // <-- thay bằng link/file của bạn
+
+// Dùng chung DB
+const DB_NAME = 'birthdayDB';
+const DB_VER  = 1;
+const STORE   = 'images';
+const KEY_BGM = 'bgm_blob';
+
+function openDB() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(DB_NAME, DB_VER);
+    req.onupgradeneeded = () => {
+      const db = req.result;
+      if (!db.objectStoreNames.contains(STORE)) {
+        db.createObjectStore(STORE);
+      }
+    };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror   = () => reject(req.error);
+  });
+}
+function getFromDB(key){
+  return openDB().then(db => new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE, 'readonly');
+    const req = tx.objectStore(STORE).get(key);
+    req.onsuccess = () => resolve(req.result || null);
+    req.onerror   = () => reject(req.error);
+  }));
+}
+
+(async function playBgm(){
+  const allowed = sessionStorage.getItem('allow_music') === '1';
+  const audio   = document.getElementById('bgm');
+  audio.volume  = 0.35;
+
+  // ƯU TIÊN: lấy nhạc user đã lưu
+  const blob = await getFromDB(KEY_BGM);
+  if (blob) {
+    const url = URL.createObjectURL(blob);
+    audio.src = url;
+    // Giải phóng URL khi không còn dùng đến (tùy trường hợp)
+    audio.addEventListener('ended', () => URL.revokeObjectURL(url), { once: true });
+  } else {
+    // FALLBACK: dùng bài mặc định của bạn
+    audio.src = DEFAULT_BGM_URL;
+  }
+
+  // Autoplay an toàn (nếu vẫn bị chặn, kích ở tương tác đầu)
+  const tryPlay = () => {
+    audio.play().catch(() => {
+      const kick = () => {
+        audio.play().finally(() => {
+          window.removeEventListener('pointerdown', kick);
+          window.removeEventListener('keydown',   kick);
+        });
+      };
+      window.addEventListener('pointerdown', kick, { once:true, passive:true });
+      window.addEventListener('keydown',   kick, { once:true });
+    });
+  };
+
+  if (allowed) {
+    sessionStorage.removeItem('allow_music');
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+      tryPlay();
+    } else {
+      document.addEventListener('DOMContentLoaded', tryPlay, { once: true });
+    }
+  }
+})();
+</script>
+<!-- === BGM Player — END === -->
+
 </body>
 </html>
+
