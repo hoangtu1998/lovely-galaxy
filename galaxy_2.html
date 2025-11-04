@@ -159,7 +159,7 @@ const THICKNESS     = 22;
 const ORBIT_SPRITES = 8;  // số "thẻ" bay quanh (slot hiển thị), chúng sẽ loop qua list ảnh
 
 /* camera-ish */
-let autoSpeed = 0.05;
+let autoSpeed = 0.002;
 let userRotY = 0.0;
 let userRotX = 0.18;
 const dist = 520;
@@ -278,7 +278,7 @@ let orbitFrameCounter = 0;
 const ORBIT_FRAMES_BEFORE_SPOTLIGHT = 20; // khoảng ~4s nếu ~60fps
 
 let spotlightFrameCounter = 0;
-const SPOTLIGHT_FRAMES = 10; // ~2s đứng im
+const SPOTLIGHT_FRAMES = 60; // ~2s đứng im
 
 let spotlightSpriteIndex = 0;     // slot sprite đang được spotlight
 let nextSpotlightSpriteIndex = 1; // slot kế tiếp
@@ -419,7 +419,7 @@ function renderLoop(){
       const sp = sprites[curSlot];
 
       // chụp scale và imgIndex lúc này
-      const angNow = sp.baseA + tOrbit*(0.015 + sp.s*0.002);
+      const angNow = sp.baseA + tOrbit*(0.008 + sp.s*0.001);
       const px3 = Math.cos(angNow)*sp.r;
       const pz3 = Math.sin(angNow)*sp.r;
       const py3 = sp.y;
@@ -592,4 +592,5 @@ init();
 </script>
 </body>
 </html>
+
 
