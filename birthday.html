@@ -62,12 +62,10 @@
   pointer-events:none;
 }
 
-/* Giãn khoảng cách giữa các dòng chữ */
+/* mỗi dòng cách nhau xa hơn */
 .rainWrap{
   opacity:0;
-  /* trước là 12–18px, tăng lên cho cân đối hơn */
-  margin-bottom: clamp(14px, 2.5vw, 24px);
-  transition:opacity .3s ease;
+  margin-bottom: clamp(24px, 4vw, 42px); /* tăng line spacing */
 }
 .rainWrap.show{opacity:1;}
 
@@ -433,82 +431,56 @@ gift.addEventListener('click', () => {
 });
 </script>
   <!-- === BGM Player (Birthday) — START === -->
+<!-- Background music -->
 <audio id="bgm" preload="auto" loop playsinline style="display:none"></audio>
-
 <script>
-/** URL bài nhạc MẶC ĐỊNH của bạn (host sẵn) **/
-const DEFAULT_BGM_URL = 'hpbd.mp3'; // <-- thay bằng link/file của bạn
+(async () => {
+  const DEFAULT_BGM_URL = 'hpbd.mp3'; // file nhạc mặc định của bạn
+  const KEY_BGM = 'bgm_blob';
+  const audio = document.getElementById('bgm');
+  audio.volume = 0.4;
 
-// Dùng chung DB
-const DB_NAME = 'birthdayDB';
-const DB_VER  = 1;
-const STORE   = 'images';
-const KEY_BGM = 'bgm_blob';
+  // IndexedDB get
+  function openDB(){
+    return new Promise((resolve,reject)=>{
+      const req = indexedDB.open('birthdayDB',1);
+      req.onsuccess=()=>resolve(req.result);
+      req.onupgradeneeded=()=>req.result.createObjectStore('images');
+      req.onerror=()=>reject(req.error);
+    });
+  }
+  async function dbGet(key){
+    const db = await openDB();
+    return new Promise((resolve,reject)=>{
+      const tx=db.transaction('images','readonly');
+      const req=tx.objectStore('images').get(key);
+      req.onsuccess=()=>resolve(req.result||null);
+      req.onerror=()=>reject(req.error);
+    });
+  }
 
-function openDB() {
-  return new Promise((resolve, reject) => {
-    const req = indexedDB.open(DB_NAME, DB_VER);
-    req.onupgradeneeded = () => {
-      const db = req.result;
-      if (!db.objectStoreNames.contains(STORE)) {
-        db.createObjectStore(STORE);
-      }
-    };
-    req.onsuccess = () => resolve(req.result);
-    req.onerror   = () => reject(req.error);
-  });
-}
-function getFromDB(key){
-  return openDB().then(db => new Promise((resolve, reject) => {
-    const tx = db.transaction(STORE, 'readonly');
-    const req = tx.objectStore(STORE).get(key);
-    req.onsuccess = () => resolve(req.result || null);
-    req.onerror   = () => reject(req.error);
-  }));
-}
-
-(async function playBgm(){
-  const allowed = sessionStorage.getItem('allow_music') === '1';
-  const audio   = document.getElementById('bgm');
-  audio.volume  = 0.35;
-
-  // ƯU TIÊN: lấy nhạc user đã lưu
-  const blob = await getFromDB(KEY_BGM);
-  if (blob) {
+  // ưu tiên nhạc user
+  const blob = await dbGet(KEY_BGM);
+  if(blob){
     const url = URL.createObjectURL(blob);
     audio.src = url;
-    // Giải phóng URL khi không còn dùng đến (tùy trường hợp)
-    audio.addEventListener('ended', () => URL.revokeObjectURL(url), { once: true });
   } else {
-    // FALLBACK: dùng bài mặc định của bạn
     audio.src = DEFAULT_BGM_URL;
   }
 
-  // Autoplay an toàn (nếu vẫn bị chặn, kích ở tương tác đầu)
-  const tryPlay = () => {
-    audio.play().catch(() => {
-      const kick = () => {
-        audio.play().finally(() => {
-          window.removeEventListener('pointerdown', kick);
-          window.removeEventListener('keydown',   kick);
-        });
-      };
-      window.addEventListener('pointerdown', kick, { once:true, passive:true });
-      window.addEventListener('keydown',   kick, { once:true });
-    });
-  };
+  // auto play (dựa trên pass from index)
+  const allowed = sessionStorage.getItem('allow_music')==='1';
+  sessionStorage.removeItem('allow_music');
 
-  if (allowed) {
-    sessionStorage.removeItem('allow_music');
-    if (document.readyState === 'complete' || document.readyState === 'interactive') {
-      tryPlay();
-    } else {
-      document.addEventListener('DOMContentLoaded', tryPlay, { once: true });
-    }
-  }
+  const tryPlay = ()=>audio.play().catch(()=>{
+    const kick = ()=>audio.play();
+    window.addEventListener('pointerdown',kick,{once:true});
+    window.addEventListener('keydown',kick,{once:true});
+  });
+
+  if(allowed) tryPlay();
 })();
 </script>
-<!-- === BGM Player — END === -->
 
 </body>
 </html>
