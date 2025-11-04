@@ -13,18 +13,7 @@
   <meta name="theme-color" content="#ffd9e8">
 
   <style>
-
-    /* Khi có ảnh người dùng: bỏ gradient hồng của body */
-body.no-pink-bg{
-  background: #000 !important; /* hoặc #fff nếu bạn muốn */
-}
-
-/* Mặc định .bgLayerImg đang có gradient hồng trong CSS nguyên thủy,
-   nên để an toàn ta reset khi đã toggle bằng JS (ở trên đã set inline rồi, nhưng thêm lớp dự phòng) */
-body.no-pink-bg .bgLayerImg{
-  background: none !important; /* JS đã set background ảnh; dòng này chỉ phòng hờ */
-  filter: none !important;
-} 
+ 
     *{box-sizing:border-box;margin:0;padding:0;}
     html,body{height:100%;}
     body{
@@ -245,18 +234,18 @@ const LS_GREETING       = 'greeting_text';
 
 /* ===== đổi nền birthday_top nếu có ===== */
 (function applyBirthdayTopBackground(){
-  const bgLayer = document.getElementById("bgLayerDynamic");
-  const topImg = localStorage.getItem('img_birthday_top_dataurl'); // LS_IMG_BIRTH_TOP
-  if (topImg) {
-    // 1) set nền CHỈ là ảnh (không có gradient hồng)
-    bgLayer.style.background = `url("${topImg}") center / cover no-repeat fixed`;
-    bgLayer.style.filter = "none";
+  const KEY = 'img_birthday_top_dataurl'; // = LS_IMG_BIRTH_TOP của bạn
+  const bgLayer = document.getElementById('bgLayerDynamic');
+  const topImg = localStorage.getItem(KEY);
 
-    // 2) tắt lớp hồng dưới cùng
+  if (topImg) {
+    // set ảnh nền (không overlay hồng)
+    bgLayer.style.background = `url("${topImg}") center / cover no-repeat fixed`;
+    bgLayer.style.filter = 'none';
+
+    // tắt lớp hồng dưới cùng + bỏ gradient body
     const pink = document.getElementById('pinkBg');
     if (pink) pink.style.display = 'none';
-
-    // 3) tắt luôn gradient hồng trên <body>
     document.body.classList.add('no-pink-bg');
   }
 })();
@@ -510,6 +499,7 @@ loopCute();
 
 </body>
 </html>
+
 
 
 
