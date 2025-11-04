@@ -238,17 +238,19 @@ function shake(){
   setTimeout(()=> card.style.transform='translateX(0)',140);
 }
 
-/* submit pass */
 function submit(){
   if(buf===getSecret()){
     localStorage.setItem('gift_unlocked','1');
+
+    // Cho phép autoplay ở trang birthday (vì có tương tác người dùng)
+    sessionStorage.setItem('allow_music','1');
+
     location.href='birthday.html';
   }else{
-    buf="";
-    updateDisp();
-    shake();
+    buf=""; updateDisp(); shake();
   }
 }
+
 
 /* xử lý bấm phím keypad */
 function press(k){
@@ -336,3 +338,4 @@ if('serviceWorker' in navigator){
 </script>
 </body>
 </html>
+
