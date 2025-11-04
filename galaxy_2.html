@@ -71,6 +71,8 @@
 const DB_NAME = 'birthdayDB';
 const DB_VER  = 1;
 const STORE   = 'images';
+const bgm = document.getElementById('bgm');
+
 
 function openDB() {
   return new Promise((resolve, reject) => {
@@ -85,6 +87,38 @@ function openDB() {
     req.onerror   = () => reject(req.error);
   });
 }
+// detect click gift -> allow auto sound
+const FROM_GIFT =
+  sessionStorage.getItem('galaxy_autoplay') === '1' ||
+  new URLSearchParams(location.search).get('autoplay') === '1';
+
+async function autoplayFromGift(){
+  try{
+    if(bgm.paused){
+      bgm.volume = 0;
+      await bgm.play(); // policy may block
+    }
+    bgm.muted = false;
+
+    const targetVol = parseFloat(localStorage.getItem('galaxy_music_volume') || '0.6');
+
+    const t0 = performance.now(), start = bgm.volume, end = targetVol, dur = 900;
+    (function step(now){
+      let p = Math.min(1, (now - t0)/dur);
+      p = 1 - Math.pow(1 - p, 3);
+      bgm.volume = start + (end - start)*p;
+      if(p < 1) requestAnimationFrame(step);
+    })(t0);
+  }catch(e){
+    // nếu bị chặn (iOS), vẫn play muted & chờ chạm lần 1
+  }finally{
+    sessionStorage.removeItem('galaxy_autoplay');
+  }
+}
+
+window.addEventListener("load", () => {
+  if(FROM_GIFT) autoplayFromGift();
+});
 
 // get blob by key
 async function getImageFromDB(key) {
@@ -599,3 +633,4 @@ init();
 </script>
 </body>
 </html>
+
