@@ -181,17 +181,20 @@
         Các ảnh này KHÔNG nằm trong file export JSON.
       </div>
     </div>
+      <!-- === BGM: CHỌN & LƯU NHẠC (Settings) — START === -->
     <section style="margin-top:16px">
-  <h3>🎵 Nhạc nền</h3>
-  <input id="bgmInput" type="file" accept="audio/*">
-  <div style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap">
-    <button id="saveBgm">Lưu nhạc</button>
-    <button id="previewBgm">Nghe thử</button>
-    <button id="clearBgm">Xóa nhạc</button>
-  </div>
-  <small id="bgmName" style="display:block;margin-top:6px;color:#666"></small>
-  <audio id="bgmPreview" controls style="display:none;margin-top:8px"></audio>
-</section>
+      <h3>🎵 Nhạc nền</h3>
+      <input id="bgmInput" type="file" accept="audio/*">
+      <div style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap">
+        <button id="saveBgm">Lưu nhạc</button>
+        <button id="previewBgm">Nghe thử</button>
+        <button id="clearBgm">Xóa nhạc đã lưu</button>
+      </div>
+      <small id="bgmName" style="display:block;margin-top:6px;color:#666"></small>
+      <audio id="bgmPreview" controls style="display:none;margin-top:8px"></audio>
+    </section>
+    <!-- === BGM UI — END === -->
+
     <!-- ACTIONS -->
     <div class="card">
       <div class="title">Lưu / Xuất / Nhập</div>
@@ -581,4 +584,5 @@ document.getElementById('imp').addEventListener('change', async (e)=>{
 </script>
 </body>
 </html>
+
 
