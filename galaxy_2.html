@@ -218,8 +218,8 @@
   const mem = navigator.deviceMemory || 4;
   const LOW = mem <= 4 && innerWidth < 900;
 
-  const STAR_COUNT    = LOW ? 1400 : 2800;
-  const R_MAX         = 320;
+  const STAR_COUNT    = LOW ? 1200 : 2800;
+  const R_MAX         = 300;
   const THICKNESS     = 22;
   const ORBIT_SPRITES = 8;  // số "thẻ" bay quanh (slot hiển thị), chúng sẽ loop qua list ảnh
 
@@ -603,7 +603,7 @@
       const img  = spriteImgs[slot.imgIndex % spriteImgs.length];
 
       // kích thước đích cố định theo màn hình (mọi ảnh bằng nhau)
-      const targetW = Math.min(innerWidth, innerHeight) * 0.45; // chỉnh 0.3~0.45 tùy thích
+      const targetW = Math.min(innerWidth, innerHeight) * 0.5; // chỉnh 0.3~0.45 tùy thích
       // tween zoom mượt
       spotlightZoom = Math.min(1, spotlightZoom + 0.08);
       const w = spotlightStartW + (targetW - spotlightStartW) * easeOutCubic(spotlightZoom);
@@ -671,4 +671,5 @@
   </script>
 </body>
 </html>
+
 
