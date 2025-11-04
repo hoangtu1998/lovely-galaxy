@@ -60,19 +60,10 @@
     .ok{ color:#62f3a2; font-size:13px }
     .warn{ color:#ff7a7a; font-size:13px }
 
-    .noteGalaxy{
-      font-size:12px;
-      line-height:1.4;
-      color:var(--muted);
-      margin-top:6px;
-    }
+    .noteGalaxy{ font-size:12px; line-height:1.4; color:var(--muted); margin-top:6px; }
 
-    @media (max-width:1100px){
-      .grid-main{ grid-template-columns:repeat(2,1fr); }
-    }
-    @media (max-width:600px){
-      .grid-main{ grid-template-columns:1fr; }
-    }
+    @media (max-width:1100px){ .grid-main{ grid-template-columns:repeat(2,1fr); } }
+    @media (max-width:600px){ .grid-main{ grid-template-columns:1fr; } }
   </style>
 </head>
 <body>
@@ -97,7 +88,7 @@
         <small class="hint">Hiển thị bên trái màn hình nhập mật khẩu.</small>
       </div>
 
-      <!-- BIRTHDAY - TOP (localStorage base64) -->
+      <!-- BIRTHDAY - TOP -->
       <div class="card">
         <div class="title">Ảnh cho <u>Birthday — Top</u> (ảnh nền trang chúc mừng)</div>
         <div class="preview" id="pv_birthday_top"><small>Mặc định: assets/cute-cake.png</small></div>
@@ -107,7 +98,7 @@
         <small class="hint">Nếu không chọn thì dùng assets/cute-cake.png.</small>
       </div>
 
-      <!-- BIRTHDAY - CARD (localStorage base64, nếu cần ở chỗ khác) -->
+      <!-- BIRTHDAY - CARD -->
       <div class="card">
         <div class="title">Ảnh cho <u>Birthday — Card</u> (thiệp/hộp quà)</div>
         <div class="preview" id="pv_birthday_card"><small>Mặc định: assets/card-cute.jpg</small></div>
@@ -120,131 +111,94 @@
       <!-- PASS + GREETING -->
       <div class="card">
         <div class="title">Mật khẩu và lời chúc</div>
-
         <label for="pw">Mật khẩu mở quà</label>
         <input type="password" id="pw" placeholder="Ví dụ: 1234">
-
         <label for="greeting">Lời chúc khi mở quà</label>
         <input type="text" id="greeting" placeholder="Ví dụ: Chúc bạn tuổi mới rực rỡ & hạnh phúc! 💖">
-
-        <div class="noteGalaxy">
-          Lời chúc sẽ hiện ở màn Galaxy ✨
-        </div>
+        <div class="noteGalaxy">Lời chúc sẽ hiện ở màn Galaxy ✨</div>
       </div>
     </div>
 
     <!-- GALAXY IMAGES (IndexedDB) -->
     <div class="card">
-      <div class="title">
-        Ảnh cho <u>Galaxy</u> (tối đa 5 ảnh sẽ quay xung quanh trong không gian)
-      </div>
+      <div class="title">Ảnh cho <u>Galaxy</u> (tối đa 5 ảnh sẽ quay xung quanh trong không gian)</div>
 
       <div class="grid-galaxy">
         <div>
           <div class="preview" id="pv_galaxy_1"><small>Galaxy #1<br>Chưa có ảnh</small></div>
-          <div class="row">
-            <input type="file" id="f_galaxy_1" accept="image/*">
-          </div>
+          <div class="row"><input type="file" id="f_galaxy_1" accept="image/*"></div>
         </div>
-
         <div>
           <div class="preview" id="pv_galaxy_2"><small>Galaxy #2<br>Chưa có ảnh</small></div>
-          <div class="row">
-            <input type="file" id="f_galaxy_2" accept="image/*">
-          </div>
+          <div class="row"><input type="file" id="f_galaxy_2" accept="image/*"></div>
         </div>
-
         <div>
           <div class="preview" id="pv_galaxy_3"><small>Galaxy #3<br>Chưa có ảnh</small></div>
-          <div class="row">
-            <input type="file" id="f_galaxy_3" accept="image/*">
-          </div>
+          <div class="row"><input type="file" id="f_galaxy_3" accept="image/*"></div>
         </div>
-
         <div>
           <div class="preview" id="pv_galaxy_4"><small>Galaxy #4<br>Chưa có ảnh</small></div>
-          <div class="row">
-            <input type="file" id="f_galaxy_4" accept="image/*">
-          </div>
+          <div class="row"><input type="file" id="f_galaxy_4" accept="image/*"></div>
         </div>
-
         <div>
           <div class="preview" id="pv_galaxy_5"><small>Galaxy #5<br>Chưa có ảnh</small></div>
-          <div class="row">
-            <input type="file" id="f_galaxy_5" accept="image/*">
-          </div>
+          <div class="row"><input type="file" id="f_galaxy_5" accept="image/*"></div>
         </div>
       </div>
 
       <div class="noteGalaxy">
-        Ảnh Index & Galaxy được lưu trong IndexedDB (bộ nhớ lớn hơn).<br/>
-        Các ảnh này KHÔNG nằm trong file export JSON.
+        Ảnh Index & Galaxy được lưu trong IndexedDB (bộ nhớ lớn hơn).<br/>Các ảnh này KHÔNG nằm trong file export JSON.
       </div>
     </div>
-      <!-- === BGM: CHỌN & LƯU NHẠC (Settings) — START === -->
-    <section style="margin-top:16px">
-      <h3>🎵 Nhạc nền</h3>
+
+    <!-- === BGM: CHỌN & LƯU NHẠC === -->
+    <section class="card" style="margin-top:16px">
+      <div class="title">🎵 Nhạc nền</div>
       <input id="bgmInput" type="file" accept="audio/*">
       <div style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap">
         <button id="saveBgm">Lưu nhạc</button>
         <button id="previewBgm">Nghe thử</button>
         <button id="clearBgm">Xóa nhạc đã lưu</button>
       </div>
-      <small id="bgmName" style="display:block;margin-top:6px;color:#666"></small>
+      <small id="bgmName" style="display:block;margin-top:6px;color:#8a93a6"></small>
       <audio id="bgmPreview" controls style="display:none;margin-top:8px"></audio>
     </section>
-    <!-- === BGM UI — END === -->
 
     <!-- ACTIONS -->
     <div class="card">
       <div class="title">Lưu / Xuất / Nhập</div>
-
       <div class="actions">
         <button class="primary" id="btnSave">💾 Lưu</button>
         <button class="red" id="btnClear">🗑 Xóa hết</button>
 
         <button id="btnExport">⬇️ Export</button>
-        <label for="imp" style="display:inline-block;">
-          <button id="btnImport">⬆️ Import</button>
-        </label>
+        <label for="imp" style="display:inline-block;"><button id="btnImport">⬆️ Import</button></label>
         <input id="imp" type="file" accept="application/json" style="display:none">
-
         <span id="msg" style="margin-left:auto;"></span>
       </div>
-
       <div class="footer">
         Export JSON sẽ bao gồm mật khẩu, lời chúc, Birthday Top/Card (base64).<br/>
-        KHÔNG bao gồm Index/Galaxy vì 2 loại đó ở IndexedDB.
+        KHÔNG bao gồm Index/Galaxy/BGM vì các loại đó ở IndexedDB.
       </div>
-
       <div style="text-align:center;margin-top:12px">
         <a href="index.html" style="color:#a7f3d0;text-decoration:none">← Quay lại Index</a>
       </div>
     </div>
-
   </section>
 
 <script>
-/* ===== Keys ===== */
+/* ======================== KEYS & DOM ======================== */
 const LS_PW             = 'userPassword';
 const LS_IMG_BIRTH_TOP  = 'img_birthday_top_dataurl';
 const LS_IMG_BIRTH_CARD = 'img_birthday_card_dataurl';
 const LS_GREETING       = 'greeting_text';
 
-const GAL_KEYS = [
-  'img_index_main',   // NEW: ảnh index
-  'img_galaxy_1',
-  'img_galaxy_2',
-  'img_galaxy_3',
-  'img_galaxy_4',
-  'img_galaxy_5'
-];
+const GAL_KEYS = ['img_index_main','img_galaxy_1','img_galaxy_2','img_galaxy_3','img_galaxy_4','img_galaxy_5'];
+const KEY_BGM  = 'bgm_blob';
 
-/* ===== Elements ===== */
 const pvIndex      = document.getElementById('pv_index');
 const pvBirthTop   = document.getElementById('pv_birthday_top');
 const pvBirthCard  = document.getElementById('pv_birthday_card');
-
 const pvGalaxy1    = document.getElementById('pv_galaxy_1');
 const pvGalaxy2    = document.getElementById('pv_galaxy_2');
 const pvGalaxy3    = document.getElementById('pv_galaxy_3');
@@ -254,7 +208,6 @@ const pvGalaxy5    = document.getElementById('pv_galaxy_5');
 const fIndex       = document.getElementById('f_index');
 const fBirthTop    = document.getElementById('f_birthday_top');
 const fBirthCard   = document.getElementById('f_birthday_card');
-
 const fGalaxy1     = document.getElementById('f_galaxy_1');
 const fGalaxy2     = document.getElementById('f_galaxy_2');
 const fGalaxy3     = document.getElementById('f_galaxy_3');
@@ -265,91 +218,86 @@ const pwEl         = document.getElementById('pw');
 const greetingEl   = document.getElementById('greeting');
 const msg          = document.getElementById('msg');
 
-/* ===== Helpers ===== */
+const bgmInput = document.getElementById('bgmInput');
+const btnBgmSave = document.getElementById('saveBgm');
+const btnBgmPrev = document.getElementById('previewBgm');
+const btnBgmDel  = document.getElementById('clearBgm');
+const bgmNameEl  = document.getElementById('bgmName');
+const bgmPrevEl  = document.getElementById('bgmPreview');
+
+/* ======================== UI HELPERS ======================== */
 function showMsg(text, ok=true){
   msg.textContent = text;
   msg.className = ok ? 'ok' : 'warn';
   setTimeout(()=>{ msg.textContent=''; }, 2500);
 }
-function setPreview(el, dataURL, fallbackLabel){
-  el.innerHTML = dataURL
-    ? `<img src="${dataURL}" alt="preview">`
-    : `<small>${fallbackLabel}</small>`;
+function setPreview(el, srcOrNull, fb){
+  el.innerHTML = srcOrNull ? `<img src="${srcOrNull}" alt="preview">` : `<small>${fb}</small>`;
 }
-
-/* localStorage base64 helper */
 function fileToDataURL(file){
   return new Promise((resolve,reject)=>{
-    const reader = new FileReader();
-    reader.onload = e => resolve(e.target.result);
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
+    const r = new FileReader();
+    r.onload = e => resolve(e.target.result);
+    r.onerror = reject;
+    r.readAsDataURL(file);
   });
 }
 
-/* ===== IndexedDB helpers ===== */
+/* ======================== IndexedDB (ONE SET) ======================== */
 const DB_NAME = 'birthdayDB';
 const DB_VER  = 1;
 const STORE   = 'images';
 
-function openDB() {
-  return new Promise((resolve, reject) => {
+function openDB(){
+  return new Promise((resolve,reject)=>{
     const req = indexedDB.open(DB_NAME, DB_VER);
     req.onupgradeneeded = () => {
       const db = req.result;
-      if (!db.objectStoreNames.contains(STORE)) {
-        db.createObjectStore(STORE);
-      }
+      if(!db.objectStoreNames.contains(STORE)) db.createObjectStore(STORE);
     };
     req.onsuccess = () => resolve(req.result);
     req.onerror   = () => reject(req.error);
   });
 }
-
-async function saveImageToDB(key, fileBlob) {
+async function dbPut(key, value){
   const db = await openDB();
-  return new Promise((resolve, reject) => {
-    const tx = db.transaction(STORE, 'readwrite');
-    tx.objectStore(STORE).put(fileBlob, key);
+  return new Promise((resolve,reject)=>{
+    const tx = db.transaction(STORE,'readwrite');
+    tx.objectStore(STORE).put(value, key);
     tx.oncomplete = () => resolve(true);
     tx.onerror    = () => reject(tx.error);
   });
 }
-
-async function getImageFromDB(key){
+async function dbGet(key){
   const db = await openDB();
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve,reject)=>{
     const tx = db.transaction(STORE,'readonly');
     const req = tx.objectStore(STORE).get(key);
     req.onsuccess = () => resolve(req.result || null);
     req.onerror   = () => reject(req.error);
   });
 }
-
-async function deleteFromDB(keys){
+async function dbDeleteKeys(keys){
   const db = await openDB();
   return new Promise((resolve,reject)=>{
     const tx = db.transaction(STORE,'readwrite');
-    const store = tx.objectStore(STORE);
-    keys.forEach(k => store.delete(k));
-    tx.oncomplete = ()=>resolve(true);
-    tx.onerror    = ()=>reject(tx.error);
+    const st = tx.objectStore(STORE);
+    keys.forEach(k=>st.delete(k));
+    tx.oncomplete = () => resolve(true);
+    tx.onerror    = () => reject(tx.error);
   });
 }
 
-/* load preview Index + Galaxy từ DB */
-async function loadDBPreviews() {
-  // index
-  const blobIndex = await getImageFromDB('img_index_main');
-  const urlIndex = blobIndex ? URL.createObjectURL(blobIndex) : null;
-  setPreview(pvIndex, urlIndex, 'Chưa có ảnh Index');
+/* ======================== LOAD PREVIEWS ======================== */
+async function loadDBPreviews(){
+  const idx = await dbGet('img_index_main');
+  setPreview(pvIndex, idx ? URL.createObjectURL(idx) : null, 'Chưa có ảnh Index');
 
-  // galaxy
-  const g1 = await getImageFromDB('img_galaxy_1');
-  const g2 = await getImageFromDB('img_galaxy_2');
-  const g3 = await getImageFromDB('img_galaxy_3');
-  const g4 = await getImageFromDB('img_galaxy_4');
-  const g5 = await getImageFromDB('img_galaxy_5');
+  const g1 = await dbGet('img_galaxy_1');
+  const g2 = await dbGet('img_galaxy_2');
+  const g3 = await dbGet('img_galaxy_3');
+  const g4 = await dbGet('img_galaxy_4');
+  const g5 = await dbGet('img_galaxy_5');
 
   setPreview(pvGalaxy1, g1?URL.createObjectURL(g1):null, 'Galaxy #1\nChưa có ảnh');
   setPreview(pvGalaxy2, g2?URL.createObjectURL(g2):null, 'Galaxy #2\nChưa có ảnh');
@@ -357,38 +305,21 @@ async function loadDBPreviews() {
   setPreview(pvGalaxy4, g4?URL.createObjectURL(g4):null, 'Galaxy #4\nChưa có ảnh');
   setPreview(pvGalaxy5, g5?URL.createObjectURL(g5):null, 'Galaxy #5\nChưa có ảnh');
 }
-
-/* ===== Load ban đầu ===== */
 async function loadAll(){
-  // preview birthday top/card từ localStorage
-  setPreview(
-    pvBirthTop,
-    localStorage.getItem(LS_IMG_BIRTH_TOP) || '',
-    'Mặc định: assets/cute-cake.png'
-  );
-  setPreview(
-    pvBirthCard,
-    localStorage.getItem(LS_IMG_BIRTH_CARD) || '',
-    'Mặc định: assets/card-cute.jpg'
-  );
-
-  // text
+  setPreview(pvBirthTop,  localStorage.getItem(LS_IMG_BIRTH_TOP)||'',  'Mặc định: assets/cute-cake.png');
+  setPreview(pvBirthCard, localStorage.getItem(LS_IMG_BIRTH_CARD)||'', 'Mặc định: assets/card-cute.jpg');
   greetingEl.value = localStorage.getItem(LS_GREETING) || '';
   pwEl.value       = localStorage.getItem(LS_PW) || '';
-
-  // preview Index + Galaxy từ IndexedDB
   await loadDBPreviews();
 }
 loadAll();
 
-/* ===== SAVE ===== */
+/* ======================== SAVE ======================== */
 document.getElementById('btnSave').addEventListener('click', async ()=>{
   try{
-    // save pw + greeting
     localStorage.setItem(LS_PW, (pwEl.value||'').trim());
     localStorage.setItem(LS_GREETING, (greetingEl.value||'').trim());
 
-    // save birthday top/card vào localStorage (base64)
     if (fBirthTop.files[0]) {
       const d = await fileToDataURL(fBirthTop.files[0]);
       localStorage.setItem(LS_IMG_BIRTH_TOP, d);
@@ -400,147 +331,76 @@ document.getElementById('btnSave').addEventListener('click', async ()=>{
       setPreview(pvBirthCard, d, '');
     }
 
-    // save Index + Galaxy vào IndexedDB
-    async function handleDBInput(fileInput, key, pvEl, fallbackText){
-      if (fileInput.files[0]) {
-        const blob = fileInput.files[0];
-        await saveImageToDB(key, blob);
-        const url = URL.createObjectURL(blob);
-        setPreview(pvEl, url, fallbackText);
+    async function saveBlob(inputEl, key, pvEl, fb){
+      if(inputEl.files[0]){
+        const blob = inputEl.files[0];
+        await dbPut(key, blob);
+        setPreview(pvEl, URL.createObjectURL(blob), fb);
       }
     }
-
-    await handleDBInput(fIndex,    'img_index_main', pvIndex,    'Chưa có ảnh Index');
-    await handleDBInput(fGalaxy1,  'img_galaxy_1',   pvGalaxy1,  'Galaxy #1\nChưa có ảnh');
-    await handleDBInput(fGalaxy2,  'img_galaxy_2',   pvGalaxy2,  'Galaxy #2\nChưa có ảnh');
-    await handleDBInput(fGalaxy3,  'img_galaxy_3',   pvGalaxy3,  'Galaxy #3\nChưa có ảnh');
-    await handleDBInput(fGalaxy4,  'img_galaxy_4',   pvGalaxy4,  'Galaxy #4\nChưa có ảnh');
-    await handleDBInput(fGalaxy5,  'img_galaxy_5',   pvGalaxy5,  'Galaxy #5\nChưa có ảnh');
+    await saveBlob(fIndex,   'img_index_main', pvIndex,   'Chưa có ảnh Index');
+    await saveBlob(fGalaxy1, 'img_galaxy_1',   pvGalaxy1, 'Galaxy #1\nChưa có ảnh');
+    await saveBlob(fGalaxy2, 'img_galaxy_2',   pvGalaxy2, 'Galaxy #2\nChưa có ảnh');
+    await saveBlob(fGalaxy3, 'img_galaxy_3',   pvGalaxy3, 'Galaxy #3\nChưa có ảnh');
+    await saveBlob(fGalaxy4, 'img_galaxy_4',   pvGalaxy4, 'Galaxy #4\nChưa có ảnh');
+    await saveBlob(fGalaxy5, 'img_galaxy_5',   pvGalaxy5, 'Galaxy #5\nChưa có ảnh');
 
     showMsg('Đã lưu ✓', true);
-  }catch(e){
-    console.error(e);
+  }catch(err){
+    console.error(err);
     showMsg('Lỗi khi lưu!', false);
   }
 });
-/*** Dùng chung IndexedDB của bạn ***/
-const DB_NAME = 'birthdayDB';
-const DB_VER  = 1;            // GIỮ NGUYÊN phiên bản bạn đang dùng
-const STORE   = 'images';     // Tận dụng cùng store với ảnh (đã có)
-const KEY_BGM = 'bgm_blob';   // Khóa để lưu file nhạc
 
-function openDB() {
-  return new Promise((resolve, reject) => {
-    const req = indexedDB.open(DB_NAME, DB_VER);
-    req.onupgradeneeded = () => {
-      const db = req.result;
-      if (!db.objectStoreNames.contains(STORE)) {
-        db.createObjectStore(STORE);
-      }
-    };
-    req.onsuccess = () => resolve(req.result);
-    req.onerror   = () => reject(req.error);
-  });
-}
-function putToDB(key, value){
-  return openDB().then(db => new Promise((resolve, reject) => {
-    const tx = db.transaction(STORE, 'readwrite');
-    tx.objectStore(STORE).put(value, key);
-    tx.oncomplete = () => resolve(true);
-    tx.onerror    = () => reject(tx.error);
-  }));
-}
-function getFromDB(key){
-  return openDB().then(db => new Promise((resolve, reject) => {
-    const tx = db.transaction(STORE, 'readonly');
-    const req = tx.objectStore(STORE).get(key);
-    req.onsuccess = () => resolve(req.result || null);
-    req.onerror   = () => reject(req.error);
-  }));
-}
-function delFromDB(key){
-  return openDB().then(db => new Promise((resolve, reject) => {
-    const tx = db.transaction(STORE, 'readwrite');
-    tx.objectStore(STORE).delete(key);
-    tx.oncomplete = () => resolve(true);
-    tx.onerror    = () => reject(tx.error);
-  }));
-}
-
-/*** UI events ***/
-const input   = document.getElementById('bgmInput');
-const btnSave = document.getElementById('saveBgm');
-const btnPrev = document.getElementById('previewBgm');
-const btnDel  = document.getElementById('clearBgm');
-const nameEl  = document.getElementById('bgmName');
-const audioEl = document.getElementById('bgmPreview');
-
-btnSave.addEventListener('click', async () => {
-  const f = input.files && input.files[0];
-  if (!f) { alert('Chọn 1 file audio trước nhé'); return; }
-  try {
-    // Lưu blob gốc vào IndexedDB
-    await putToDB(KEY_BGM, f);
-    nameEl.textContent = 'Đã lưu: ' + f.name;
+/* ======================== BGM UI ======================== */
+btnBgmSave.addEventListener('click', async ()=>{
+  const f = bgmInput.files && bgmInput.files[0];
+  if(!f){ alert('Chọn 1 file audio trước nhé'); return; }
+  try{
+    await dbPut(KEY_BGM, f);
+    bgmNameEl.textContent = 'Đã lưu: ' + (f.name || '(tệp)');
     alert('Lưu nhạc thành công!');
-  } catch (e) {
+  }catch(e){
     console.error(e);
     alert('Không lưu được nhạc. Thử lại nhé!');
   }
 });
-
-btnPrev.addEventListener('click', async () => {
-  try {
-    const blob = await getFromDB(KEY_BGM);
-    if (!blob) { alert('Chưa có nhạc nào được lưu'); return; }
-    const url = URL.createObjectURL(blob);
-    audioEl.src = url;
-    audioEl.style.display = 'block';
-    audioEl.play().finally(() => {
-      // Giải phóng URL khi không cần nữa
-      audioEl.onended = () => { URL.revokeObjectURL(url); };
-    });
-    nameEl.textContent = 'Đang nghe: ' + (blob.name || '(tệp đã lưu)');
-  } catch (e) {
-    console.error(e);
-  }
+btnBgmPrev.addEventListener('click', async ()=>{
+  const blob = await dbGet(KEY_BGM);
+  if(!blob){ alert('Chưa có nhạc nào được lưu'); return; }
+  const url = URL.createObjectURL(blob);
+  bgmPrevEl.src = url;
+  bgmPrevEl.style.display = 'block';
+  bgmPrevEl.play().finally(()=>{ bgmPrevEl.onended = ()=>URL.revokeObjectURL(url); });
+  bgmNameEl.textContent = 'Đang nghe: ' + (blob.name || '(tệp đã lưu)');
 });
-
-btnDel.addEventListener('click', async () => {
-  await delFromDB(KEY_BGM);
-  audioEl.pause();
-  audioEl.removeAttribute('src');
-  audioEl.style.display = 'none';
-  input.value = '';
-  nameEl.textContent = 'Đã xóa nhạc nền.';
+btnBgmDel.addEventListener('click', async ()=>{
+  await dbDeleteKeys([KEY_BGM]);
+  bgmPrevEl.pause();
+  bgmPrevEl.removeAttribute('src');
+  bgmPrevEl.style.display = 'none';
+  bgmInput.value = '';
+  bgmNameEl.textContent = 'Đã xóa nhạc đã lưu (sẽ dùng bài mặc định).';
   alert('Đã xóa nhạc.');
 });
-
-// Hiển thị tên nhạc đã lưu (nếu có)
 (async function initBgmName(){
-  const blob = await getFromDB(KEY_BGM);
-  if (blob) nameEl.textContent = 'Đang lưu: ' + (blob.name || '(tệp đã lưu)');
+  const blob = await dbGet(KEY_BGM);
+  bgmNameEl.textContent = blob ? ('Đang lưu: ' + (blob.name || '(tệp đã lưu)')) : 'Hiện đang dùng bài MẶC ĐỊNH.';
 })();
-/* ===== CLEAR ===== */
+
+/* ======================== CLEAR / EXPORT / IMPORT ======================== */
 document.getElementById('btnClear').addEventListener('click', async ()=>{
   if(!confirm('Xóa hết cài đặt (ảnh + mật khẩu)?')) return;
 
-  // clear localStorage
-  [LS_PW, LS_IMG_BIRTH_TOP, LS_IMG_BIRTH_CARD, LS_GREETING].forEach(
-    k => localStorage.removeItem(k)
-  );
+  [LS_PW, LS_IMG_BIRTH_TOP, LS_IMG_BIRTH_CARD, LS_GREETING].forEach(k=>localStorage.removeItem(k));
 
-  // clear IndexedDB (Index + Galaxy)
-  await deleteFromDB(GAL_KEYS);
+  // Xóa Index + Galaxy (muốn xóa luôn BGM thì thêm KEY_BGM vào mảng)
+  await dbDeleteKeys([...GAL_KEYS /*, KEY_BGM*/]);
 
   await loadAll();
   showMsg('Đã xóa ✓', true);
 });
 
-/* ===== EXPORT / IMPORT =====
-   EXPORT chỉ gồm pw, greeting, birthday_top, birthday_card.
-   (Index + Galaxy nằm IndexedDB => không export)
-*/
 document.getElementById('btnExport').addEventListener('click', ()=>{
   const data = {
     pw: localStorage.getItem(LS_PW) || '',
@@ -554,13 +414,12 @@ document.getElementById('btnExport').addEventListener('click', ()=>{
   a.download = 'lovely-settings.json';
   a.click();
   URL.revokeObjectURL(a.href);
-  showMsg('Đã export JSON (không gồm Index/Galaxy)', true);
+  showMsg('Đã export JSON (không gồm Index/Galaxy/BGM)', true);
 });
 
 document.getElementById('btnImport').addEventListener('click', ()=>{
   document.getElementById('imp').click();
 });
-
 document.getElementById('imp').addEventListener('change', async (e)=>{
   const file = e.target.files[0];
   if(!file) return;
@@ -575,7 +434,7 @@ document.getElementById('imp').addEventListener('change', async (e)=>{
     if('greeting' in data) localStorage.setItem(LS_GREETING, data.greeting||'');
 
     await loadAll();
-    showMsg('Đã import ✓ (Index/Galaxy giữ nguyên trên máy này)', true);
+    showMsg('Đã import ✓ (Index/Galaxy/BGM giữ nguyên trên máy này)', true);
   }catch(err){
     console.error(err);
     showMsg('File không hợp lệ!', false);
@@ -584,5 +443,3 @@ document.getElementById('imp').addEventListener('change', async (e)=>{
 </script>
 </body>
 </html>
-
-
