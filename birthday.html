@@ -482,7 +482,11 @@ loopCute();
     sessionStorage.setItem('allow_music', '1');       // galaxy_2 sẽ đọc cờ này
     sessionStorage.setItem('galaxy_autoplay', '1');   // tương thích code cũ
     localStorage.setItem('galaxy_music_enabled','1'); // nếu trang sau có dùng
-
+    // ⏱ LƯU THỜI GIAN ĐANG PHÁT CỦA NHẠC
+    const bgmEl = document.getElementById('bgm');
+    if (bgmEl && !isNaN(bgmEl.currentTime)) {
+      sessionStorage.setItem('bgm_pos', String(bgmEl.currentTime));
+    }
     // hiệu ứng mở nắp hộp
     giftEmoji.classList.add('open');
 
@@ -499,6 +503,7 @@ loopCute();
 
 </body>
 </html>
+
 
 
 
