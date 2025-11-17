@@ -99,6 +99,15 @@
     // Lấy nhạc user nếu có, không thì dùng mặc định
     const blob = await dbGet(KEY_BGM);
     audio.src = blob ? URL.createObjectURL(blob) : DEFAULT_BGM_URL;
+      // ⏱ NẾU BÊN BIRTHDAY ĐÃ LƯU THỜI GIAN, TUA TỚI ĐÓ ĐỂ KHÔNG PHÁT LẠI TỪ ĐẦU
+        const savedPos = parseFloat(sessionStorage.getItem('bgm_pos') || '0');
+        if (!isNaN(savedPos) && savedPos > 0) {
+          audio.addEventListener('loadedmetadata', () => {
+            if (!isNaN(audio.duration) && savedPos < audio.duration) {
+              audio.currentTime = savedPos;
+            }
+          }, { once: true });
+        }
 
     // Cho phép auto-play nếu đi từ hộp quà / có query
     const allow = sessionStorage.getItem('allow_music') === '1'
@@ -625,7 +634,8 @@
         const screen = proj(px3, py3, pz3);
 
         const scaleNow = sp.s * screen.s;
-        const w = 120 * scaleNow;
+        const baseCardSize = innerWidth < 500 ? 90 : 120;     // 👈 thêm
+        const w = baseCardSize * scaleNow;    
         const h = w;
         const rr = Math.min(10*scaleNow, w/4);
 
@@ -651,9 +661,10 @@
 
     // 3) tạo mảng sprites (các "thẻ" bay quanh)
     sprites = [];
+    const baseR = (innerWidth < 500 ? 210 : 280);
     for(let i=0;i<ORBIT_SPRITES;i++){
       const a = i / ORBIT_SPRITES * Math.PI*2;
-      const r = 280 + Math.sin(i*0.7)*18;
+      const r = baseR + Math.sin(i*0.7)*18;
       sprites.push({
         imgIndex: i % spriteImgs.length,
         baseA: a,
@@ -671,5 +682,6 @@
   </script>
 </body>
 </html>
+
 
 
