@@ -885,14 +885,23 @@ function renderLoop(){
       return za - zb;
     });
   }
-  const pulseAmt = pulsing ? (1 + Math.sin(tOrbit*0.06)*0.06) : 1;
+    const pulseAmt = pulsing ? (1 + Math.sin(tOrbit*0.06)*0.06) : 1;
   for(const p0 of drawList){
-    const wobble = Math.sin((p0.x+p0.z+tOrbit*0.8)*0.01)*0.5;
+    // 🎯 TÍNH LẠI X,Z THEO QUỸ ĐẠO QUAY
+    const r       = Math.hypot(p0.x, p0.z);          // bán kính từ tâm
+    const baseAng = Math.atan2(p0.z, p0.x);          // góc ban đầu
+    const spinAng = baseAng + tOrbit * 0.01;         // tốc độ quay (0.01: xoay chậm, tăng nếu muốn nhanh hơn)
+
+    const spinX   = Math.cos(spinAng) * r;
+    const spinZ   = Math.sin(spinAng) * r;
+
+    const wobble = Math.sin((spinX + spinZ + tOrbit*0.8)*0.01)*0.5;
     const pr = proj(
-      p0.x * pulseAmt,
+      spinX * pulseAmt,
       (p0.y + wobble) * pulseAmt,
-      p0.z * pulseAmt
+      spinZ * pulseAmt
     );
+
     const hue  = (p0.hueBase + 20*Math.sin(tOrbit*0.02)) % 360;
     const size = Math.min(2.8, 1.8*pr.s + 0.6);
 
@@ -1022,3 +1031,4 @@ initGalaxy();
 
 </body>
 </html>
+
