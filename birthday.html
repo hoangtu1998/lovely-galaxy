@@ -175,7 +175,7 @@
 
     canvas{image-rendering:pixelated;}
 
-    /* ===== SCENE 2: GALAXY (CSS CAROUSEL) ===== */
+    /* ===== SCENE 2: GALAXY (CSS CAROUSEL + CANVAS BACKGROUND) ===== */
 
     :root{
       --bg1:#0f0820;        /* tím đậm */
@@ -186,6 +186,15 @@
       --radius: 18px;       /* bo góc ảnh */
       --ringZ: 300px;       /* bán kính trục Z (độ sâu 3D) */
       --spin-sec: 18s;      /* thời gian quay 1 vòng */
+    }
+
+    /* Canvas nền vũ trụ galaxy */
+    #cv{
+      position:fixed;
+      inset:0;
+      z-index:0;
+      display:block;
+      background:#000;
     }
 
     /* Lời chúc (trên đầu) */
@@ -221,7 +230,7 @@
       #wishBox{ transform: translateX(-3.5vw); }
     }
 
-    /* Nền và sân khấu galaxy */
+    /* Nền khung galaxy */
     #scene-galaxy{
       position:fixed;
       inset:0;
@@ -238,6 +247,7 @@
       place-items:center;
       perspective:1200px;
       font-family:Quicksand, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      z-index:5; /* nổi trên canvas */
     }
 
     /* SVG trái tim neon */
@@ -399,9 +409,15 @@
     </div>
   </div>
 
-  <!-- SCENE 2: GALAXY (NEON HEART + CAROUSEL) -->
+  <!-- SCENE 2: GALAXY (NEON HEART + CAROUSEL + BACKGROUND GALAXY) -->
   <div id="scene-galaxy" style="display:none;">
+    <!-- Nền galaxy: sao + ngân hà -->
+    <canvas id="cv"></canvas>
+
+    <!-- Lời chúc trên đầu -->
     <div id="wishBox"></div>
+
+    <!-- Lớp tim neon + carousel ảnh -->
     <div class="stage">
       <!-- Trái tim neon -->
       <div class="neon-layer">
@@ -416,7 +432,7 @@
       <!-- Carousel xoay ảnh -->
       <div class="carousel" id="carousel"></div>
 
-      <div class="caption"> <small>🥺🥰</small></div>
+      <div class="caption">Có ny học engineering để làm gì <small>🥺🥰</small></div>
       <div class="led"></div>
     </div>
   </div>
@@ -683,7 +699,7 @@ loopCute();
       const sceneBirthday = document.getElementById('scene-birthday');
       if (sceneBirthday) sceneBirthday.style.display = 'none';
 
-      // Nền cho galaxy (background thực tế do #scene-galaxy lo)
+      // Nền đen cho galaxy (thêm để chuyển mượt)
       document.body.style.background = '#000';
 
       const sceneGalaxy = document.getElementById('scene-galaxy');
@@ -854,6 +870,143 @@ async function initGalaxy(){
 window.addEventListener('load', initGalaxy);
 </script>
 
+<script>
+/* ================== GALAXY BACKGROUND CANVAS ================== */
+
+const cv = document.getElementById('cv');
+const cx = cv.getContext('2d', { alpha: false });
+
+let dprG = Math.min(window.devicePixelRatio || 1, 2);
+
+function resizeGalaxyCanvas(){
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+  cv.width  = Math.max(1, Math.floor(w * dprG));
+  cv.height = Math.max(1, Math.floor(h * dprG));
+  cv.style.width  = w + 'px';
+  cv.style.height = h + 'px';
+  cx.setTransform(dprG,0,0,dprG,0,0);
+}
+window.addEventListener('resize', resizeGalaxyCanvas);
+resizeGalaxyCanvas();
+
+/* Sao xa + điểm ngân hà */
+const STAR_COUNT   = 600;
+const GAL_COUNT    = 2200;
+const GAL_RADIUS   = 420;
+const GAL_THICK    = 80;
+
+const stars = [];
+const gals  = [];
+
+function initStars(){
+  stars.length = 0;
+  for(let i=0;i<STAR_COUNT;i++){
+    stars.push({
+      x: (Math.random()-0.5) * 2 * window.innerWidth,
+      y: (Math.random()-0.5) * 2 * window.innerHeight,
+      baseAlpha: 0.25 + Math.random()*0.55,
+      tw: Math.random()*2*Math.PI,
+      twSpeed: 0.004 + Math.random()*0.004,
+      r: 0.6 + Math.random()*1.2
+    });
+  }
+}
+
+function initGalaxyPoints(){
+  gals.length = 0;
+  for(let i=0;i<GAL_COUNT;i++){
+    const t = Math.random();
+    const r = Math.pow(t,0.55) * GAL_RADIUS;
+    const baseAngle = Math.random() * Math.PI * 2;
+    const swirl = r * 0.2;
+    const a = baseAngle + swirl;
+
+    const x = Math.cos(a) * r;
+    const y = (Math.random()-0.5) * GAL_THICK * (0.3 + 0.7 * (r/GAL_RADIUS));
+    const z = Math.sin(a) * r;
+
+    const armHue = 200 + (a/(Math.PI*2))*120;
+    const light  = 55 + Math.random()*12;
+
+    gals.push({
+      x,y,z,
+      baseAngle:a,
+      radius:r,
+      hue:armHue,
+      light,
+      size:0.35 + Math.random()*1.1,
+      speed:0.0008 + Math.random()*0.0012
+    });
+  }
+}
+
+initStars();
+initGalaxyPoints();
+
+let tGal = 0;
+
+function renderGalaxy(){
+  requestAnimationFrame(renderGalaxy);
+  tGal += 1;
+
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+  const cxMid = w/2;
+  const cyMid = h/2;
+
+  // nền tối + hơi tím
+  const bg = cx.createRadialGradient(cxMid, cyMid*0.8, 0, cxMid, cyMid, Math.max(w,h));
+  bg.addColorStop(0,'rgba(8,8,20,1)');
+  bg.addColorStop(0.5,'rgba(2,5,25,1)');
+  bg.addColorStop(1,'rgba(0,0,0,1)');
+  cx.fillStyle = bg;
+  cx.fillRect(0,0,w,h);
+
+  // sao xa twinkle
+  for(const s of stars){
+    s.tw += s.twSpeed;
+    const alpha = s.baseAlpha * (0.6 + 0.4*Math.sin(s.tw));
+    cx.globalAlpha = alpha;
+    cx.beginPath();
+    cx.arc(cxMid + s.x*0.5, cyMid + s.y*0.5, s.r, 0, Math.PI*2);
+    cx.fillStyle = '#ffffff';
+    cx.fill();
+  }
+  cx.globalAlpha = 1;
+
+  // glow lõi galaxy
+  const core = cx.createRadialGradient(cxMid, cyMid, 0, cxMid, cyMid, GAL_RADIUS*0.9);
+  core.addColorStop(0,'rgba(255,255,255,0.95)');
+  core.addColorStop(0.2,'rgba(220,210,255,0.85)');
+  core.addColorStop(0.45,'rgba(150,120,255,0.55)');
+  core.addColorStop(0.9,'rgba(20,10,40,0.0)');
+  cx.fillStyle = core;
+  cx.beginPath();
+  cx.arc(cxMid, cyMid, GAL_RADIUS, 0, Math.PI*2);
+  cx.fill();
+
+  // điểm ngân hà xoáy
+  for(const p of gals){
+    const a = p.baseAngle + tGal * p.speed;
+    const r = p.radius * (0.96 + 0.08*Math.sin(tGal*0.01 + p.radius*0.02));
+
+    const sx = cxMid + Math.cos(a) * r;
+    const sy = cyMid + Math.sin(a) * r * 0.55 + (p.y*0.2);
+
+    const flicker = 0.7 + 0.3*Math.sin((tGal*0.03) + p.radius*0.05);
+    const size = p.size * flicker;
+    const hue = (p.hue + 10*Math.sin(tGal*0.01)) % 360;
+
+    cx.beginPath();
+    cx.fillStyle = `hsla(${hue}, 80%, ${p.light}%, 0.9)`;
+    cx.arc(sx, sy, size, 0, Math.PI*2);
+    cx.fill();
+  }
+}
+
+renderGalaxy();
+</script>
+
 </body>
 </html>
-
