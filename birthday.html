@@ -941,7 +941,7 @@ function renderLoop(){
 
     drawCardImage(img, innerWidth/2, innerHeight/2, w, h, rr, true, 1);
 
-  } else {
+    } else {
     for (let i=0;i<sprites.length;i++){
       const sp = sprites[i];
 
@@ -955,12 +955,22 @@ function renderLoop(){
       const scaleNow = sp.s * screen.s;
       const img = spriteImgs[sp.imgIndex % spriteImgs.length];
 
-      let iw = img && img.naturalWidth ? img.naturalWidth : (innerWidth < 500 ? 90 : 120);
-      let ih = img && img.naturalHeight ? img.naturalHeight : iw;
+      // Kích thước ảnh gốc
+      let iw = img && img.naturalWidth  ? img.naturalWidth  : 600;
+      let ih = img && img.naturalHeight ? img.naturalHeight : 600;
 
-      // dùng kích thước ảnh gốc * scale 3D
-      const w = iw * scaleNow;
-      const h = ih * scaleNow;
+      // Scale 3D ban đầu
+      let w = iw * scaleNow;
+      let h = ih * scaleNow;
+
+      // Giới hạn không cho vượt quá màn hình (đặc biệt là điện thoại)
+      const maxW = innerWidth  * (innerWidth < 500 ? 0.55 : 0.40); // mobile to hơn chút
+      const maxH = innerHeight * 0.45;
+
+      const clampFactor = Math.min(1, maxW / w, maxH / h);
+      w *= clampFactor;
+      h *= clampFactor;
+
       const rr = Math.min(10*scaleNow, Math.min(w,h)/4);
 
       drawCardImage(img, screen.x, screen.y, w, h, rr, false, scaleNow);
@@ -1047,3 +1057,4 @@ initGalaxy();
 
 </body>
 </html>
+
