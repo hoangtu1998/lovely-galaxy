@@ -692,7 +692,11 @@ let nextSpotlightSpriteIndex = 1;
 let spotlightImageScale = 1;
 
 let spotlightStartW = 100;
+let spotlightStartH = 100;
+let spotlightTargetW = 0;
+let spotlightTargetH = 0;
 let spotlightZoom = 0;
+
 function easeOutCubic(t){ return 1 - Math.pow(1 - t, 3); }
 
 /* Rounded rect helper */
@@ -822,8 +826,18 @@ function renderLoop(){
       const py3 = sp.y;
       const screen = proj(px3, py3, pz3);
 
-      const startScale = sp.s * screen.s;
-      spotlightStartW = 80 * startScale;
+      const img = spriteImgs[sp.imgIndex % spriteImgs.length];
+      let iw = img && img.naturalWidth ? img.naturalWidth : Math.min(innerWidth, innerHeight)*0.5;
+      let ih = img && img.naturalHeight ? img.naturalHeight : iw;
+      const maxW = innerWidth * 0.8;
+      const maxH = innerHeight * 0.8;
+      const ratio = Math.min(1, maxW/iw, maxH/ih);
+      spotlightTargetW = iw * ratio;
+      spotlightTargetH = ih * ratio;
+
+      // bắt đầu từ 40% kích thước thật
+      spotlightStartW = spotlightTargetW * 0.4;
+      spotlightStartH = spotlightTargetH * 0.4;
       spotlightZoom = 0;
 
       spotlightSpriteIndex = curSlot;
@@ -885,12 +899,11 @@ function renderLoop(){
       return za - zb;
     });
   }
-    const pulseAmt = pulsing ? (1 + Math.sin(tOrbit*0.06)*0.06) : 1;
+  const pulseAmt = pulsing ? (1 + Math.sin(tOrbit*0.06)*0.06) : 1;
   for(const p0 of drawList){
-    // 🎯 TÍNH LẠI X,Z THEO QUỸ ĐẠO QUAY
-    const r       = Math.hypot(p0.x, p0.z);          // bán kính từ tâm
-    const baseAng = Math.atan2(p0.z, p0.x);          // góc ban đầu
-    const spinAng = baseAng + tOrbit * 0.01;         // tốc độ quay (0.01: xoay chậm, tăng nếu muốn nhanh hơn)
+    const r       = Math.hypot(p0.x, p0.z);
+    const baseAng = Math.atan2(p0.z, p0.x);
+    const spinAng = baseAng + tOrbit * 0.01;
 
     const spinX   = Math.cos(spinAng) * r;
     const spinZ   = Math.sin(spinAng) * r;
@@ -920,11 +933,11 @@ function renderLoop(){
     const slot = sprites[spotlightSpriteIndex];
     const img  = spriteImgs[slot.imgIndex % spriteImgs.length];
 
-    const targetW = Math.min(innerWidth, innerHeight) * 0.5;
     spotlightZoom = Math.min(1, spotlightZoom + 0.08);
-    const w = spotlightStartW + (targetW - spotlightStartW) * easeOutCubic(spotlightZoom);
-    const h = w;
-    const rr = Math.min(18, w/4);
+    const z = easeOutCubic(spotlightZoom);
+    const w = spotlightStartW + (spotlightTargetW - spotlightStartW) * z;
+    const h = spotlightStartH + (spotlightTargetH - spotlightStartH) * z;
+    const rr = Math.min(18, Math.min(w,h)/8);
 
     drawCardImage(img, innerWidth/2, innerHeight/2, w, h, rr, true, 1);
 
@@ -940,12 +953,15 @@ function renderLoop(){
       const screen = proj(px3, py3, pz3);
 
       const scaleNow = sp.s * screen.s;
-      const baseCardSize = innerWidth < 500 ? 90 : 120;   // nhỏ hơn trên mobile
-      const w = baseCardSize * scaleNow;
-      const h = w;
-      const rr = Math.min(10*scaleNow, w/4);
-
       const img = spriteImgs[sp.imgIndex % spriteImgs.length];
+
+      let iw = img && img.naturalWidth ? img.naturalWidth : (innerWidth < 500 ? 90 : 120);
+      let ih = img && img.naturalHeight ? img.naturalHeight : iw;
+
+      // dùng kích thước ảnh gốc * scale 3D
+      const w = iw * scaleNow;
+      const h = ih * scaleNow;
+      const rr = Math.min(10*scaleNow, Math.min(w,h)/4);
 
       drawCardImage(img, screen.x, screen.y, w, h, rr, false, scaleNow);
     }
@@ -1010,7 +1026,7 @@ async function initGalaxy() {
   });
 
   sprites = [];
-  const baseR = (innerWidth < 500 ? 210 : 280);   // bán kính nhỏ hơn trên mobile
+  const baseR = (innerWidth < 500 ? 210 : 280);
   for(let i=0;i<ORBIT_SPRITES;i++){
     const a = i / ORBIT_SPRITES * Math.PI*2;
     const r = baseR + Math.sin(i*0.7)*18;
@@ -1031,4 +1047,3 @@ initGalaxy();
 
 </body>
 </html>
-
