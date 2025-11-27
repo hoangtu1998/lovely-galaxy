@@ -742,44 +742,47 @@ loopCute();
    ========================================================= */
 
 /* Lời chúc trên cùng: gõ từng chữ + xong mới hiện LED */
-/* Lời chúc galaxy: "Chúc mừng sinh nhật bạn iu 💖" rơi từng chữ + xong mới hiện LED */
+/* GALAXY: Lời chúc xuất hiện từng từ, xong mới hiện LED "Happy birthday" */
 const wishEl = document.getElementById('wishBox');
 
-// Default lời chúc nếu settings chưa lưu gì
-const savedWish = localStorage.getItem('wish_text')
+// Lấy lời chúc từ localStorage nếu có, không thì dùng mặc định:
+const savedWish =
+  localStorage.getItem('wish_text')
   || "Chúc mừng sinh nhật bạn iu 💖";
 
-// Reset nội dung
-wishEl.innerHTML = "";
-let twIndex = 0;
+// Tách thành từng từ (theo khoảng trắng)
+const words = savedWish.trim().split(/\s+/);
+let wordIndex = 0;
 
-function typeWriterDrop() {
-  if (twIndex < savedWish.length) {
-    const ch = savedWish.charAt(twIndex);
+// Reset nội dung ban đầu
+wishEl.textContent = "";
 
-    const span = document.createElement('span');
-    span.textContent = ch;
-    span.className = 'wish-ch';
-    // mỗi chữ lệch nhẹ thời gian 1 chút cho giống mưa chữ
-    span.style.animationDelay = '0s';
+// Hàm hiện dần từng cụm từ:
+// "Chúc" → "Chúc mừng" → "Chúc mừng sinh" → ...
+function revealWordsStep() {
+  if (wordIndex < words.length) {
+    const currentText = words.slice(0, wordIndex + 1).join(" ");
+    wishEl.textContent = currentText;
+    wordIndex++;
 
-    wishEl.appendChild(span);
-    twIndex++;
-
-    setTimeout(typeWriterDrop, 70); // tốc độ xuất hiện từng chữ
+    // Tốc độ chuyển cụm (ms) – muốn chậm hơn thì tăng lên, ví dụ 600–800
+    setTimeout(revealWordsStep, 450);
   } else {
-    // Gõ / rơi xong toàn bộ -> hiện LED
-    const led = document.querySelector('.led');
-    if (led) {
-      led.classList.add('show');
-    }
+    // Đã hiện hết tất cả các từ của câu
+    // -> Đợi thêm chút rồi hiện LED "Happy birthday"
+    setTimeout(() => {
+      const led = document.querySelector('.led');
+      if (led) {
+        led.classList.add('show');
+      }
+    }, 600);
   }
 }
 
-// Bắt đầu: cho wishBox hiện mờ rồi rơi chữ
+// Bắt đầu: cho wishBox hiện mờ rồi mới chạy hiệu ứng từng từ
 setTimeout(() => {
   wishEl.style.opacity = 1;
-  typeWriterDrop();
+  revealWordsStep();
 }, 900);
 
 /* Đo path trái tim neon để LED chạy */
@@ -1068,4 +1071,5 @@ renderGalaxy();
 
 </body>
 </html>
+
 
