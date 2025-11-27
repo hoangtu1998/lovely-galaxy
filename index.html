@@ -2,218 +2,367 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
   <title>💖 Mở Quà Bí Mật 💖</title>
 
-  <!-- Font hỗn hợp: chữ mềm + số tròn -->
+  <!-- Font giống iOS: Quicksand mềm, Bubble cho số -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@600&family=Bubblegum+Sans&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600&family=SF+Pro+Display:wght@500&family=Bubblegum+Sans&display=swap" rel="stylesheet">
 
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
-  <meta name="theme-color" content="#ffb6c1">
-
-  <!-- Cho Android -->
+  <meta name="theme-color" content="#000000">
   <meta name="mobile-web-app-capable" content="yes">
-
-  <!-- Cho iOS -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-  <!-- manifest PWA -->
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icon-192.png">
 
   <style>
     :root{
-      --bg:#fff0f7;
-      --card:#ffe6ef;
-      --ink:#4c1f3d;
-      --muted:#a86b88;
-      --key:#fff;
-      --shadow:0 4px 16px rgba(255,105,180,.35);
-      --accent:#ff69b4;
+      --ink:#f5f7ff;
+      --muted:#c3c8d9;
+      --accent:#ffffff;
+      --accent-soft:rgba(255,255,255,0.16);
+      --btn-bg:rgba(15,15,30,0.45);
+      --btn-border:rgba(255,255,255,0.18);
+      --btn-shadow:0 12px 35px rgba(0,0,0,0.65);
     }
-    *{ box-sizing:border-box; }
-    html,body{ height:100%; margin:0; }
+    *{ box-sizing:border-box; margin:0; padding:0; }
+    html,body{ height:100%; }
+
     body{
-      background: radial-gradient(circle at 70% 20%, #ffeaf2 0%, #ffd9e8 50%, #fff0f7 100%);
+      font-family:-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
       color:var(--ink);
-      font-family:'Quicksand', sans-serif;
+      background:#000;
+      min-height:100vh;
+      display:flex;
+      align-items:stretch;
+      justify-content:center;
+      overflow:hidden;
+    }
+
+    /* ===== Wallpaper (ảnh index) full-screen like iPhone lock ===== */
+    .wallpaper{
+      position:fixed;
+      inset:0;
+      z-index:-2;
+      overflow:hidden;
+    }
+    .wallpaper img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      transform:scale(1.1);
+      filter:blur(22px) brightness(0.72) saturate(1.1);
+      transform-origin:center;
+    }
+
+    /* overlay mờ tím xanh kiểu iOS 18 */
+    .overlay{
+      position:fixed;
+      inset:0;
+      background:
+        radial-gradient(circle at 20% 10%, rgba(255,160,220,0.35), transparent 55%),
+        radial-gradient(circle at 80% 90%, rgba(90,200,255,0.35), transparent 55%),
+        linear-gradient(180deg, rgba(0,0,0,0.65), rgba(0,0,0,0.95));
+      mix-blend-mode:soft-light;
+      z-index:-1;
+    }
+
+    /* ===== Layout chính ===== */
+    .lock-root{
+      position:relative;
+      flex:1;
+      max-width:480px;
+      margin:auto;
+      padding:18px 22px 32px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+    }
+
+    /* Top: giờ + ngày */
+    .lock-top{
+      text-align:center;
+      padding-top:18px;
+      pointer-events:none;
+      user-select:none;
+    }
+    .lock-time{
+      font-size:clamp(52px,12vw,72px);
+      font-weight:400;
+      letter-spacing:1px;
+    }
+    .lock-date{
+      margin-top:4px;
+      font-size:14px;
+      color:var(--muted);
+    }
+
+    /* Giữa: avatar + text + ô pass + keypad */
+    .card{
+      margin-top:32px;
       display:flex;
       flex-direction:column;
       align-items:center;
-      padding:16px 0;
-      min-height:100vh;
+      gap:18px;
+      background:linear-gradient(
+        180deg,
+        rgba(10,10,25,0.55),
+        rgba(5,5,18,0.88)
+      );
+      border-radius:28px;
+      border:1px solid rgba(255,255,255,0.16);
+      box-shadow:0 26px 60px rgba(0,0,0,0.85);
+      padding:20px 18px 26px;
+      backdrop-filter:blur(22px) saturate(160%);
+      -webkit-backdrop-filter:blur(22px) saturate(160%);
     }
 
-    h1{
-      font-family:'Pacifico', cursive;
-      font-size:clamp(24px,4vw,32px);
-      color:#ff4081;
-      margin:8px 0 16px;
-      text-shadow:0 2px 4px rgba(255,105,180,.4);
-      letter-spacing:1px;
-      text-align:center;
-      max-width:90vw;
-      line-height:1.2;
+    .avatar-wrap{
+      margin-top:2px;
     }
-
-    .wrap{
+    .avatar-ring{
+      width:74px;
+      height:74px;
+      border-radius:50%;
+      padding:2px;
+      background:conic-gradient(
+        from 120deg,
+        rgba(255,180,220,0.9),
+        rgba(160,220,255,0.9),
+        rgba(255,220,255,0.9),
+        rgba(255,180,220,0.9)
+      );
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow:0 0 28px rgba(0,0,0,0.9);
+    }
+    .avatar-ring-inner{
       width:100%;
-      max-width:420px;
-      display:grid;
-      place-items:center;
-      padding:0 16px;
-    }
-
-    .card{
-      width:100%;
-      background:var(--card);
-      border-radius:20px;
-      border:2px solid #ffcde3;
-      box-shadow:0 12px 40px rgba(255,182,193,.4);
-      padding:20px 16px;
-      display:grid;
-      grid-template-columns:1fr;
-      gap:16px;
-      transition:transform .15s ease;
-    }
-
-    .left{ display:flex; justify-content:center; }
-
-    .frame{
-      width:200px;
-      max-width:70vw;
-      border-radius:16px;
-      border:3px solid #ffb6c1;
-      box-shadow:0 8px 20px rgba(255,182,193,.55);
+      height:100%;
+      border-radius:50%;
       overflow:hidden;
+      background:#111;
     }
-    .frame img{
+    .avatar-ring-inner img{
       width:100%;
       height:100%;
       object-fit:cover;
       display:block;
-      aspect-ratio:1/1;
     }
 
-    .right{
-      display:grid;
-      gap:12px;
-      align-content:start;
+    .lock-title{
+      font-size:16px;
+      color:var(--ink);
+      margin-top:2px;
+    }
+    .lock-sub{
+      font-size:13px;
+      color:var(--muted);
+      margin-top:-4px;
     }
 
+    /* Dots hiển thị mật mã */
     .display{
-      height:48px;
-      background:#fff;
-      border-radius:14px;
-      border:2px solid #ffb6c1;
-      box-shadow:inset 0 2px 6px rgba(255,182,193,.4);
+      margin-top:6px;
       display:flex;
+      gap:10px;
+      justify-content:center;
       align-items:center;
-      justify-content:flex-end;
-      padding:0 12px;
-      font-size:24px;
-      color:#ff4081;
-      letter-spacing:5px;
-      font-family:'Bubblegum Sans', cursive;
+      min-height:26px;
+    }
+    .dot{
+      width:12px;
+      height:12px;
+      border-radius:50%;
+      border:1px solid rgba(255,255,255,0.55);
+      background:transparent;
+      box-shadow:0 0 0 0 transparent;
+      transition:background .18s ease, box-shadow .18s ease, transform .16s ease;
+    }
+    .dot.filled{
+      background:#fff;
+      box-shadow:0 0 10px rgba(255,255,255,0.8);
+      transform:scale(1.05);
     }
 
+    /* Keypad kiểu iOS */
     .pad{
+      margin-top:10px;
+      width:100%;
+      max-width:320px;
       display:grid;
       grid-template-columns:repeat(3,1fr);
-      gap:10px;
+      gap:12px 18px;
       user-select:none;
     }
 
     button.key{
-      height:54px;
-      border-radius:14px;
-      border:none;
-      background:#fff;
-      box-shadow:var(--shadow);
-      font-size:20px;
-      font-family:'Bubblegum Sans', cursive;
-      color:#ff69b4;
+      height:60px;
+      width:60px;
+      margin:0 auto;
+      border-radius:50%;
+      border:1px solid var(--btn-border);
+      background:radial-gradient(circle at 30% 20%, rgba(255,255,255,0.22), var(--btn-bg));
+      box-shadow:var(--btn-shadow);
+      color:var(--accent);
+      font-size:22px;
+      font-family:"SF Pro Display","Bubblegum Sans", system-ui, sans-serif;
+      font-weight:500;
       cursor:pointer;
-      transition:transform .1s, background .2s;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      transition:
+        transform .08s ease,
+        box-shadow .12s ease,
+        background .12s ease,
+        border-color .12s ease,
+        opacity .12s ease;
+      -webkit-tap-highlight-color:transparent;
     }
-    button.key:hover{ background:#ffe6f1; }
-    button.key:active{ transform:scale(.96); }
+    button.key span.sub{
+      font-size:10px;
+      color:rgba(255,255,255,0.6);
+      display:block;
+      margin-top:2px;
+    }
 
+    button.key:active{
+      transform:scale(0.94);
+      box-shadow:0 6px 18px rgba(0,0,0,0.9);
+      background:radial-gradient(circle at 30% 20%, rgba(255,255,255,0.4), rgba(10,10,25,0.95));
+    }
+
+    .key.del,
     .key.ok{
-      background:linear-gradient(0deg,#ff6fb0,#ffa3cc);
-      color:#fff;
-      border:0;
       font-size:20px;
-      box-shadow:0 4px 12px rgba(255,105,180,.4);
     }
     .key.del{
-      background:#fff4f7;
-      color:#d16a8d;
-      border:1px solid #ffd1df;
-      font-family:'Quicksand';
+      color:rgba(255,255,255,0.75);
+      background:radial-gradient(circle at 30% 20%, rgba(255,255,255,0.15), rgba(15,15,30,0.7));
+      border-color:rgba(255,255,255,0.24);
+    }
+    .key.ok{
+      background:radial-gradient(circle at 30% 20%, #ffffff, #e7e7ff);
+      color:#111323;
+      border-color:rgba(255,255,255,0.9);
+      box-shadow:0 16px 40px rgba(0,0,0,0.85);
     }
 
+    /* chân trang: link cài đặt + hint */
     .foot{
-      text-align:center;
-      color:var(--muted);
+      margin-top:10px;
       font-size:12px;
-      line-height:1.4;
-      font-family:'Quicksand', sans-serif;
-    }
-
-    .links{
+      color:var(--muted);
       text-align:center;
-      margin:12px 0 0;
-      font-size:14px;
     }
-    .links a{
-      color:#ff4fa0;
-      text-decoration:none;
-    }
-    .links a:hover{
+    .foot a{
+      color:#f5f7ff;
       text-decoration:underline;
+      text-decoration-thickness:1px;
+      text-underline-offset:3px;
     }
 
-    @media(max-width:820px){
-      .card{ grid-template-columns:1fr; }
+    .lock-bottom{
+      text-align:center;
+      margin-top:24px;
+      font-size:13px;
+      color:rgba(235,238,255,0.75);
+    }
+    .lock-bottom small{
+      font-size:11px;
+      opacity:0.8;
+    }
+
+    /* hiệu ứng lắc khi sai pass */
+    @keyframes shakeCard{
+      0%{ transform:translateX(0); }
+      20%{ transform:translateX(-6px); }
+      40%{ transform:translateX(6px); }
+      60%{ transform:translateX(-4px); }
+      80%{ transform:translateX(4px); }
+      100%{ transform:translateX(0); }
+    }
+    .card.shake{
+      animation:shakeCard 0.22s ease-in-out;
+    }
+
+    @media (max-height:640px){
+      .card{
+        margin-top:20px;
+        padding:16px 14px 22px;
+      }
+      .lock-root{
+        padding-top:10px;
+      }
     }
   </style>
 </head>
 <body>
-  <h1>🌸 Nhập Pass đi người đẹp 🌸</h1>
-  <section class="wrap">
-    <div class="card" id="card">
-      <div class="left">
-        <div class="frame">
-          <img id="indexPic" src="assets/OIP.webp" alt="Ảnh index"/>
+  <!-- Wallpaper từ ảnh index -->
+  <div class="wallpaper">
+    <img id="indexPic" src="assets/OIP.webp" alt="Wallpaper">
+  </div>
+  <div class="overlay"></div>
+
+  <main class="lock-root">
+    <!-- Giờ + ngày kiểu iPhone -->
+    <header class="lock-top">
+      <div class="lock-time" id="lockTime">09:41</div>
+      <div class="lock-date" id="lockDate">Thursday, November 27</div>
+    </header>
+
+    <!-- Khung nhập pass (card) -->
+    <section class="card" id="card">
+      <div class="avatar-wrap">
+        <div class="avatar-ring">
+          <div class="avatar-ring-inner">
+            <!-- dùng lại ảnh index làm avatar -->
+            <img id="avatarPic" src="assets/OIP.webp" alt="Owner">
+          </div>
         </div>
       </div>
-      <div class="right">
-        <div class="display" id="disp"></div>
-        <div class="pad">
-          <button class="key" data-k="1">1</button>
-          <button class="key" data-k="2">2</button>
-          <button class="key" data-k="3">3</button>
-          <button class="key" data-k="4">4</button>
-          <button class="key" data-k="5">5</button>
-          <button class="key" data-k="6">6</button>
-          <button class="key" data-k="7">7</button>
-          <button class="key" data-k="8">8</button>
-          <button class="key" data-k="9">9</button>
-          <button class="key del" data-k="del">⌫</button>
-          <button class="key" data-k="0">0</button>
-          <button class="key ok" data-k="ok">💖</button>
-        </div>
-        <div class="foot">Vào <a href="settings.html">Cài đặt</a> để chọn ảnh & mật khẩu dễ thương 💗</div>
+
+      <div class="lock-title">Nhập mật mã</div>
+      <div class="lock-sub">Để mở món quà bí mật ✨</div>
+
+      <!-- hiển thị pass dạng chấm -->
+      <div class="display" id="disp"></div>
+
+      <!-- keypad kiểu iOS -->
+      <div class="pad">
+        <button class="key" data-k="1">1</button>
+        <button class="key" data-k="2">2</button>
+        <button class="key" data-k="3">3</button>
+        <button class="key" data-k="4">4</button>
+        <button class="key" data-k="5">5</button>
+        <button class="key" data-k="6">6</button>
+        <button class="key" data-k="7">7</button>
+        <button class="key" data-k="8">8</button>
+        <button class="key" data-k="9">9</button>
+        <button class="key del" data-k="del">⌫</button>
+        <button class="key" data-k="0">0</button>
+        <button class="key ok" data-k="ok">OK</button>
       </div>
+
+      <div class="foot">
+        Vào <a href="settings.html">Cài đặt</a> để chọn ảnh & mật khẩu dễ thương 💗
+      </div>
+    </section>
+
+    <!-- cuối màn hình: hint giống swipe up -->
+    <div class="lock-bottom">
+      <div>Swipe up trong tim bạn để mở quà 💖</div>
+      <small>(Nhập đúng mật mã trước đã nha)</small>
     </div>
-    <div class="links"><a href="settings.html">⚙️ Cài đặt</a></div>
-  </section>
+  </main>
 
 <script>
-/* ==== mật khẩu vẫn y như bạn đang dùng ==== */
+/* ==== mật khẩu: giữ nguyên logic cũ ==== */
 const LS_PW = 'userPassword';
 
 const disp = document.getElementById('disp');
@@ -225,32 +374,36 @@ function getSecret(){
   return (localStorage.getItem(LS_PW)||'').trim() || "1234";
 }
 
-/* cập nhật ô hiển thị pass (dùng dấu chấm) */
+/* render chấm tròn theo độ dài buf */
 function updateDisp(){
-  disp.textContent = buf.replace(/./g,'•');
+  const maxDots = 8;
+  const len = Math.min(buf.length, maxDots);
+  disp.innerHTML = "";
+  for(let i=0;i<maxDots;i++){
+    const dot = document.createElement('div');
+    dot.className = 'dot' + (i < len ? ' filled' : '');
+    disp.appendChild(dot);
+  }
 }
 
 /* hiệu ứng lắc khi sai pass */
 function shake(){
-  card.style.transition='transform .08s';
-  card.style.transform='translateX(-5px)';
-  setTimeout(()=> card.style.transform='translateX(5px)',70);
-  setTimeout(()=> card.style.transform='translateX(0)',140);
+  card.classList.remove('shake');
+  void card.offsetWidth; // force reflow
+  card.classList.add('shake');
 }
 
 function submit(){
   if(buf===getSecret()){
     localStorage.setItem('gift_unlocked','1');
-
-    // Cho phép autoplay ở trang birthday (vì có tương tác người dùng)
     sessionStorage.setItem('allow_music','1');
-
     location.href='birthday.html';
   }else{
-    buf=""; updateDisp(); shake();
+    buf=""; 
+    updateDisp(); 
+    shake();
   }
 }
-
 
 /* xử lý bấm phím keypad */
 function press(k){
@@ -280,13 +433,11 @@ addEventListener('keydown',e=>{
 /* render ban đầu */
 updateDisp();
 
-/* ==== PHẦN MỚI: lấy ảnh Index từ IndexedDB thay vì localStorage ==== */
-
-/* tên DB/indexedDB giống settings và galaxy */
+/* ==== wallpaper & avatar từ IndexedDB ==== */
 const DB_NAME = 'birthdayDB';
 const DB_VER  = 1;
 const STORE   = 'images';
-const INDEX_KEY = 'img_index_main'; // ảnh index lưu bằng key này trong settings mới
+const INDEX_KEY = 'img_index_main';
 
 function openDB() {
   return new Promise((resolve, reject) => {
@@ -312,24 +463,48 @@ async function getImageFromDB(key){
   });
 }
 
-/* load ảnh Index khi mở trang */
+/* load ảnh Index khi mở trang -> dùng cho wallpaper & avatar */
 (async function loadIndexPic(){
-  const imgEl = document.getElementById('indexPic');
+  const wall = document.getElementById('indexPic');
+  const avatar = document.getElementById('avatarPic');
 
   try {
     const blob = await getImageFromDB(INDEX_KEY);
     if (blob) {
       const url = URL.createObjectURL(blob);
-      imgEl.src = url;  // dùng ảnh user upload, dung lượng lớn ok
+      wall.src = url;
+      avatar.src = url;
     } else {
-      // nếu chưa có trong DB -> giữ fallback assets/OIP.webp
-      imgEl.src = "assets/OIP.webp";
+      wall.src = "assets/OIP.webp";
+      avatar.src = "assets/OIP.webp";
     }
   } catch (err) {
     console.error('Không load được ảnh Index từ IndexedDB:', err);
-    imgEl.src = "assets/OIP.webp";
+    wall.src = "assets/OIP.webp";
+    avatar.src = "assets/OIP.webp";
   }
 })();
+
+/* ==== đồng hồ trên cùng cho giống iPhone ==== */
+function updateLockTime(){
+  const tEl = document.getElementById('lockTime');
+  const dEl = document.getElementById('lockDate');
+  const now = new Date();
+
+  const hh = String(now.getHours()).padStart(2,'0');
+  const mm = String(now.getMinutes()).padStart(2,'0');
+  tEl.textContent = `${hh}:${mm}`;
+
+  const weekdayNames = ['Chủ nhật','Thứ hai','Thứ ba','Thứ tư','Thứ năm','Thứ sáu','Thứ bảy'];
+  const monthNames = ['thg 1','thg 2','thg 3','thg 4','thg 5','thg 6','thg 7','thg 8','thg 9','thg 10','thg 11','thg 12'];
+
+  const wd = weekdayNames[now.getDay()];
+  const day = now.getDate();
+  const mon = monthNames[now.getMonth()];
+  dEl.textContent = `${wd}, ${day} ${mon}`;
+}
+updateLockTime();
+setInterval(updateLockTime, 30000);
 
 /* ==== optional: PWA service worker ==== */
 if('serviceWorker' in navigator){
@@ -338,4 +513,3 @@ if('serviceWorker' in navigator){
 </script>
 </body>
 </html>
-
