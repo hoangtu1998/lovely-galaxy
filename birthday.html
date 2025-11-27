@@ -209,7 +209,8 @@
       width:100%;
       padding:28px 16px;
       text-align:center;
-
+      letter-spacing: 0.05em;
+      word-spacing: 0.20em;
       font-family: "Dancing Script", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
       font-size:clamp(24px,4vw,40px);
       line-height:1.35;
@@ -422,70 +423,50 @@
       opacity:.92
     }
    /* Chữ galaxy mềm, trôi, glow, nhún nhẹ */
+/* Chữ galaxy: mềm, thoáng, glow nhẹ, không bị dính chữ */
+
 .softChar{
   display:inline-block;
   opacity:0;
-  transform:
-    translate3d(-10px,-10px,0)
-    scale(0.9)
-    rotate(-4deg);
-  filter:blur(1px);
+  margin-right:0.04em; /* mỗi chữ cách nhẹ nhau */
+  transform:translate3d(0,-8px,0) scale(0.9);
   text-shadow:
-    0 0 12px rgba(255,150,230,0.9),
-    0 0 22px rgba(120,200,255,0.85),
-    0 4px 10px rgba(0,0,0,0.9);
+    0 0 8px rgba(255,180,240,0.8),
+    0 0 16px rgba(140,220,255,0.7),
+    0 2px 8px rgba(0,0,0,0.7);
   animation:
-    softAppear 0.52s cubic-bezier(.22,.72,.16,1.02) forwards,
-    softGlow   2.2s ease-in-out infinite 0.4s;
+    softAppear 0.38s cubic-bezier(.22,.72,.16,1.02) forwards,
+    softGlow   2.4s ease-in-out infinite 0.4s;
 }
 
 @keyframes softAppear{
   0%{
     opacity:0;
-    transform:
-      translate3d(-14px,-14px,0)
-      scale(0.86)
-      rotate(-8deg);
-    filter:blur(2px);
+    transform:translate3d(0,-10px,0) scale(0.9);
   }
-  45%{
+  60%{
     opacity:1;
-    transform:
-      translate3d(3px,4px,0)
-      scale(1.03)
-      rotate(2deg);
-    filter:blur(0.4px);
-  }
-  70%{
-    transform:
-      translate3d(-2px,1px,0)
-      scale(0.99)
-      rotate(-1deg);
+    transform:translate3d(0,3px,0) scale(1.03);
   }
   100%{
     opacity:1;
-    transform:
-      translate3d(0,0,0)
-      scale(1)
-      rotate(0deg);
-    filter:blur(0);
+    transform:translate3d(0,0,0) scale(1);
   }
 }
 
 @keyframes softGlow{
   0%,100%{
     text-shadow:
-      0 0 8px  rgba(255,180,240,0.9),
-      0 0 18px rgba(130,210,255,0.7),
-      0 0 28px rgba(255,90,200,0.6);
+      0 0 6px  rgba(255,190,240,0.8),
+      0 0 14px rgba(150,230,255,0.7);
   }
   50%{
     text-shadow:
-      0 0 14px rgba(255,230,255,1),
-      0 0 28px rgba(160,235,255,0.95),
-      0 0 40px rgba(255,120,210,0.9);
+      0 0 12px rgba(255,230,255,1),
+      0 0 24px rgba(160,245,255,0.95);
   }
 }
+
 
   </style>
 </head>
@@ -847,6 +828,7 @@ loopCute();
 //* GALAXY: Lời chúc gõ từng CHỮ, xong mới hiện LED */
 /* GALAXY: typewriter mềm mại từng CHỮ */
 /* GALAXY: typewriter từng CHỮ với hiệu ứng mềm + glow */
+/* GALAXY: typewriter từng CHỮ, màu chuyển nhẹ, chữ không bị dính */
 function startGalaxyWish(){
   const wishEl = document.getElementById('wishBox');
   if (!wishEl) return;
@@ -857,6 +839,7 @@ function startGalaxyWish(){
 
   const text = savedWish;
   let idx = 0;
+  let visualIndex = 0; // chỉ đếm các ký tự thật (không tính khoảng trắng)
 
   wishEl.innerHTML = "";
   wishEl.style.opacity = 1;
@@ -865,20 +848,29 @@ function startGalaxyWish(){
     if (idx < text.length) {
       const ch = text.charAt(idx);
 
-      const span = document.createElement('span');
-      span.textContent = ch;
-      span.className = "softChar";
+      if (ch === ' ') {
+        // khoảng trắng – thêm text bình thường để giữ khoảng cách đẹp
+        wishEl.appendChild(document.createTextNode(' '));
+      } else {
+        const span = document.createElement('span');
+        span.textContent = ch;
+        span.className = "softChar";
 
-      // tạo chút lệch nhẹ theo vị trí cho tự nhiên
-      span.style.animationDelay = "0s";
+        // Màu chuyển dần từ hồng -> tím -> xanh cyan
+        const hueBase = 320;  // hồng tím
+        const hueRange = 80;  // dao động nhẹ sang xanh
+        const hue = hueBase + (visualIndex * 10) % hueRange;
+        span.style.color = `hsl(${hue}, 92%, 72%)`;
 
-      wishEl.appendChild(span);
+        wishEl.appendChild(span);
+        visualIndex++;
+      }
+
       idx++;
-
-      // tốc độ gõ: chỉnh giữa 70–100 cho hợp gu
+      // tốc độ gõ – 80–90ms/char là mượt
       setTimeout(typeStep, 85);
     } else {
-      // gõ xong -> hiện LED Happy birthday
+      // Gõ xong -> hiện LED Happy birthday
       setTimeout(()=>{
         const led = document.querySelector('.led');
         if (led) led.classList.add('show');
@@ -1179,6 +1171,7 @@ renderGalaxy();
 
 </body>
 </html>
+
 
 
 
