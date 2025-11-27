@@ -224,15 +224,29 @@
 
       pointer-events:none;
       opacity:0;
-      transition: opacity .8s ease;
+      transition: opacity 2.2s ease;
       z-index:15;
 
       display:block;
     }
+#wishBox.show{
+  animation:wishIn 2.5s ease forwards;
+}
 
+@keyframes wishIn{
+  0%{
+    opacity:0;
+    transform:translateY(-10px);
+  }
+  100%{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
     @media (max-width: 480px){
       #wishBox{ transform: translateX(-3.5vw); }
     }
+    
 
     /* Nền khung galaxy */
     #scene-galaxy{
@@ -331,42 +345,66 @@
     }
 
     .led{
-      position:fixed;
-      left:50%;
-      transform:translateX(-50%);
-      bottom:28px;
-      width:82vw;
-      max-width:720px;
-      height:8px;
-      border-radius:999px;
-      background:linear-gradient(90deg, red, orange, yellow, green, cyan, blue, magenta, red);
-      background-size:300% 100%;
-      animation:flow 1.2s linear infinite;
-      box-shadow:0 0 20px rgba(255,255,255,.35);
-      border:1px solid rgba(255,255,255,.2);
-      z-index:10;
-    }
-    /* LED thứ 2 nằm phía trên thanh LED cũ */
-.led2{
-  bottom: 80px;          /* cao hơn LED cũ */
-  height: 8px;
-  background: linear-gradient(90deg, red, orange, yellow, green, cyan, blue, magenta, red);
-  background-size: 300% 100%;
-  animation: flow 1.2s linear infinite;
-  border-radius: 999px;
-  width: 82vw;
-  max-width: 720px;
-  position: fixed;
-  left: 50%;
-  transform: translateX(-50%);
-  box-shadow: 0 0 20px rgba(255,255,255,.35);
-  border: 1px solid rgba(255,255,255,.2);
-  z-index: 10;
+  position:fixed;
+  left:50%;
+  transform:translateX(-50%) translateY(10px);
+  bottom:28px;
+  width:82vw;
+  max-width:720px;
+  padding:6px 14px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.25);
+
+  /* dải màu RGB chạy */
+  background:linear-gradient(
+    90deg,
+    red,
+    orange,
+    yellow,
+    lime,
+    cyan,
+    blue,
+    magenta,
+    red
+  );
+  background-size:300% 100%;
+  animation:flow 1.2s linear infinite;
+
+  box-shadow:0 0 24px rgba(255,255,255,.4);
+  z-index:10;
+
+  opacity:0;                 /* ẨN LÚC BAN ĐẦU */
+  pointer-events:none;
+  transition:opacity .6s ease, transform .6s ease;
 }
-    @keyframes flow{
-      from{ background-position:0 0 }
-      to  { background-position:300% 0 }
-    }
+
+/* Chữ kiểu LED */
+.led-text{
+  font-family:Quicksand, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-weight:700;
+  text-transform:uppercase;
+  font-size:clamp(14px,2.2vw,18px);
+  letter-spacing:0.16em;
+  text-align:center;
+
+  color:transparent;
+  -webkit-background-clip:text;
+  background-clip:text;
+
+  text-shadow:0 0 14px rgba(255,255,255,.8);
+}
+
+/* Khi cần hiện thanh LED */
+.led.show{
+  opacity:1;
+  transform:translateX(-50%) translateY(0);
+}
+
+@keyframes flow{
+  from{ background-position:0 0; }
+  to  { background-position:300% 0; }
+}
+
 
     .caption{
       position:fixed;
@@ -447,8 +485,7 @@
       <div class="carousel" id="carousel"></div>
 
      
-      <div class="led"></div>
-      <div class="led led2"></div>
+     <div class="led led-text">HAPPY BIRTHDAY</div>
     </div>
   </div>
 
@@ -733,11 +770,25 @@ loopCute();
    ========================================================= */
 
 /* Lời chúc trên cùng */
+/* Lời chúc trên cùng: hiện dần + xong mới hiện LED */
 const wishEl = document.getElementById('wishBox');
 const savedWish = localStorage.getItem('wish_text')
   || "Chúc mừng sinh nhật 🎂 Chúc bạn luôn xinh đẹp, hạnh phúc và được yêu thương nhất vũ trụ 💖✨";
-wishEl.textContent = savedWish;
-setTimeout(()=> { wishEl.style.opacity = 1; }, 10000);
+
+wishEl.textContent = savedWish;   // gán nguyên câu, không gõ từng chữ
+wishEl.style.opacity = 0;
+setTimeout(() => {
+  // cho lời chúc hiện dần
+  wishEl.style.opacity = 1;
+
+  // đợi thêm ~2.4s cho fade-in xong rồi mới bật LED
+  setTimeout(() => {
+    const led = document.querySelector('.led');
+    if (led) {
+      led.classList.add('show');   // thêm class để LED hiện lên
+    }
+  }, 2400);
+}, 800);
 
 /* Đo path trái tim neon để LED chạy */
 function setupNeonHeart(){
@@ -1025,6 +1076,7 @@ renderGalaxy();
 
 </body>
 </html>
+
 
 
 
