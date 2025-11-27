@@ -83,11 +83,13 @@
         0 3px 8px rgba(0,0,0,0.6);
       font-family:"Dancing Script",cursive;
     }
-  /* CHO DÒNG "Bạn iu" TO HƠN */
+
+    /* làm dòng "Bạn iu" to hơn một chút */
     .line2 .rain{
       font-size:clamp(30px,4.2vw,52px);
-      letter-spacing: 0.04em;
+      letter-spacing:0.04em;
     }
+
     .line3 .rain{
       font-family:"Playpen Sans",sans-serif;
       font-size:clamp(22px,3.2vw,38px);
@@ -224,29 +226,15 @@
 
       pointer-events:none;
       opacity:0;
-      transition: opacity 2.2s ease;
+      transition: opacity .8s ease;
       z-index:15;
 
       display:block;
     }
-#wishBox.show{
-  animation:wishIn 2.5s ease forwards;
-}
 
-@keyframes wishIn{
-  0%{
-    opacity:0;
-    transform:translateY(-10px);
-  }
-  100%{
-    opacity:1;
-    transform:translateY(0);
-  }
-}
     @media (max-width: 480px){
       #wishBox{ transform: translateX(-3.5vw); }
     }
-    
 
     /* Nền khung galaxy */
     #scene-galaxy{
@@ -344,83 +332,54 @@
       50%    { filter: drop-shadow(0 0 22px rgba(255,255,255,.45)) }
     }
 
+    /* THANH LED RGB CHỮ HAPPY BIRTHDAY */
     .led{
-  position:fixed;
-  left:50%;
-  transform:translateX(-50%) translateY(10px);
-  bottom:28px;
-  width:82vw;
-  max-width:720px;
-  padding:6px 14px;
-  border-radius:999px;
-  border:1px solid rgba(255,255,255,.25);
-
-  /* dải màu RGB chạy */
-  background:linear-gradient(
-    90deg,
-    red,
-    orange,
-    yellow,
-    lime,
-    cyan,
-    blue,
-    magenta,
-    red
-  );
-  background-size:300% 100%;
-  animation:flow 1.2s linear infinite;
-
-  box-shadow:0 0 24px rgba(255,255,255,.4);
-  z-index:10;
-
-  opacity:0;                 /* ẨN LÚC BAN ĐẦU */
-  pointer-events:none;
-  transition:opacity .6s ease, transform .6s ease;
-}
-
-/* Chữ kiểu LED */
-.led-text{
-  font-family:Quicksand, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  font-weight:700;
-  text-transform:uppercase;
-  font-size:clamp(14px,2.2vw,18px);
-  letter-spacing:0.16em;
-  text-align:center;
-
-  color:transparent;
-  -webkit-background-clip:text;
-  background-clip:text;
-
-  text-shadow:0 0 14px rgba(255,255,255,.8);
-}
-
-/* Khi cần hiện thanh LED */
-.led.show{
-  opacity:1;
-  transform:translateX(-50%) translateY(0);
-}
-
-@keyframes flow{
-  from{ background-position:0 0; }
-  to  { background-position:300% 0; }
-}
-
-
-    .caption{
       position:fixed;
       left:50%;
-      transform:translateX(-50%);
-      bottom:50px;
-      color:#eaf6ff;
-      font-weight:700;
-      text-shadow: 0 2px 6px rgba(0,0,0,.6);
+      transform:translateX(-50%) translateY(10px);
+      bottom:28px;
+      width:82vw;
+      max-width:720px;
+      padding:6px 14px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.25);
+      background:linear-gradient(
+        90deg,
+        red, orange, yellow, lime, cyan, blue, magenta, red
+      );
+      background-size:300% 100%;
+      animation:flow 1.2s linear infinite;
+      box-shadow:0 0 24px rgba(255,255,255,.4);
       z-index:10;
+
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .6s ease, transform .6s ease;
+    }
+
+    .led-text{
+      font-family:Quicksand, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      font-weight:700;
+      text-transform:uppercase;
+      font-size:clamp(14px,2.2vw,18px);
+      letter-spacing:0.16em;
       text-align:center;
+      color:transparent;
+      -webkit-background-clip:text;
+      background-clip:text;
+      text-shadow:0 0 14px rgba(255,255,255,.8);
     }
-    .caption small{
-      font-weight:600;
-      opacity:.92
+
+    .led.show{
+      opacity:1;
+      transform:translateX(-50%) translateY(0);
     }
+
+    @keyframes flow{
+      from{ background-position:0 0 }
+      to  { background-position:300% 0 }
+    }
+
   </style>
 </head>
 <body>
@@ -479,13 +438,20 @@
     <!-- Lớp tim neon + carousel ảnh -->
     <div class="stage">
       <!-- Trái tim neon -->
-      
+      <div class="neon-layer">
+        <svg viewBox="0 0 800 600" aria-hidden="true">
+          <path class="neon pink"
+                d="M400 540 C 340 500, 230 420, 170 300 C 110 180, 290 80, 400 210"/>
+          <path class="neon cyan"
+                d="M400 210 C 510 80, 690 170, 630 300 C 570 420, 460 500, 400 540"/>
+        </svg>
+      </div>
 
       <!-- Carousel xoay ảnh -->
       <div class="carousel" id="carousel"></div>
 
-     
-     <div class="led led-text">HAPPY BIRTHDAY</div>
+      <!-- 1 THANH LED HAPPY BIRTHDAY -->
+      <div class="led led-text">Happy birthday</div>
     </div>
   </div>
 
@@ -769,35 +735,34 @@ loopCute();
    ========== GALAXY: NEON HEART + CSS CAROUSEL ============
    ========================================================= */
 
-/* Lời chúc trên cùng */
-/* Lời chúc trên cùng: hiện dần + xong mới hiện LED */
-/* Lời chúc dạng typewriter + LED hiện sau khi gõ xong */
+/* Lời chúc trên cùng: gõ từng chữ + xong mới hiện LED */
 const wishEl = document.getElementById('wishBox');
-
 const savedWish = localStorage.getItem('wish_text')
   || "Chúc mừng sinh nhật 🎂 Chúc bạn luôn xinh đẹp, hạnh phúc và được yêu thương nhất vũ trụ 💖✨";
 
-let idx = 0;
+let twIndex = 0;
 wishEl.textContent = "";
 
+/* Gõ từng ký tự */
 function typeWriter() {
-  if (idx < savedWish.length) {
-    wishEl.textContent += savedWish.charAt(idx);
-    idx++;
-    setTimeout(typeWriter, 60);  // tốc độ gõ (60ms / ký tự)
+  if (twIndex < savedWish.length) {
+    wishEl.textContent += savedWish.charAt(twIndex);
+    twIndex++;
+    setTimeout(typeWriter, 70); // chỉnh tốc độ gõ tại đây
   } else {
-    // GÕ XONG → hiện LED
+    // Gõ xong -> hiện LED
     const led = document.querySelector('.led');
-    if (led) led.classList.add('show');
+    if (led) {
+      led.classList.add('show');
+    }
   }
 }
 
-/* Delay 1 chút cho scene galaxy hiện rồi mới bắt đầu gõ */
+/* Bắt đầu: fade-in wishBox rồi gõ chữ */
 setTimeout(() => {
   wishEl.style.opacity = 1;
   typeWriter();
 }, 900);
-
 
 /* Đo path trái tim neon để LED chạy */
 function setupNeonHeart(){
@@ -1085,8 +1050,3 @@ renderGalaxy();
 
 </body>
 </html>
-
-
-
-
-
