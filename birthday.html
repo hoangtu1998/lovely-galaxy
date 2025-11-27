@@ -736,33 +736,33 @@ loopCute();
 (function(){
   const giftWrap  = document.getElementById('giftWrap');
   const giftEmoji = document.getElementById('giftEmoji');
+  let giftOpened = false;   // 🔥 THÊM
 
   function goNext(){
+    if (giftOpened) return; // 🔥 CHẶN CHẠY LẠI
+    giftOpened = true;
+
     // Lưu lời chúc qua galaxy
     const greet = localStorage.getItem(LS_GREETING)
       || "Chúc mừng sinh nhật 🎂 Chúc bạn luôn xinh đẹp, hạnh phúc và được yêu thương nhất vũ trụ 💖✨";
     localStorage.setItem("wish_text", greet);
 
-    // hiệu ứng mở nắp hộp
     giftEmoji.classList.add('open');
 
-    // Ẩn scene birthday, hiện galaxy
-     setTimeout(()=>{
-    const sceneBirthday = document.getElementById('scene-birthday');
-    if (sceneBirthday) sceneBirthday.style.display = 'none';
+    setTimeout(()=>{
+      const sceneBirthday = document.getElementById('scene-birthday');
+      if (sceneBirthday) sceneBirthday.style.display = 'none';
 
-    // Nền đen cho galaxy (thêm để chuyển mượt)
-    document.body.style.background = '#000';
+      document.body.style.background = '#000';
 
-    const sceneGalaxy = document.getElementById('scene-galaxy');
-    if (sceneGalaxy) {
-      sceneGalaxy.style.display = 'block';
-      // 🔥 Bắt đầu chạy hiệu ứng lời chúc galaxy tại đây
-      if (window.startGalaxyWish) {
-        window.startGalaxyWish();
+      const sceneGalaxy = document.getElementById('scene-galaxy');
+      if (sceneGalaxy) {
+        sceneGalaxy.style.display = 'block';
+        if (window.startGalaxyWish) {
+          window.startGalaxyWish();
+        }
       }
-    }
-  }, 600);
+    }, 600);
   }
 
   giftEmoji.addEventListener('click', goNext);
@@ -1102,6 +1102,7 @@ renderGalaxy();
 
 </body>
 </html>
+
 
 
 
