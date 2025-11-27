@@ -83,7 +83,11 @@
         0 3px 8px rgba(0,0,0,0.6);
       font-family:"Dancing Script",cursive;
     }
-
+  /* CHO DÒNG "Bạn iu" TO HƠN */
+    .line2 .rain{
+      font-size:clamp(30px,4.2vw,52px);
+      letter-spacing: 0.04em;
+    }
     .line3 .rain{
       font-family:"Playpen Sans",sans-serif;
       font-size:clamp(22px,3.2vw,38px);
@@ -342,6 +346,23 @@
       border:1px solid rgba(255,255,255,.2);
       z-index:10;
     }
+    /* LED thứ 2 nằm phía trên thanh LED cũ */
+.led2{
+  bottom: 80px;          /* cao hơn LED cũ */
+  height: 8px;
+  background: linear-gradient(90deg, red, orange, yellow, green, cyan, blue, magenta, red);
+  background-size: 300% 100%;
+  animation: flow 1.2s linear infinite;
+  border-radius: 999px;
+  width: 82vw;
+  max-width: 720px;
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  box-shadow: 0 0 20px rgba(255,255,255,.35);
+  border: 1px solid rgba(255,255,255,.2);
+  z-index: 10;
+}
     @keyframes flow{
       from{ background-position:0 0 }
       to  { background-position:300% 0 }
@@ -420,20 +441,14 @@
     <!-- Lớp tim neon + carousel ảnh -->
     <div class="stage">
       <!-- Trái tim neon -->
-      <div class="neon-layer">
-        <svg viewBox="0 0 800 600" aria-hidden="true">
-          <path class="neon pink"
-                d="M400 540 C 340 500, 230 420, 170 300 C 110 180, 290 80, 400 210"/>
-          <path class="neon cyan"
-                d="M400 210 C 510 80, 690 170, 630 300 C 570 420, 460 500, 400 540"/>
-        </svg>
-      </div>
+      
 
       <!-- Carousel xoay ảnh -->
       <div class="carousel" id="carousel"></div>
 
      
       <div class="led"></div>
+      <div class="led led2"></div>
     </div>
   </div>
 
@@ -1010,5 +1025,6 @@ renderGalaxy();
 
 </body>
 </html>
+
 
 
