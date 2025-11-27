@@ -747,16 +747,22 @@ loopCute();
     giftEmoji.classList.add('open');
 
     // Ẩn scene birthday, hiện galaxy
-    setTimeout(()=>{
-      const sceneBirthday = document.getElementById('scene-birthday');
-      if (sceneBirthday) sceneBirthday.style.display = 'none';
+     setTimeout(()=>{
+    const sceneBirthday = document.getElementById('scene-birthday');
+    if (sceneBirthday) sceneBirthday.style.display = 'none';
 
-      // Nền đen cho galaxy (thêm để chuyển mượt)
-      document.body.style.background = '#000';
+    // Nền đen cho galaxy (thêm để chuyển mượt)
+    document.body.style.background = '#000';
 
-      const sceneGalaxy = document.getElementById('scene-galaxy');
-      if (sceneGalaxy) sceneGalaxy.style.display = 'block';
-    }, 600);
+    const sceneGalaxy = document.getElementById('scene-galaxy');
+    if (sceneGalaxy) {
+      sceneGalaxy.style.display = 'block';
+      // 🔥 Bắt đầu chạy hiệu ứng lời chúc galaxy tại đây
+      if (window.startGalaxyWish) {
+        window.startGalaxyWish();
+      }
+    }
+  }, 600);
   }
 
   giftEmoji.addEventListener('click', goNext);
@@ -772,46 +778,43 @@ loopCute();
 /* Lời chúc trên cùng */
 /* Lời chúc trên cùng: hiện dần + xong mới hiện LED */
 /* Lời chúc dạng typewriter + LED hiện sau khi gõ xong */
-/* GALAXY: Lời chúc xuất hiện từng từ, mỗi 0.5s, xong mới hiện LED */
-const wishEl = document.getElementById('wishBox');
+//* GALAXY: Lời chúc gõ từng CHỮ, xong mới hiện LED */
+function startGalaxyWish(){
+  const wishEl = document.getElementById('wishBox');
+  if (!wishEl) return;
 
-// Lấy lời chúc từ settings, nếu chưa có thì dùng câu mặc định này
-const savedWish =
-  localStorage.getItem('wish_text')
-  || "Chúc mừng sinh nhật 🎂 Chúc bạn luôn xinh đẹp, hạnh phúc và được yêu thương nhất vũ trụ 💖✨";
+  // Lấy lời chúc từ settings, nếu không có thì dùng mặc định
+  const savedWish =
+    localStorage.getItem('wish_text')
+    || "Chúc mừng sinh nhật 🎂 Chúc bạn luôn xinh đẹp, hạnh phúc và được yêu thương nhất vũ trụ 💖✨";
 
-// Tách câu thành từng từ
-const words = savedWish.trim().split(/\s+/);
-let wordIndex = 0;
+  const text = savedWish;
+  let idx = 0;
 
-// Ban đầu không hiển thị gì
-wishEl.textContent = "";
+  // Ban đầu trống
+  wishEl.textContent = "";
+  wishEl.style.opacity = 1;
 
-// Mỗi 0.5s hiện thêm 1 từ
-function revealWordsStep() {
-  if (wordIndex < words.length) {
-    const current = words.slice(0, wordIndex + 1).join(" ");
-    wishEl.textContent = current;
-    wordIndex++;
-
-    // 0.5s / từ
-    setTimeout(revealWordsStep, 500);
-  } else {
-    // Khi đã hiện hết câu -> chờ chút rồi bật LED Happy birthday
-    setTimeout(() => {
-      const led = document.querySelector('.led');
-      if (led) {
-        led.classList.add('show');
-      }
-    }, 600);
+  function typeStep(){
+    if (idx < text.length) {
+      wishEl.textContent += text.charAt(idx);
+      idx++;
+      // tốc độ gõ: 1 chữ / 80–100ms, cả câu tầm 8–12s tuỳ độ dài
+      setTimeout(typeStep, 80);
+    } else {
+      // Gõ xong hết -> hiện LED "Happy birthday"
+      setTimeout(()=>{
+        const led = document.querySelector('.led');
+        if (led) led.classList.add('show');
+      }, 600);
+    }
   }
+
+  typeStep();
 }
 
-// Bắt đầu: cho wishBox fade-in rồi chạy
-setTimeout(() => {
-  wishEl.style.opacity = 1;
-  revealWordsStep();
-}, 900);
+// Cho global để goNext() gọi được
+window.startGalaxyWish = startGalaxyWish;
 
 /* Đo path trái tim neon để LED chạy */
 function setupNeonHeart(){
@@ -1099,5 +1102,6 @@ renderGalaxy();
 
 </body>
 </html>
+
 
 
