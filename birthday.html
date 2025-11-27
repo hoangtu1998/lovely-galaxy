@@ -771,24 +771,33 @@ loopCute();
 
 /* Lời chúc trên cùng */
 /* Lời chúc trên cùng: hiện dần + xong mới hiện LED */
+/* Lời chúc dạng typewriter + LED hiện sau khi gõ xong */
 const wishEl = document.getElementById('wishBox');
+
 const savedWish = localStorage.getItem('wish_text')
   || "Chúc mừng sinh nhật 🎂 Chúc bạn luôn xinh đẹp, hạnh phúc và được yêu thương nhất vũ trụ 💖✨";
 
-wishEl.textContent = savedWish;   // gán nguyên câu, không gõ từng chữ
-wishEl.style.opacity = 0;
-setTimeout(() => {
-  // cho lời chúc hiện dần
-  wishEl.style.opacity = 1;
+let idx = 0;
+wishEl.textContent = "";
 
-  // đợi thêm ~2.4s cho fade-in xong rồi mới bật LED
-  setTimeout(() => {
+function typeWriter() {
+  if (idx < savedWish.length) {
+    wishEl.textContent += savedWish.charAt(idx);
+    idx++;
+    setTimeout(typeWriter, 60);  // tốc độ gõ (60ms / ký tự)
+  } else {
+    // GÕ XONG → hiện LED
     const led = document.querySelector('.led');
-    if (led) {
-      led.classList.add('show');   // thêm class để LED hiện lên
-    }
-  }, 2400);
-}, 800);
+    if (led) led.classList.add('show');
+  }
+}
+
+/* Delay 1 chút cho scene galaxy hiện rồi mới bắt đầu gõ */
+setTimeout(() => {
+  wishEl.style.opacity = 1;
+  typeWriter();
+}, 900);
+
 
 /* Đo path trái tim neon để LED chạy */
 function setupNeonHeart(){
@@ -1076,6 +1085,7 @@ renderGalaxy();
 
 </body>
 </html>
+
 
 
 
