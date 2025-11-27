@@ -772,58 +772,46 @@ loopCute();
 /* Lời chúc trên cùng */
 /* Lời chúc trên cùng: hiện dần + xong mới hiện LED */
 /* Lời chúc dạng typewriter + LED hiện sau khi gõ xong */
-/* GALAXY: Lời chúc xuất hiện từng cụm từ, tự căn thời gian ~10 giây */
+/* GALAXY: Lời chúc xuất hiện từng từ, mỗi 0.5s, xong mới hiện LED */
 const wishEl = document.getElementById('wishBox');
 
-// Lấy từ settings hoặc mặc định
+// Lấy lời chúc từ settings, nếu chưa có thì dùng câu mặc định này
 const savedWish =
   localStorage.getItem('wish_text')
   || "Chúc mừng sinh nhật 🎂 Chúc bạn luôn xinh đẹp, hạnh phúc và được yêu thương nhất vũ trụ 💖✨";
 
-// Tách từ
+// Tách câu thành từng từ
 const words = savedWish.trim().split(/\s+/);
 let wordIndex = 0;
 
-// Reset nội dung
-wishEl.innerHTML = "";
+// Ban đầu không hiển thị gì
+wishEl.textContent = "";
 
-// === Tự tính tốc độ để toàn câu ~10 giây ===
-const TOTAL_DURATION = 10000; // 10 giây
-const timePerWord = TOTAL_DURATION / words.length;  // ms mỗi từ
-
+// Mỗi 0.5s hiện thêm 1 từ
 function revealWordsStep() {
   if (wordIndex < words.length) {
-
-    let html = "";
-    for (let i = 0; i <= wordIndex; i++) {
-      if (i === wordIndex) {
-        html += `<span class="wish-ch">${words[i]}</span>`;
-      } else {
-        html += words[i] + " ";
-      }
-    }
-    wishEl.innerHTML = html;
+    const current = words.slice(0, wordIndex + 1).join(" ");
+    wishEl.textContent = current;
     wordIndex++;
 
-    // tốc độ động dựa trên độ dài câu
-    setTimeout(revealWordsStep, timePerWord);
-
+    // 0.5s / từ
+    setTimeout(revealWordsStep, 500);
   } else {
-
-    // Hiện LED sau khi xong
+    // Khi đã hiện hết câu -> chờ chút rồi bật LED Happy birthday
     setTimeout(() => {
       const led = document.querySelector('.led');
-      if (led) led.classList.add('show');
-    }, 500);
+      if (led) {
+        led.classList.add('show');
+      }
+    }, 600);
   }
 }
 
-// Bắt đầu
+// Bắt đầu: cho wishBox fade-in rồi chạy
 setTimeout(() => {
   wishEl.style.opacity = 1;
   revealWordsStep();
 }, 900);
-
 
 /* Đo path trái tim neon để LED chạy */
 function setupNeonHeart(){
@@ -1111,4 +1099,5 @@ renderGalaxy();
 
 </body>
 </html>
+
 
