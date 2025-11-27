@@ -421,6 +421,28 @@
       font-weight:600;
       opacity:.92
     }
+    .softChar {
+  display:inline-block;
+  opacity:0;
+  transform:translateY(-6px) scale(0.94);
+  animation: softAppear 0.32s cubic-bezier(.25,.8,.25,1) forwards;
+}
+
+@keyframes softAppear {
+  0% {
+    opacity:0;
+    transform:translateY(-6px) scale(0.94);
+  }
+  60% {
+    opacity:1;
+    transform:translateY(2px) scale(1.02);
+  }
+  100% {
+    opacity:1;
+    transform:translateY(0) scale(1);
+  }
+}
+
   </style>
 </head>
 <body>
@@ -779,11 +801,11 @@ loopCute();
 /* Lời chúc trên cùng: hiện dần + xong mới hiện LED */
 /* Lời chúc dạng typewriter + LED hiện sau khi gõ xong */
 //* GALAXY: Lời chúc gõ từng CHỮ, xong mới hiện LED */
+/* GALAXY: typewriter mềm mại từng CHỮ */
 function startGalaxyWish(){
   const wishEl = document.getElementById('wishBox');
   if (!wishEl) return;
 
-  // Lấy lời chúc từ settings, nếu không có thì dùng mặc định
   const savedWish =
     localStorage.getItem('wish_text')
     || "Chúc mừng sinh nhật 🎂 Chúc bạn luôn xinh đẹp, hạnh phúc và được yêu thương nhất vũ trụ 💖✨";
@@ -791,18 +813,22 @@ function startGalaxyWish(){
   const text = savedWish;
   let idx = 0;
 
-  // Ban đầu trống
-  wishEl.textContent = "";
+  wishEl.innerHTML = "";
   wishEl.style.opacity = 1;
 
   function typeStep(){
     if (idx < text.length) {
-      wishEl.textContent += text.charAt(idx);
+      const ch = text.charAt(idx);
+
+      const span = document.createElement('span');
+      span.textContent = ch;
+      span.className = "softChar";   // thêm animation mềm
+      wishEl.appendChild(span);
+
       idx++;
-      // tốc độ gõ: 1 chữ / 80–100ms, cả câu tầm 8–12s tuỳ độ dài
-      setTimeout(typeStep, 80);
+      setTimeout(typeStep, 90);      // tốc độ gõ
     } else {
-      // Gõ xong hết -> hiện LED "Happy birthday"
+      // hiện LED sau khi gõ xong
       setTimeout(()=>{
         const led = document.querySelector('.led');
         if (led) led.classList.add('show');
@@ -1102,6 +1128,7 @@ renderGalaxy();
 
 </body>
 </html>
+
 
 
 
