@@ -231,9 +231,23 @@
 
       display:block;
     }
-
+  
     @media (max-width: 480px){
       #wishBox{ transform: translateX(-3.5vw); }
+    }
+    /* Chữ lời chúc kiểu rơi từng ký tự ở galaxy */
+    #wishBox .wish-ch {
+      display:inline-block;
+      opacity:0;
+      transform:translateY(-14px);
+      animation:wishDrop .45s ease-out forwards;
+    }
+    
+    @keyframes wishDrop{
+      0%  { opacity:0; transform:translateY(-18px); }
+      60% { opacity:1; transform:translateY(4px); }
+      85% { transform:translateY(-2px); }
+      100%{ opacity:1; transform:translateY(0); }
     }
 
     /* Nền khung galaxy */
@@ -438,15 +452,7 @@
     <!-- Lớp tim neon + carousel ảnh -->
     <div class="stage">
       <!-- Trái tim neon -->
-      <div class="neon-layer">
-        <svg viewBox="0 0 800 600" aria-hidden="true">
-          <path class="neon pink"
-                d="M400 540 C 340 500, 230 420, 170 300 C 110 180, 290 80, 400 210"/>
-          <path class="neon cyan"
-                d="M400 210 C 510 80, 690 170, 630 300 C 570 420, 460 500, 400 540"/>
-        </svg>
-      </div>
-
+    
       <!-- Carousel xoay ảnh -->
       <div class="carousel" id="carousel"></div>
 
@@ -736,21 +742,33 @@ loopCute();
    ========================================================= */
 
 /* Lời chúc trên cùng: gõ từng chữ + xong mới hiện LED */
+/* Lời chúc galaxy: "Chúc mừng sinh nhật bạn iu 💖" rơi từng chữ + xong mới hiện LED */
 const wishEl = document.getElementById('wishBox');
+
+// Default lời chúc nếu settings chưa lưu gì
 const savedWish = localStorage.getItem('wish_text')
-  || "Chúc mừng sinh nhật 🎂 Chúc bạn luôn xinh đẹp, hạnh phúc và được yêu thương nhất vũ trụ 💖✨";
+  || "Chúc mừng sinh nhật bạn iu 💖";
 
+// Reset nội dung
+wishEl.innerHTML = "";
 let twIndex = 0;
-wishEl.textContent = "";
 
-/* Gõ từng ký tự */
-function typeWriter() {
+function typeWriterDrop() {
   if (twIndex < savedWish.length) {
-    wishEl.textContent += savedWish.charAt(twIndex);
+    const ch = savedWish.charAt(twIndex);
+
+    const span = document.createElement('span');
+    span.textContent = ch;
+    span.className = 'wish-ch';
+    // mỗi chữ lệch nhẹ thời gian 1 chút cho giống mưa chữ
+    span.style.animationDelay = '0s';
+
+    wishEl.appendChild(span);
     twIndex++;
-    setTimeout(typeWriter, 70); // chỉnh tốc độ gõ tại đây
+
+    setTimeout(typeWriterDrop, 70); // tốc độ xuất hiện từng chữ
   } else {
-    // Gõ xong -> hiện LED
+    // Gõ / rơi xong toàn bộ -> hiện LED
     const led = document.querySelector('.led');
     if (led) {
       led.classList.add('show');
@@ -758,10 +776,10 @@ function typeWriter() {
   }
 }
 
-/* Bắt đầu: fade-in wishBox rồi gõ chữ */
+// Bắt đầu: cho wishBox hiện mờ rồi rơi chữ
 setTimeout(() => {
   wishEl.style.opacity = 1;
-  typeWriter();
+  typeWriterDrop();
 }, 900);
 
 /* Đo path trái tim neon để LED chạy */
@@ -1050,3 +1068,4 @@ renderGalaxy();
 
 </body>
 </html>
+
