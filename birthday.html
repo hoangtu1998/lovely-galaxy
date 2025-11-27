@@ -772,30 +772,56 @@ loopCute();
 /* Lời chúc trên cùng */
 /* Lời chúc trên cùng: hiện dần + xong mới hiện LED */
 /* Lời chúc dạng typewriter + LED hiện sau khi gõ xong */
+/* GALAXY: Lời chúc xuất hiện từng cụm từ, tự căn thời gian ~10 giây */
 const wishEl = document.getElementById('wishBox');
 
-const savedWish = localStorage.getItem('wish_text')
+// Lấy từ settings hoặc mặc định
+const savedWish =
+  localStorage.getItem('wish_text')
   || "Chúc mừng sinh nhật 🎂 Chúc bạn luôn xinh đẹp, hạnh phúc và được yêu thương nhất vũ trụ 💖✨";
 
-let idx = 0;
-wishEl.textContent = "";
+// Tách từ
+const words = savedWish.trim().split(/\s+/);
+let wordIndex = 0;
 
-function typeWriter() {
-  if (idx < savedWish.length) {
-    wishEl.textContent += savedWish.charAt(idx);
-    idx++;
-    setTimeout(typeWriter, 60);  // tốc độ gõ (60ms / ký tự)
+// Reset nội dung
+wishEl.innerHTML = "";
+
+// === Tự tính tốc độ để toàn câu ~10 giây ===
+const TOTAL_DURATION = 10000; // 10 giây
+const timePerWord = TOTAL_DURATION / words.length;  // ms mỗi từ
+
+function revealWordsStep() {
+  if (wordIndex < words.length) {
+
+    let html = "";
+    for (let i = 0; i <= wordIndex; i++) {
+      if (i === wordIndex) {
+        html += `<span class="wish-ch">${words[i]}</span>`;
+      } else {
+        html += words[i] + " ";
+      }
+    }
+    wishEl.innerHTML = html;
+    wordIndex++;
+
+    // tốc độ động dựa trên độ dài câu
+    setTimeout(revealWordsStep, timePerWord);
+
   } else {
-    // GÕ XONG → hiện LED
-    const led = document.querySelector('.led');
-    if (led) led.classList.add('show');
+
+    // Hiện LED sau khi xong
+    setTimeout(() => {
+      const led = document.querySelector('.led');
+      if (led) led.classList.add('show');
+    }, 500);
   }
 }
 
-/* Delay 1 chút cho scene galaxy hiện rồi mới bắt đầu gõ */
+// Bắt đầu
 setTimeout(() => {
   wishEl.style.opacity = 1;
-  typeWriter();
+  revealWordsStep();
 }, 900);
 
 
@@ -1085,3 +1111,4 @@ renderGalaxy();
 
 </body>
 </html>
+
