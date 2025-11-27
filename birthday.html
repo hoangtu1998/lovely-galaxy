@@ -743,33 +743,40 @@ loopCute();
 
 /* Lời chúc trên cùng: gõ từng chữ + xong mới hiện LED */
 /* GALAXY: Lời chúc xuất hiện từng từ, xong mới hiện LED "Happy birthday" */
+/* GALAXY: Lời chúc xuất hiện từng cụm từ + chữ mới rơi nhẹ, xong mới hiện LED */
 const wishEl = document.getElementById('wishBox');
 
-// Lấy lời chúc từ localStorage nếu có, không thì dùng mặc định:
+// Lấy lời chúc từ settings (wish_text) nếu có, không thì dùng mặc định
 const savedWish =
   localStorage.getItem('wish_text')
   || "Chúc mừng sinh nhật bạn iu 💖";
 
-// Tách thành từng từ (theo khoảng trắng)
+// Tách thành từng từ
 const words = savedWish.trim().split(/\s+/);
 let wordIndex = 0;
 
-// Reset nội dung ban đầu
-wishEl.textContent = "";
+// Reset nội dung
+wishEl.innerHTML = "";
 
-// Hàm hiện dần từng cụm từ:
-// "Chúc" → "Chúc mừng" → "Chúc mừng sinh" → ...
+// Mỗi bước: "Chúc" → "Chúc mừng" → "Chúc mừng sinh" → ...
 function revealWordsStep() {
   if (wordIndex < words.length) {
-    const currentText = words.slice(0, wordIndex + 1).join(" ");
-    wishEl.textContent = currentText;
+    let html = "";
+    for (let i = 0; i <= wordIndex; i++) {
+      if (i === wordIndex) {
+        // từ mới thêm sẽ có class wish-ch để chạy animation rơi
+        html += `<span class="wish-ch">${words[i]}</span>`;
+      } else {
+        html += words[i] + " ";
+      }
+    }
+    wishEl.innerHTML = html;
     wordIndex++;
 
-    // Tốc độ chuyển cụm (ms) – muốn chậm hơn thì tăng lên, ví dụ 600–800
+    // tốc độ nhảy từ – chỉnh nhanh/chậm ở đây
     setTimeout(revealWordsStep, 450);
   } else {
-    // Đã hiện hết tất cả các từ của câu
-    // -> Đợi thêm chút rồi hiện LED "Happy birthday"
+    // đã hiện xong hết câu -> đợi chút rồi hiện LED "Happy birthday"
     setTimeout(() => {
       const led = document.querySelector('.led');
       if (led) {
@@ -779,12 +786,12 @@ function revealWordsStep() {
   }
 }
 
-// Bắt đầu: cho wishBox hiện mờ rồi mới chạy hiệu ứng từng từ
+// Bắt đầu: fade-in wishBox rồi chạy hiệu ứng từng từ
 setTimeout(() => {
   wishEl.style.opacity = 1;
   revealWordsStep();
 }, 900);
-
+f
 /* Đo path trái tim neon để LED chạy */
 function setupNeonHeart(){
   const neonPaths = document.querySelectorAll('#scene-galaxy .neon-layer path.neon');
@@ -1071,5 +1078,6 @@ renderGalaxy();
 
 </body>
 </html>
+
 
 
