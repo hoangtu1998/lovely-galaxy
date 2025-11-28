@@ -17,16 +17,14 @@
 
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icon-192.png">
-
   <style>
     :root{
-      --ink:#f5f7ff;
-      --muted:#c3c8d9;
+      --ink:#fef9ff;
+      --muted:#e2c9ff;
       --accent:#ffffff;
-      --accent-soft:rgba(255,255,255,0.16);
-      --btn-bg:rgba(15,15,30,0.45);
-      --btn-border:rgba(255,255,255,0.18);
-      --btn-shadow:0 12px 35px rgba(0,0,0,0.65);
+      --btn-bg:rgba(8,8,20,0.75);
+      --btn-border:rgba(255,255,255,0.35);
+      --btn-shadow:0 14px 40px rgba(0,0,0,0.85);
     }
     *{ box-sizing:border-box; margin:0; padding:0; }
     html,body{ height:100%; }
@@ -34,7 +32,7 @@
     body{
       font-family:-apple-system, BlinkMacSystemFont, system-ui, "Quicksand", sans-serif;
       color:var(--ink);
-      background:#000;
+      background:#02030a;
       min-height:100vh;
       display:flex;
       justify-content:center;
@@ -42,30 +40,42 @@
       overflow:hidden;
     }
 
-    /* ===== Wallpaper full màn giống lockscreen ===== */
+    /* ===== Wallpaper full màn giống lockscreen neon ===== */
     .wallpaper{
       position:fixed;
       inset:0;
       z-index:-2;
       overflow:hidden;
+      background:
+        radial-gradient(circle at 5% 15%, #ffb347 0, rgba(255,179,71,0.05) 55%),
+        radial-gradient(circle at 90% 10%, #ff4fa3 0, rgba(255,79,163,0.05) 55%),
+        radial-gradient(circle at 50% 95%, #6366f1 0, rgba(99,102,241,0.05) 55%),
+        linear-gradient(145deg,#050514 0,#0a0215 40%,#090b30 75%,#050514 100%);
     }
     .wallpaper img{
       width:100%;
       height:100%;
       object-fit:cover;
-      transform:scale(1.08);
-      filter:blur(22px) brightness(0.74) saturate(1.1);
-      transform-origin:center;
+      transform:scale(1.1);
+      opacity:0.55;               /* hòa với nền neon */
+      mix-blend-mode:soft-light;
+      filter:blur(18px) saturate(1.25);
     }
 
+    /* layer glow neon mờ bên trên */
     .overlay{
       position:fixed;
       inset:0;
+      pointer-events:none;
       background:
-        radial-gradient(circle at 20% 10%, rgba(255,160,220,0.45), transparent 55%),
-        radial-gradient(circle at 80% 90%, rgba(90,200,255,0.4), transparent 55%),
-        linear-gradient(180deg, rgba(0,0,0,0.52), rgba(0,0,0,0.96));
-      mix-blend-mode:soft-light;
+        radial-gradient(120% 120% at 50% 0,
+          rgba(255,255,255,0.16) 0,
+          rgba(255,255,255,0.05) 40%,
+          transparent 60%),
+        linear-gradient(180deg,
+          rgba(0,0,0,0) 0,
+          rgba(0,0,0,0.35) 55%,
+          rgba(0,0,0,0.9) 100%);
       z-index:-1;
     }
 
@@ -76,70 +86,75 @@
       max-width:430px;
       height:100vh;
       margin:auto;
-      padding:20px 18px 32px;
+      padding:22px 18px 30px;
       display:flex;
       flex-direction:column;
       justify-content:space-between;
     }
 
-    /* Trung tâm: giờ + ngày nằm giữa màn hình */
+    /* Trung tâm: giờ + ngày */
     .lock-top{
       flex:1;
       display:flex;
       flex-direction:column;
       align-items:center;
       justify-content:center;
+      text-align:center;
       pointer-events:none;
       user-select:none;
-      text-align:center;
     }
     .lock-date{
       font-size:13px;
-      letter-spacing:0.06em;
+      letter-spacing:0.08em;
       text-transform:uppercase;
-      color:var(--muted);
-      margin-bottom:4px;
+      color:rgba(255,255,255,0.7);
+      text-shadow:0 0 10px rgba(0,0,0,0.8);
+      margin-bottom:6px;
     }
     .lock-time{
-      font-size:clamp(64px, 20vw, 96px);
-      font-weight:400;
-      letter-spacing:2px;
-      text-shadow:0 0 18px rgba(0,0,0,0.7);
+      font-size:clamp(72px, 22vw, 108px);
+      font-weight:500;
+      letter-spacing:3px;
+      color:rgba(255,255,255,0.86);
+      text-shadow:
+        0 0 18px rgba(255,255,255,0.85),
+        0 0 40px rgba(255,120,200,0.85),
+        0 0 70px rgba(97,146,255,0.9);
     }
 
-    /* Dưới: khu vực nhập pass & keypad */
+    /* Dưới: khu vực nhập mật mã + keypad (trong suốt nhẹ) */
     .card{
       display:flex;
       flex-direction:column;
       align-items:center;
       gap:10px;
-      margin-top:0;
-      padding:10px 10px 20px;
-      border-radius:28px;
-      border:1px solid rgba(255,255,255,0.08);
-      background:linear-gradient(
-        180deg,
-        rgba(10,10,25,0.24),
-        rgba(5,5,18,0.80)
-      );
-      backdrop-filter:blur(20px) saturate(160%);
-      -webkit-backdrop-filter:blur(20px) saturate(160%);
-      box-shadow:0 26px 55px rgba(0,0,0,0.85);
+      padding:12px 12px 20px;
+      border-radius:30px;
+      border:1px solid rgba(255,255,255,0.22);
+      background:
+        radial-gradient(circle at 10% 0, rgba(255,255,255,0.18), transparent 55%),
+        radial-gradient(circle at 90% 100%, rgba(120,180,255,0.25), transparent 55%),
+        linear-gradient(180deg,
+          rgba(3,3,15,0.65),
+          rgba(3,3,15,0.95));
+      backdrop-filter:blur(24px) saturate(170%);
+      -webkit-backdrop-filter:blur(24px) saturate(170%);
+      box-shadow:
+        0 26px 60px rgba(0,0,0,0.9),
+        0 0 40px rgba(255,120,200,0.25);
     }
 
-    .avatar-wrap{ display:none; } /* Ẩn avatar cho giống concept */
+    .avatar-wrap{ display:none; }
 
     .lock-title{
       font-size:15px;
-      margin-top:2px;
     }
     .lock-sub{
       font-size:12px;
-      color:var(--muted);
+      color:rgba(232,214,255,0.9);
       margin-top:-2px;
     }
 
-    /* Các chấm mật mã */
     .display{
       margin-top:8px;
       display:flex;
@@ -152,18 +167,19 @@
       width:12px;
       height:12px;
       border-radius:50%;
-      border:1px solid rgba(255,255,255,0.55);
-      background:transparent;
+      border:1px solid rgba(255,255,255,0.8);
+      background:rgba(255,255,255,0.05);
       box-shadow:0 0 0 0 transparent;
       transition:background .18s ease, box-shadow .18s ease, transform .16s ease;
     }
     .dot.filled{
       background:#fff;
-      box-shadow:0 0 10px rgba(255,255,255,0.8);
+      box-shadow:
+        0 0 12px rgba(255,255,255,0.9),
+        0 0 18px rgba(255,160,220,0.9);
       transform:scale(1.05);
     }
 
-    /* Keypad nằm giữa, chuẩn lockscreen */
     .pad{
       margin-top:10px;
       width:100%;
@@ -180,7 +196,8 @@
       margin:0 auto;
       border-radius:50%;
       border:1px solid var(--btn-border);
-      background:radial-gradient(circle at 30% 20%, rgba(255,255,255,0.24), var(--btn-bg));
+      background:
+        radial-gradient(circle at 30% 20%, rgba(255,255,255,0.6), rgba(40,40,70,0.95));
       box-shadow:var(--btn-shadow);
       color:var(--accent);
       font-size:22px;
@@ -197,37 +214,40 @@
         opacity .12s ease;
       -webkit-tap-highlight-color:transparent;
     }
-
     button.key:active{
       transform:scale(0.94);
       box-shadow:0 6px 18px rgba(0,0,0,0.9);
-      background:radial-gradient(circle at 30% 20%, rgba(255,255,255,0.45), rgba(10,10,25,0.98));
+      background:
+        radial-gradient(circle at 30% 20%, #ffffff, rgba(20,20,45,1));
     }
-
     .key.del,
     .key.ok{
       font-size:18px;
     }
     .key.del{
-      color:rgba(255,255,255,0.78);
-      background:radial-gradient(circle at 30% 20%, rgba(255,255,255,0.16), rgba(15,15,30,0.75));
-      border-color:rgba(255,255,255,0.22);
+      color:rgba(255,255,255,0.9);
+      background:
+        radial-gradient(circle at 30% 20%, rgba(255,255,255,0.45), rgba(30,30,60,0.95));
+      border-color:rgba(255,255,255,0.55);
     }
     .key.ok{
-      background:radial-gradient(circle at 30% 20%, #ffffff, #e6e6ff);
-      color:#141427;
-      border-color:rgba(255,255,255,0.9);
-      box-shadow:0 16px 40px rgba(0,0,0,0.9);
+      background:
+        radial-gradient(circle at 30% 20%, #ffffff, #ffe3ff);
+      color:#17152d;
+      border-color:#ffffff;
+      box-shadow:
+        0 18px 45px rgba(0,0,0,0.95),
+        0 0 24px rgba(255,255,255,0.4);
     }
 
     .foot{
       margin-top:10px;
       font-size:11px;
-      color:var(--muted);
+      color:rgba(227,206,255,0.9);
       text-align:center;
     }
     .foot a{
-      color:#f5f7ff;
+      color:#fdfbff;
       text-decoration:underline;
       text-decoration-thickness:1px;
       text-underline-offset:3px;
@@ -237,14 +257,14 @@
       text-align:center;
       margin-top:8px;
       font-size:12px;
-      color:rgba(235,238,255,0.80);
+      color:rgba(241,225,255,0.9);
+      text-shadow:0 0 12px rgba(0,0,0,0.8);
     }
     .lock-bottom small{
       font-size:11px;
-      opacity:0.85;
+      opacity:0.9;
     }
 
-    /* Lắc khi sai mật mã */
     @keyframes shakeCard{
       0%{ transform:translateX(0); }
       20%{ transform:translateX(-6px); }
@@ -266,10 +286,12 @@
         padding:8px 8px 16px;
       }
       .lock-time{
-        font-size:clamp(54px, 18vw, 80px);
+        font-size:clamp(60px, 18vw, 90px);
       }
     }
   </style>
+
+  
 </head>
 <body>
   <!-- Wallpaper từ ảnh index -->
@@ -479,3 +501,4 @@ if('serviceWorker' in navigator){
 </script>
 </body>
 </html>
+
