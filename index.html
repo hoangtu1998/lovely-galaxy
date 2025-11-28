@@ -42,6 +42,7 @@
     html,body{
       height:100%;
       margin:0;
+      overflow-x: hidden; /* Ngăn ngừa zoom trên màn hình */
     }
 
     body{
@@ -222,6 +223,7 @@
       margin:12px 0 0;
       font-size:14px;
       color:var(--muted);
+      opacity:0.8;  /* Làm phần này nhẹ hơn */
     }
 
     .links a{
@@ -263,7 +265,9 @@
           <button class="key" data-k="0">0</button>
           <button class="key ok" data-k="ok">💖</button>
         </div>
+      </div>
     </div>
+    <!-- Di chuyển phần "Cài đặt" ra ngoài thẻ .card -->
     <div class="links"><a href="settings.html">⚙️ Cài đặt</a></div>
   </section>
 
@@ -380,3 +384,4 @@ async function getImageFromDB(key){
 </script>
 </body>
 </html>
+
