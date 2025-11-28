@@ -6,7 +6,7 @@
         content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
   <title>💖 Mở Quà Bí Mật 💖</title>
 
-  <!-- Font mềm giống iOS -->
+  <!-- Font mềm kiểu iOS -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600&display=swap" rel="stylesheet">
 
@@ -127,7 +127,7 @@
       box-shadow:0 26px 55px rgba(0,0,0,0.85);
     }
 
-    .avatar-wrap{ display:none; } /* Ẩn avatar cho giống hình concept */
+    .avatar-wrap{ display:none; } /* Ẩn avatar cho giống concept */
 
     .lock-title{
       font-size:15px;
@@ -139,7 +139,7 @@
       margin-top:-2px;
     }
 
-    /* Các chấm mật mã đặt sát dưới title */
+    /* Các chấm mật mã */
     .display{
       margin-top:8px;
       display:flex;
@@ -163,7 +163,7 @@
       transform:scale(1.05);
     }
 
-    /* Keypad nằm giữa theo chiều ngang, sát mép dưới card */
+    /* Keypad nằm giữa, chuẩn lockscreen */
     .pad{
       margin-top:10px;
       width:100%;
@@ -287,7 +287,7 @@
 
     <!-- Khu vực nhập mật mã + keypad -->
     <section class="card" id="card">
-      <!-- avatar ẩn nhưng vẫn giữ cấu trúc nếu sau này muốn bật lại -->
+      <!-- Avatar ẩn (giữ cấu trúc) -->
       <div class="avatar-wrap">
         <div class="avatar-ring">
           <div class="avatar-ring-inner">
@@ -328,7 +328,7 @@
   </main>
 
 <script>
-/* ==== mật khẩu: giữ nguyên logic cũ ==== */
+/* ==== Mật khẩu: giữ nguyên logic cũ ==== */
 const LS_PW = 'userPassword';
 
 const disp = document.getElementById('disp');
@@ -389,7 +389,7 @@ document.querySelectorAll('.key').forEach(b=>{
   b.addEventListener('click',()=>press(b.dataset.k));
 });
 
-/* gán phím cứng bàn phím thật (desktop) */
+/* gán phím cứng (desktop) */
 addEventListener('keydown',e=>{
   if(e.key>='0'&&e.key<='9') press(e.key);
   if(e.key==='Backspace')    press('del');
@@ -472,7 +472,7 @@ function updateLockTime(){
 updateLockTime();
 setInterval(updateLockTime, 30000);
 
-/* ==== PWA service worker (giữ nguyên) ==== */
+/* ==== PWA service worker ==== */
 if('serviceWorker' in navigator){
   navigator.serviceWorker.register('./sw.js').catch(()=>{});
 }
