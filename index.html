@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@600&family=Bubblegum+Sans&display=swap" rel="stylesheet">
 
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
-  <meta name="theme-color" content="#fddde6">
+  <meta name="theme-color" content="#0b0720">
 
   <!-- Cho Android -->
   <meta name="mobile-web-app-capable" content="yes">
@@ -25,52 +25,69 @@
 
   <style>
     :root{
-      /* Tông pastel tươi, hợp sinh nhật con gái ~29 tuổi */
-      --bg:#fff7fb;
-      --card:#ffffff;
-      --ink:#432343;
-      --muted:#a06c9b;
-      --key:#ffffff;
-      --shadow:0 10px 28px rgba(245, 158, 194, 0.45);
-      --accent:#f973af;
+      /* Bảng màu: hồng + tím + xanh lá + vàng, kiểu aurora */
+      --bg:#050318;
+      --card:rgba(10,12,35,0.92);
+      --ink:#fdfbff;
+      --muted:#c7c9ff;
+
+      --accent-pink:#f472b6;
+      --accent-purple:#a855f7;
+      --accent-green:#6ee7b7;
+      --accent-yellow:#facc6b;
+
+      --shadow-soft:0 18px 40px rgba(5,10,40,0.9);
+      --radius-lg:22px;
     }
+
     *{ box-sizing:border-box; }
+
     html,body{
       height:100%;
       margin:0;
-      touch-action:manipulation; /* hạn chế double-tap zoom trên mobile */
+      touch-action:manipulation;
     }
-    body{
-  background:
-    radial-gradient(circle at 20% 0%, rgba(255,160,210,0.35) 0%, transparent 55%),
-    radial-gradient(circle at 80% 0%, rgba(215,120,180,0.35) 0%, transparent 55%),
-    linear-gradient(180deg,
-      #f3c0d9 0%,   /* hồng nhạt */
-      #d98ab6 40%, /* hồng tím vừa */
-      #b36398 75%, /* tím berry */
-      #7a3d6a 100% /* tím đậm sang */
-    );
-  background-attachment: fixed;
-  color: var(--ink);
-  font-family: 'Quicksand', sans-serif;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  padding:16px 0;
-  min-height:100vh;
-}
 
+    body{
+      /* nền aurora: tím + hồng + xanh + vàng */
+      background:
+        radial-gradient(circle at 0% 0%,
+          rgba(244,114,182,0.35) 0%,
+          transparent 55%),
+        radial-gradient(circle at 100% 0%,
+          rgba(250,204,21,0.30) 0%,
+          transparent 55%),
+        radial-gradient(circle at 15% 90%,
+          rgba(45,212,191,0.32) 0%,
+          transparent 55%),
+        linear-gradient(180deg,
+          #0b0720 0%,
+          #15103b 35%,
+          #21124b 65%,
+          #2b153e 100%);
+      background-attachment:fixed;
+
+      color:var(--ink);
+      font-family:'Quicksand', sans-serif;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      padding:16px 0;
+      min-height:100vh;
+    }
 
     h1{
       font-family:'Pacifico', cursive;
       font-size:clamp(24px,4vw,32px);
-      color:#f14d9a;
-      margin:8px 0 16px;
-      text-shadow:0 3px 7px rgba(244,114,182,.6);
-      letter-spacing:1px;
+      color:#ffeefc;
+      margin:8px 0 18px;
       text-align:center;
       max-width:90vw;
       line-height:1.2;
+      letter-spacing:1px;
+      text-shadow:
+        0 0 12px rgba(248,250,252,0.6),
+        0 0 24px rgba(244,114,182,0.7);
     }
 
     .wrap{
@@ -84,32 +101,72 @@
     .card{
       width:100%;
       background:var(--card);
-      border-radius:22px;
-      border:1px solid #ffd4e5;
-      box-shadow:var(--shadow);
+      border-radius:var(--radius-lg);
+      border:1px solid rgba(161,172,255,0.45);
+      box-shadow:var(--shadow-soft);
       padding:20px 16px;
       display:grid;
       grid-template-columns:1fr;
       gap:16px;
       transition:transform .15s ease;
+      backdrop-filter:blur(18px);
+      -webkit-backdrop-filter:blur(18px);
+      position:relative;
+      overflow:hidden;
     }
 
-    .left{ display:flex; justify-content:center; }
+    /* lớp ánh sáng nhẹ bên trong card */
+    .card::before{
+      content:"";
+      position:absolute;
+      inset:-20%;
+      background:
+        radial-gradient(circle at 0% 0%,
+          rgba(244,114,182,0.18) 0%,
+          transparent 55%),
+        radial-gradient(circle at 100% 0%,
+          rgba(250,204,21,0.12) 0%,
+          transparent 60%),
+        radial-gradient(circle at 20% 100%,
+          rgba(45,212,191,0.16) 0%,
+          transparent 55%);
+      opacity:0.9;
+      pointer-events:none;
+    }
 
+    .card > *{
+      position:relative;
+      z-index:1;
+    }
+
+    .left{
+      display:flex;
+      justify-content:center;
+    }
+
+    /* viền ảnh kiểu gradient mix 4 màu */
     .frame{
-  width:200px;
-  max-width:70vw;
-  border-radius:18px;
-  border:2px solid rgba(255, 170, 205, 0.45);   /* viền nhạt hơn */
-  box-shadow:0 6px 18px rgba(230, 150, 185, 0.30); /* shadow dịu hơn */
-  overflow:hidden;
-}
+      width:200px;
+      max-width:70vw;
+      border-radius:20px;
+      padding:3px;
+      background:conic-gradient(
+        from 140deg,
+        var(--accent-pink),
+        var(--accent-yellow),
+        var(--accent-green),
+        var(--accent-purple),
+        var(--accent-pink)
+      );
+      box-shadow:0 12px 30px rgba(15,23,42,0.95);
+    }
 
     .frame img{
       width:100%;
       height:100%;
       object-fit:cover;
       display:block;
+      border-radius:18px;
       aspect-ratio:1/1;
     }
 
@@ -119,18 +176,26 @@
       align-content:start;
     }
 
+    /* ô hiển thị mật khẩu: tối hơn nhưng vẫn sáng và trong */
     .display{
       height:48px;
-      background:#fffdfd;
-      border-radius:16px;
-      border:1px solid #ffc1dd;
-      box-shadow:inset 0 1px 5px rgba(248,187,208,.5);
+      border-radius:18px;
+      padding:0 12px;
+      background:linear-gradient(135deg,
+        rgba(15,23,42,0.9),
+        rgba(30,64,175,0.7));
+      border:1px solid rgba(191,219,254,0.7);
+      box-shadow:
+        0 0 18px rgba(59,130,246,0.55),
+        inset 0 0 10px rgba(15,23,42,0.9);
+      backdrop-filter:blur(12px);
+      -webkit-backdrop-filter:blur(12px);
+
       display:flex;
       align-items:center;
       justify-content:flex-end;
-      padding:0 12px;
       font-size:24px;
-      color:var(--accent);
+      color:#fef9c3; /* vàng kem sáng */
       letter-spacing:5px;
       font-family:'Bubblegum Sans', cursive;
     }
@@ -142,56 +207,69 @@
       user-select:none;
     }
 
-   button.key{
-  height:54px;
-  border-radius:18px;
-  border:none;
-  background:linear-gradient(135deg,
-      #d98ab6 0%,
-      #c96ca2 40%,
-      #a94a86 70%,
-      #7a3d6a 100%
-  );
-  color:#fff;
-  box-shadow:0 6px 16px rgba(0,0,0,0.35);
-  font-size:20px;
-  font-family:'Bubblegum Sans', cursive;
-  cursor:pointer;
-  transition:transform .1s, background .25s, box-shadow .25s;
-}
-
-button.key:hover{
-  background:linear-gradient(135deg,
-      #e6a3c8 0%,
-      #d984b4 40%,
-      #b45695 70%,
-      #8a4a77 100%
-  );
-  box-shadow:0 8px 22px rgba(0,0,0,0.45);
-}
-
-button.key:active{
-  transform:scale(.96);
-  box-shadow:0 4px 12px rgba(0,0,0,0.4);
-}
-
-    .key.ok{
-      background:linear-gradient(135deg,#fb72b3,#ff9a8b);
-      color:#fff;
-      border:0;
+    button.key{
+      height:54px;
+      border-radius:999px;
+      border:none;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(250,204,21,0.35) 0%, transparent 55%),
+        radial-gradient(circle at 100% 0%, rgba(45,212,191,0.3) 0%, transparent 55%),
+        linear-gradient(135deg,
+          rgba(30,64,175,1),
+          rgba(79,70,229,1),
+          rgba(168,85,247,1));
+      box-shadow:0 10px 26px rgba(15,23,42,0.9);
       font-size:20px;
-      box-shadow:0 8px 22px rgba(249,115,184,.7);
-    }
-    .key.ok:hover{
-      background:linear-gradient(135deg,#ff8dbf,#ffc3a0);
-      box-shadow:0 10px 26px rgba(249,115,184,.8);
+      font-family:'Bubblegum Sans', cursive;
+      color:#fefce8;
+      cursor:pointer;
+      transition:transform .1s, box-shadow .2s, filter .2s, background .25s;
+      -webkit-tap-highlight-color:transparent;
+      touch-action:manipulation;
+      display:flex;
+      justify-content:center;
+      align-items:center;
     }
 
+    button.key:hover{
+      filter:brightness(1.08);
+      box-shadow:0 12px 30px rgba(15,23,42,1);
+    }
+
+    button.key:active{
+      transform:scale(.96);
+      box-shadow:0 6px 18px rgba(15,23,42,0.9);
+    }
+
+    /* nút OK 💖 – thiên về hồng + vàng */
+    .key.ok{
+      background:
+        radial-gradient(circle at 0% 0%, rgba(250,204,21,0.35) 0%, transparent 55%),
+        linear-gradient(135deg,
+          #f97316,
+          #f472b6,
+          #ec4899);
+      box-shadow:0 12px 32px rgba(248,113,166,0.8);
+      color:#fffaf5;
+      border:none;
+    }
+
+    .key.ok:hover{
+      filter:brightness(1.1);
+      box-shadow:0 14px 36px rgba(248,113,166,0.9);
+    }
+
+    /* nút xóa – tím + xanh lá dịu hơn */
     .key.del{
-      background:#fff6fb;
-      color:#c65386;
-      border:1px solid #ffd0e7;
-      font-family:'Quicksand';
+      background:
+        linear-gradient(135deg,
+          rgba(22,101,52,0.95),
+          rgba(21,128,61,0.9),
+          rgba(56,189,248,0.95));
+      color:#e0f9ff;
+      font-family:'Quicksand', sans-serif;
+      font-size:18px;
+      box-shadow:0 10px 26px rgba(5,46,22,0.9);
     }
 
     .foot{
@@ -202,13 +280,22 @@ button.key:active{
       font-family:'Quicksand', sans-serif;
     }
 
+    .foot a{
+      color:#bfdbfe;
+      text-decoration:none;
+    }
+    .foot a:hover{
+      text-decoration:underline;
+    }
+
     .links{
       text-align:center;
       margin:12px 0 0;
       font-size:14px;
+      color:var(--muted);
     }
     .links a{
-      color:#f06292;
+      color:#a5b4fc;
       text-decoration:none;
     }
     .links a:hover{
@@ -261,7 +348,7 @@ let buf = "";
 
 /* Lấy mật khẩu đang lưu */
 function getSecret(){
-  return (localStorage.getItem(LS_PW)||'').trim() || "1234";
+  return (localStorage.getItem(LS_PW)||''.trim()) || "1234";
 }
 
 /* cập nhật ô hiển thị pass (dùng dấu chấm) */
@@ -373,6 +460,3 @@ if('serviceWorker' in navigator){
 </script>
 </body>
 </html>
-
-
-
