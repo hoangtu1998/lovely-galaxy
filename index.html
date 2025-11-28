@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@600&family=Bubblegum+Sans&display=swap" rel="stylesheet">
 
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
-  <meta name="theme-color" content="#0b0720">
+  <meta name="theme-color" content="#5c4d9f">
 
   <!-- Cho Android -->
   <meta name="mobile-web-app-capable" content="yes">
@@ -25,17 +25,14 @@
 
   <style>
     :root{
-      /* Bảng màu: hồng + tím + xanh lá + vàng, kiểu aurora */
-      --bg:#050318;
-      --card:rgba(10,12,35,0.92);
-      --ink:#fdfbff;
+      --bg:#f5f2ff;
+      --card:rgba(255,255,255,0.3);
+      --ink:#5c4d9f;
       --muted:#c7c9ff;
-
       --accent-pink:#f472b6;
       --accent-purple:#a855f7;
       --accent-green:#6ee7b7;
       --accent-yellow:#facc6b;
-
       --shadow-soft:0 18px 40px rgba(5,10,40,0.9);
       --radius-lg:22px;
     }
@@ -45,15 +42,13 @@
     html,body{
       height:100%;
       margin:0;
-      touch-action:manipulation;
     }
 
-       body{
+    body{
       background:
-        radial-gradient(circle at 10% 5%, rgba(180,200,255,0.4) 0%, transparent 50%),  /* pastel tím sáng */
-        radial-gradient(circle at 80% 25%, rgba(180,255,180,0.35) 0%, transparent 50%), /* pastel xanh lá */
-        linear-gradient(180deg, #f5f2ff 0%, #d8d6ff 45%, #a8a8d5 100%);  /* pastel tím sáng nhẹ */
-      
+        radial-gradient(circle at 10% 5%, rgba(245,215,255,0.4) 0%, transparent 50%),
+        radial-gradient(circle at 80% 25%, rgba(180,255,180,0.35) 0%, transparent 50%),
+        linear-gradient(180deg, rgba(240,230,255,0.35), rgba(200,200,255,0.25));
       background-attachment:fixed;
       color:var(--ink);
       font-family:'Quicksand', sans-serif;
@@ -64,22 +59,17 @@
       min-height:100vh;
     }
 
-
-
-   h1{
-  font-family:'Pacifico', cursive;
-  font-size:clamp(24px,4vw,32px);
-  color:#5c4d9f; /* tím sáng hơn */
-  margin:8px 0 16px;
-  text-align:center;
-  max-width:90vw;
-  line-height:1.2;
-  letter-spacing:1px;
-  text-shadow:
-    0 0 12px rgba(248,250,252,0.6),
-    0 0 24px rgba(244,114,182,0.7);
-}
-
+    h1{
+      font-family:'Pacifico', cursive;
+      font-size:clamp(24px,4vw,32px);
+      color:#5c4d9f;
+      margin:8px 0 16px;
+      text-align:center;
+      max-width:90vw;
+      line-height:1.2;
+      letter-spacing:1px;
+      text-shadow: 0 0 12px rgba(248,250,252,0.6), 0 0 24px rgba(244,114,182,0.7);
+    }
 
     .wrap{
       width:100%;
@@ -89,50 +79,22 @@
       padding:0 16px;
     }
 
-      .card{
-  width:100%;
-  background:
-    radial-gradient(circle at 10% 10%, rgba(255,240,255,0.25), transparent 60%), /* sáng nhẹ pastel */
-    radial-gradient(circle at 90% 10%, rgba(200,255,200,0.25), transparent 60%),
-    linear-gradient(180deg, rgba(255,255,255,0.25), rgba(255,255,255,0.15)); /* background pastel sáng */
-  
-  border-radius:22px;
-  border:1px solid rgba(255,255,255,0.45);
-  box-shadow:0 14px 36px rgba(0,0,0,0.35);
-
-  padding:20px 16px;
-  display:grid;
-  gap:16px;
-
-  backdrop-filter:blur(22px);
-  -webkit-backdrop-filter:blur(22px);
-
-  position:relative;
-  overflow:hidden;
-}
-
-    /* lớp ánh sáng nhẹ bên trong card */
-    .card::before{
-      content:"";
-      position:absolute;
-      inset:-20%;
+    .card{
+      width:100%;
       background:
-        radial-gradient(circle at 0% 0%,
-          rgba(244,114,182,0.18) 0%,
-          transparent 55%),
-        radial-gradient(circle at 100% 0%,
-          rgba(250,204,21,0.12) 0%,
-          transparent 60%),
-        radial-gradient(circle at 20% 100%,
-          rgba(45,212,191,0.16) 0%,
-          transparent 55%);
-      opacity:0.9;
-      pointer-events:none;
-    }
-
-    .card > *{
+        radial-gradient(circle at 10% 10%, rgba(255,240,255,0.25), transparent 60%),
+        radial-gradient(circle at 90% 10%, rgba(200,255,200,0.25), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,0.25), rgba(255,255,255,0.15));
+      border-radius:22px;
+      border:1px solid rgba(255,255,255,0.45);
+      box-shadow:0 14px 36px rgba(0,0,0,0.35);
+      padding:20px 16px;
+      display:grid;
+      gap:16px;
+      backdrop-filter:blur(22px);
+      -webkit-backdrop-filter:blur(22px);
       position:relative;
-      z-index:1;
+      overflow:hidden;
     }
 
     .left{
@@ -140,7 +102,6 @@
       justify-content:center;
     }
 
-    /* viền ảnh kiểu gradient mix 4 màu */
     .frame{
       width:200px;
       max-width:70vw;
@@ -172,26 +133,20 @@
       align-content:start;
     }
 
-    /* ô hiển thị mật khẩu: tối hơn nhưng vẫn sáng và trong */
     .display{
       height:48px;
+      background:linear-gradient(135deg, rgba(15,23,42,0.9), rgba(30,64,175,0.7));
       border-radius:18px;
       padding:0 12px;
-      background:linear-gradient(135deg,
-        rgba(15,23,42,0.9),
-        rgba(30,64,175,0.7));
       border:1px solid rgba(191,219,254,0.7);
-      box-shadow:
-        0 0 18px rgba(59,130,246,0.55),
-        inset 0 0 10px rgba(15,23,42,0.9);
+      box-shadow:0 0 18px rgba(59,130,246,0.55), inset 0 0 10px rgba(15,23,42,0.9);
       backdrop-filter:blur(12px);
       -webkit-backdrop-filter:blur(12px);
-
       display:flex;
       align-items:center;
       justify-content:flex-end;
       font-size:24px;
-      color:#fef9c3; /* vàng kem sáng */
+      color:#fef9c3;
       letter-spacing:5px;
       font-family:'Bubblegum Sans', cursive;
     }
@@ -202,38 +157,31 @@
       gap:10px;
       user-select:none;
     }
-button.key{
-  height:54px;
-  border-radius:18px;
-  border:none;
-  background:linear-gradient(135deg, rgba(180,225,255,0.55), rgba(170,150,245,0.5)); /* pastel xanh và tím dịu */
-  box-shadow:0 8px 22px rgba(0,0,0,0.2);
-  font-size:20px;
-  font-family:'Bubblegum Sans', cursive;
-  color:#fff;
-  cursor:pointer;
-  transition:transform .1s, background .25s, box-shadow .25s;
-}
 
-button.key:hover{
-  background:linear-gradient(135deg, rgba(180,225,255,0.65), rgba(150,150,245,0.55)); /* hiệu ứng sáng nhẹ */
-}
+    button.key{
+      height:54px;
+      border-radius:18px;
+      border:none;
+      background:linear-gradient(135deg, rgba(200,225,255,0.65), rgba(180,150,245,0.6));
+      box-shadow:0 10px 24px rgba(0,0,0,0.3);
+      font-size:20px;
+      font-family:'Bubblegum Sans', cursive;
+      color:#fff;
+      cursor:pointer;
+      transition:transform .1s, background .25s, box-shadow .25s;
+    }
 
-button.key:active{
-  transform:scale(.96);
-  box-shadow:0 6px 16px rgba(0,0,0,0.25);
-}
+    button.key:hover{
+      background:linear-gradient(135deg, rgba(180,225,255,0.75), rgba(150,150,245,0.65));
+    }
 
+    button.key:active{
+      transform:scale(.96);
+      box-shadow:0 6px 18px rgba(0,0,0,0.35);
+    }
 
-
-    /* nút OK 💖 – thiên về hồng + vàng */
     .key.ok{
-      background:
-        radial-gradient(circle at 0% 0%, rgba(250,204,21,0.35) 0%, transparent 55%),
-        linear-gradient(135deg,
-          #f97316,
-          #f472b6,
-          #ec4899);
+      background:linear-gradient(135deg, #f97316, #f472b6, #ec4899);
       box-shadow:0 12px 32px rgba(248,113,166,0.8);
       color:#fffaf5;
       border:none;
@@ -244,13 +192,8 @@ button.key:active{
       box-shadow:0 14px 36px rgba(248,113,166,0.9);
     }
 
-    /* nút xóa – tím + xanh lá dịu hơn */
     .key.del{
-      background:
-        linear-gradient(135deg,
-          rgba(22,101,52,0.95),
-          rgba(21,128,61,0.9),
-          rgba(56,189,248,0.95));
+      background:linear-gradient(135deg, rgba(22,101,52,0.95), rgba(21,128,61,0.9), rgba(56,189,248,0.95));
       color:#e0f9ff;
       font-family:'Quicksand', sans-serif;
       font-size:18px;
@@ -333,7 +276,7 @@ let buf = "";
 
 /* Lấy mật khẩu đang lưu */
 function getSecret(){
-  return (localStorage.getItem(LS_PW)||''.trim()) || "1234";
+  return (localStorage.getItem(LS_PW)||'').trim() || "1234";
 }
 
 /* cập nhật ô hiển thị pass (dùng dấu chấm) */
@@ -352,10 +295,7 @@ function shake(){
 function submit(){
   if(buf===getSecret()){
     localStorage.setItem('gift_unlocked','1');
-
-    // Cho phép autoplay ở trang birthday (vì có tương tác người dùng)
     sessionStorage.setItem('allow_music','1');
-
     location.href='birthday.html';
   }else{
     buf=""; updateDisp(); shake();
@@ -394,7 +334,7 @@ updateDisp();
 const DB_NAME = 'birthdayDB';
 const DB_VER  = 1;
 const STORE   = 'images';
-const INDEX_KEY = 'img_index_main'; // ảnh index lưu bằng key này trong settings mới
+const INDEX_KEY = 'img_index_main';
 
 function openDB() {
   return new Promise((resolve, reject) => {
@@ -423,12 +363,11 @@ async function getImageFromDB(key){
 /* load ảnh Index khi mở trang */
 (async function loadIndexPic(){
   const imgEl = document.getElementById('indexPic');
-
   try {
     const blob = await getImageFromDB(INDEX_KEY);
     if (blob) {
       const url = URL.createObjectURL(blob);
-      imgEl.src = url;  // dùng ảnh user upload
+      imgEl.src = url;
     } else {
       imgEl.src = "assets/OIP.webp";
     }
@@ -437,15 +376,6 @@ async function getImageFromDB(key){
     imgEl.src = "assets/OIP.webp";
   }
 })();
-
-/* ==== optional: PWA service worker ==== */
-if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('./sw.js').catch(()=>{});
-}
 </script>
 </body>
 </html>
-
-
-
-
