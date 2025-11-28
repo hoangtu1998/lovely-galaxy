@@ -67,12 +67,13 @@
       padding:0 16px;
     }
 
-   .card {
+  .card {
   width: 100%;
   background: var(--card);
   border-radius: 20px; /* Bo tròn các góc */
-  border: 2px solid;
-  box-shadow: 0 12px 40px rgba(0, 51, 102, .4);
+  border: 2px solid; /* Để border hiển thị */
+  border-image: linear-gradient(45deg, #f5a7b8, #a8d0ff) 1; /* Gradient màu hồng nhạt và xanh nhạt */
+  box-shadow: 0 8px 16px rgba(255, 182, 193, .3); /* Shadow nhẹ nhàng, tạo cảm giác dễ thương */
   padding: 20px 16px;
   display: grid;
   grid-template-columns: 1fr;
@@ -83,17 +84,18 @@
 
     .left{ display:flex; justify-content:center; }
 
-    .frame{
-      width:200px;
-      max-width:110vw;
-      border-radius:16px;
-      border:3px solid #003366;
-      box-shadow:0 8px 20px rgba(0,51,102,.55);
-      overflow:hidden;
-    }
+   .frame {
+  width: 200px;
+  max-width: 90vw;
+  border-radius: 16px; /* Bo tròn các góc của khung ảnh */
+  border: 3px solid; 
+  border-image: linear-gradient(45deg, #f5a7b8, #a8d0ff) 1; /* Gradient tương tự cho ảnh */
+  box-shadow: 0 8px 16px rgba(255, 182, 193, .4); /* Shadow nhẹ cho frame */
+  overflow: hidden;
+}
     .frame img{
-      width:130%;
-      height:100%;
+      width:110%;
+      height:120%;
       object-fit:cover;
       display:block;
       aspect-ratio:1/1;
@@ -337,6 +339,7 @@ async function getImageFromDB(key){
 </script>
 </body>
 </html>
+
 
 
 
