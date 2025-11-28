@@ -286,6 +286,17 @@ addEventListener('keydown',e=>{
 
 // render ban đầu
 updateDisp();
+document.querySelectorAll('input[type="password"], .frame img').forEach(element => {
+  // Ngừng zoom khi focus vào trường mật khẩu hoặc ảnh
+  element.addEventListener('focus', function(event) {
+    document.body.style.zoom = "reset"; // Reset zoom khi focus vào input
+  });
+
+  // Chặn sự kiện nhấn để không gây zoom
+  element.addEventListener('touchstart', function(event) {
+    event.preventDefault(); // Ngừng sự kiện mặc định (zoom)
+  });
+});
 
 // ==== PHẦN MỚI: lấy ảnh Index từ IndexedDB thay vì localStorage ====
 const DB_NAME = 'birthdayDB';
@@ -338,6 +349,7 @@ async function getImageFromDB(key){
 </script>
 </body>
 </html>
+
 
 
 
