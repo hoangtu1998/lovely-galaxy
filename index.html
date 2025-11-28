@@ -287,12 +287,29 @@ addEventListener('keydown',e=>{
 // render ban đầu
 updateDisp();
   
-// Chặn zoom nhưng vẫn cho phép nhập liệu vào input
+let lastTap = 0;
+
+// Ngừng zoom khi người dùng bấm vào các phần tử không phải input, textarea, hoặc button
 document.body.addEventListener('touchstart', function(event) {
-  // Nếu người dùng không chạm vào input hoặc textarea, ngừng zoom
+  // Nếu người dùng không chạm vào input, textarea, hoặc button
   if (!event.target.closest('input, textarea, button')) {
-    event.preventDefault(); // Ngừng zoom trên các phần tử không phải là input, textarea, hoặc button
+    // Ngừng sự kiện zoom (chặn zoom cho các phần tử ngoài input)
+    event.preventDefault();
   }
+}, { passive: false });
+
+// Xử lý sự kiện double-tap
+document.body.addEventListener('touchend', function(event) {
+  const currentTime = new Date().getTime();
+  const tapLength = currentTime - lastTap;
+
+  // Nếu thời gian giữa các lần chạm < 300ms, thì coi đó là double-tap
+  if (tapLength < 300 && tapLength > 0) {
+    event.preventDefault(); // Ngừng sự kiện zoom khi bấm 2 lần
+  }
+
+  // Cập nhật thời gian bấm lần cuối
+  lastTap = currentTime;
 }, { passive: false });
 
 
@@ -347,6 +364,7 @@ async function getImageFromDB(key){
 </script>
 </body>
 </html>
+
 
 
 
