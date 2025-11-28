@@ -87,12 +87,13 @@
 
    .frame {
   width: 200px;
-  max-width: 90vw;
+  max-width: 70vw;
   border-radius: 16px; /* Bo tròn các góc của khung ảnh */
-  border: 3px solid; 
-  border-image: linear-gradient(45deg, #f5a7b8, #a8d0ff) 1; /* Gradient tương tự cho ảnh */
-  box-shadow: 0 8px 16px rgba(255, 182, 193, .4); /* Shadow nhẹ cho frame */
   overflow: hidden;
+
+  /* Thêm box-shadow với gradient cho viền bo tròn */
+  box-shadow: 0 4px 16px rgba(0, 51, 102, .4), 0 0 0 3px inset rgba(0, 0, 0, 0.1), 
+    0 0 0 6px inset linear-gradient(45deg, #2d3b52, #f4c542); 
 }
     .frame img{
       width:110%;
@@ -340,6 +341,7 @@ async function getImageFromDB(key){
 </script>
 </body>
 </html>
+
 
 
 
