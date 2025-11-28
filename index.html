@@ -142,28 +142,38 @@
       user-select:none;
     }
 
-    button.key{
-      height:54px;
-      border-radius:18px;
-      border:none;
-      background:var(--key);
-      box-shadow:var(--shadow);
-      font-size:20px;
-      font-family:'Bubblegum Sans', cursive;
-      color:var(--accent);
-      cursor:pointer;
-      transition:transform .1s, background .2s, box-shadow .15s;
-      -webkit-tap-highlight-color:transparent;
-      touch-action:manipulation;
-    }
-    button.key:hover{
-      background:#ffeef7;
-      box-shadow:0 8px 22px rgba(244,114,182,0.45);
-    }
-    button.key:active{
-      transform:scale(.96);
-      box-shadow:0 4px 14px rgba(244,114,182,0.5);
-    }
+   button.key{
+  height:54px;
+  border-radius:18px;
+  border:none;
+  background:linear-gradient(135deg,
+      #d98ab6 0%,
+      #c96ca2 40%,
+      #a94a86 70%,
+      #7a3d6a 100%
+  );
+  color:#fff;
+  box-shadow:0 6px 16px rgba(0,0,0,0.35);
+  font-size:20px;
+  font-family:'Bubblegum Sans', cursive;
+  cursor:pointer;
+  transition:transform .1s, background .25s, box-shadow .25s;
+}
+
+button.key:hover{
+  background:linear-gradient(135deg,
+      #e6a3c8 0%,
+      #d984b4 40%,
+      #b45695 70%,
+      #8a4a77 100%
+  );
+  box-shadow:0 8px 22px rgba(0,0,0,0.45);
+}
+
+button.key:active{
+  transform:scale(.96);
+  box-shadow:0 4px 12px rgba(0,0,0,0.4);
+}
 
     .key.ok{
       background:linear-gradient(135deg,#fb72b3,#ff9a8b);
@@ -363,5 +373,6 @@ if('serviceWorker' in navigator){
 </script>
 </body>
 </html>
+
 
 
