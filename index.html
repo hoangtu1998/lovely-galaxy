@@ -2,23 +2,19 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
   <title>💖 Mở Quà Bí Mật 💖</title>
 
-  <!-- Font hỗn hợp: chữ mềm + số tròn -->
+  <!-- Font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@600&family=Bubblegum+Sans&display=swap" rel="stylesheet">
 
   <meta name="theme-color" content="#ffb6c1">
-
-  <!-- Cho Android -->
   <meta name="mobile-web-app-capable" content="yes">
-
-  <!-- Cho iOS -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-  <!-- manifest PWA -->
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icon-192.png">
 
@@ -49,7 +45,7 @@
         linear-gradient(180deg,#080615 0%,#02030a 60%,#000000 100%);
     }
 
-    /* thanh trên (giống Dynamic Island giả) – chỉ để trang trí nhẹ */
+    /* Dynamic Island */
     .top-bar{
       width:100%;
       max-width:430px;
@@ -58,10 +54,26 @@
       justify-content:center;
     }
     .island{
-      width:140px;
+      width:150px;
       height:32px;
       border-radius:999px;
       background:rgba(0,0,0,0.85);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:0 10px;
+      color:#ffffff;
+      font-size:14px;
+    }
+    .island-lock{
+      font-size:15px;
+    }
+    .island-dot{
+      width:14px;
+      height:14px;
+      border-radius:50%;
+      border:2px solid rgba(255,255,255,0.5);
+      box-shadow:0 0 0 2px rgba(0,0,0,0.8);
     }
 
     h1{
@@ -81,9 +93,6 @@
       gap:24px;
     }
 
-    /* Ẩn ảnh index nhưng vẫn giữ để logic IndexedDB hoạt động */
-    .left{ display:none; }
-
     .card{
       width:100%;
       background:transparent;
@@ -96,10 +105,12 @@
       transition:transform .15s ease;
     }
 
+    /* ẩn phần ảnh nhưng vẫn giữ để code dùng */
+    .left{ display:none; }
+
     /* vùng chấm mật mã */
     .display{
       min-width:0;
-      height:auto;
       background:transparent;
       border:none;
       box-shadow:none;
@@ -107,8 +118,6 @@
       justify-content:center;
       gap:14px;
       padding:0;
-      letter-spacing:0;
-      font-family:inherit;
     }
     .dot{
       width:12px;
@@ -123,7 +132,6 @@
       border-color:var(--accent);
     }
 
-    /* keypad */
     .right{
       width:100%;
       max-width:360px;
@@ -159,7 +167,6 @@
       align-items:center;
       justify-content:center;
     }
-
     button.key:active{
       transform:scale(.94);
       background:var(--key-bg-active);
@@ -170,7 +177,6 @@
       font-weight:500;
       line-height:1;
     }
-
     .letters{
       margin-top:2px;
       font-size:11px;
@@ -179,20 +185,10 @@
       color:var(--muted);
     }
 
-    .key.ok{
-      background:var(--key-bg);
-      font-size:22px;
-      box-shadow:0 4px 14px rgba(0,0,0,0.7);
-    }
-    .key.ok:active{
-      background:var(--key-bg-active);
-    }
-
     .key.del{
       font-size:18px;
     }
 
-    /* footer giống "Khẩn cấp" / "Hủy" */
     .foot{
       width:100%;
       max-width:360px;
@@ -226,15 +222,19 @@
   </style>
 </head>
 <body>
+  <!-- Dynamic Island -->
   <div class="top-bar">
-    <div class="island"></div>
+    <div class="island">
+      <span class="island-lock">🔒</span>
+      <span class="island-dot"></span>
+    </div>
   </div>
 
   <h1>Nhập mật mã</h1>
 
   <section class="wrap">
     <div class="card" id="card">
-      <!-- vẫn giữ phần ảnh để code IndexedDB dùng, nhưng ẩn bằng CSS -->
+      <!-- Ảnh index dùng cho IndexedDB (ẩn bằng CSS) -->
       <div class="left">
         <div class="frame">
           <img id="indexPic" src="assets/OIP.webp" alt="Ảnh index"/>
@@ -242,7 +242,7 @@
       </div>
 
       <div class="right">
-        <!-- HIỂN THỊ MẬT MÃ: 6 chấm (dùng JS tô đậm) -->
+        <!-- 6 chấm mật mã -->
         <div class="display" id="disp">
           <div class="dot" data-i="0"></div>
           <div class="dot" data-i="1"></div>
@@ -252,7 +252,7 @@
           <div class="dot" data-i="5"></div>
         </div>
 
-        <!-- KEYPAD -->
+        <!-- Bàn phím số -->
         <div class="pad">
           <button class="key" data-k="1">
             <span class="num">1</span>
@@ -312,19 +312,19 @@
   </section>
 
 <script>
-/* ==== mật khẩu vẫn y như bạn đang dùng ==== */
+/* ==== mật khẩu dùng localStorage như cũ ==== */
 const LS_PW = 'userPassword';
 
 const disp = document.getElementById('disp');
 const card = document.getElementById('card');
 let buf = "";
 
-/* Lấy mật khẩu đang lưu */
+/* lấy mật khẩu đang lưu */
 function getSecret(){
   return (localStorage.getItem(LS_PW)||'').trim() || "1234";
 }
 
-/* cập nhật ô hiển thị pass -> tô chấm tròn */
+/* cập nhật chấm tròn */
 function updateDisp(){
   const dots = disp.querySelectorAll('.dot');
   dots.forEach((d,i)=>{
@@ -344,7 +344,7 @@ function shake(){
 function submit(){
   if(buf===getSecret()){
     localStorage.setItem('gift_unlocked','1');
-    // Cho phép autoplay ở trang birthday (vì có tương tác người dùng)
+    // Cho phép autoplay nhạc ở trang birthday
     sessionStorage.setItem('allow_music','1');
     location.href='birthday.html';
   }else{
@@ -352,25 +352,25 @@ function submit(){
   }
 }
 
-/* xử lý bấm phím keypad */
+/* xử lý bấm phím */
 function press(k){
-  if(k==='ok') return submit(); // (hiện giờ không có nút ok, Enter vẫn dùng được)
+  if(k==='ok') return submit(); // hiện tại không có nút ok, nhưng Enter vẫn submit
   if(k==='del'){
     buf = buf.slice(0,-1);
     return updateDisp();
   }
-  if(/^[0-9]$/.test(k) && buf.length<6){ // giới hạn 6 số cho giống iPhone
+  if(/^[0-9]$/.test(k) && buf.length<6){ // 6 số như iOS
     buf += k;
     updateDisp();
   }
 }
 
-/* gán click cho các nút */
+/* click keypad */
 document.querySelectorAll('.key').forEach(b=>{
   b.addEventListener('click',()=>press(b.dataset.k));
 });
 
-/* gán phím cứng bàn phím thật (desktop) */
+/* bàn phím thật */
 addEventListener('keydown',e=>{
   if(e.key>='0'&&e.key<='9') press(e.key);
   if(e.key==='Backspace')    press('del');
@@ -380,7 +380,7 @@ addEventListener('keydown',e=>{
 /* render ban đầu */
 updateDisp();
 
-/* ==== PHẦN LẤY ẢNH INDEX TỪ INDEXEDDB (giữ nguyên logic) ==== */
+/* ==== Lấy ảnh Index từ IndexedDB (giữ nguyên logic) ==== */
 const DB_NAME = 'birthdayDB';
 const DB_VER  = 1;
 const STORE   = 'images';
@@ -427,7 +427,7 @@ async function getImageFromDB(key){
   }
 })();
 
-/* ==== optional: PWA service worker ==== */
+/* ==== PWA service worker ==== */
 if('serviceWorker' in navigator){
   navigator.serviceWorker.register('./sw.js').catch(()=>{});
 }
