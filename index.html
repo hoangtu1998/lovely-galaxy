@@ -100,19 +100,30 @@
       padding:0 16px;
     }
 
-    .card{
+        .card{
       width:100%;
-      background:var(--card);
-      border-radius:var(--radius-lg);
-      border:1px solid rgba(161,172,255,0.45);
-      box-shadow:var(--shadow-soft);
+      background:rgba(255,255,255,0.30); /* light pastel glass */
+      border-radius:22px;
+      border:1px solid rgba(255,255,255,0.45);
+    
+      /* pastel aurora shine bên trong */
+      background:
+        radial-gradient(circle at 6% 10%, rgba(255,190,245,0.45), transparent 60%),
+        radial-gradient(circle at 95% 5%, rgba(255,240,170,0.45), transparent 60%),
+        radial-gradient(circle at 20% 95%, rgba(190,255,230,0.45), transparent 60%),
+        linear-gradient(180deg,
+          rgba(255,255,255,0.55),
+          rgba(255,255,255,0.38)
+        );
+    
+      box-shadow:0 14px 32px rgba(20,20,50,0.35);
       padding:20px 16px;
       display:grid;
-      grid-template-columns:1fr;
       gap:16px;
-      transition:transform .15s ease;
-      backdrop-filter:blur(18px);
-      -webkit-backdrop-filter:blur(18px);
+    
+      backdrop-filter:blur(24px);
+      -webkit-backdrop-filter:blur(24px);
+    
       position:relative;
       overflow:hidden;
     }
@@ -462,4 +473,5 @@ if('serviceWorker' in navigator){
 </script>
 </body>
 </html>
+
 
