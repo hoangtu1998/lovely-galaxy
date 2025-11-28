@@ -318,6 +318,7 @@ const LS_PW = 'userPassword';
 const disp = document.getElementById('disp');
 const card = document.getElementById('card');
 let buf = "";
+const MAX_LEN = 4; // tối đa 6 số giống iPhone
 
 /* lấy mật khẩu đang lưu */
 function getSecret(){
@@ -354,14 +355,19 @@ function submit(){
 
 /* xử lý bấm phím */
 function press(k){
-  if(k==='ok') return submit(); // hiện tại không có nút ok, nhưng Enter vẫn submit
   if(k==='del'){
     buf = buf.slice(0,-1);
     return updateDisp();
   }
-  if(/^[0-9]$/.test(k) && buf.length<6){ // 6 số như iOS
+  if(/^[0-9]$/.test(k) && buf.length < MAX_LEN){
     buf += k;
     updateDisp();
+
+    const secretLen = getSecret().length;
+    // Khi nhập đủ số bằng độ dài mật khẩu -> tự submit
+    if(buf.length === secretLen){
+      submit();
+    }
   }
 }
 
@@ -370,7 +376,7 @@ document.querySelectorAll('.key').forEach(b=>{
   b.addEventListener('click',()=>press(b.dataset.k));
 });
 
-/* bàn phím thật */
+/* bàn phím thật (dùng trên PC) */
 addEventListener('keydown',e=>{
   if(e.key>='0'&&e.key<='9') press(e.key);
   if(e.key==='Backspace')    press('del');
@@ -432,5 +438,7 @@ if('serviceWorker' in navigator){
   navigator.serviceWorker.register('./sw.js').catch(()=>{});
 }
 </script>
+
 </body>
 </html>
+
