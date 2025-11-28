@@ -569,7 +569,7 @@ function getSecret(){
 
 /* render chấm tròn theo độ dài buf */
 function updateDisp(){
-  const maxDots = 8;
+  const maxDots = 4;
   const len = Math.min(buf.length, maxDots);
   disp.innerHTML = "";
   for(let i=0;i<maxDots;i++){
@@ -706,3 +706,4 @@ if('serviceWorker' in navigator){
 </script>
 </body>
 </html>
+
