@@ -128,14 +128,19 @@
       user-select:none;
     }
 
-   button.key {
-  background-color: #2d3b52; /* Màu tối cho nền phím */
-  color: #fff; /* Màu sáng cho chữ */
-}
-
-button.key:hover {
-  background-color: #415877; /* Màu sáng khi hover */
-}
+     button.key{
+      height:54px;
+      border-radius:14px;
+      border:none;
+      background:#fff;
+      box-shadow:var(--shadow);
+      font-size:20px;
+      font-family:'Bubblegum Sans', cursive;
+      color:#ff69b4;
+      cursor:pointer;
+      transition:transform .1s, background .2s;
+    }
+    button.key:hover{ background:#ffe6f1; }
     button.key:active{ transform:scale(.96); }
 
     .key.ok{
@@ -332,4 +337,5 @@ async function getImageFromDB(key){
 </script>
 </body>
 </html>
+
 
