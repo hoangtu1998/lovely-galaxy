@@ -48,24 +48,11 @@
       touch-action:manipulation;
     }
 
-    body{
-  /* Nền aurora sáng hơn ~15% */
+   body{
   background:
-    radial-gradient(circle at 0% 0%,
-      rgba(244,114,182,0.45) 0%,     /* tăng sáng hồng */
-      transparent 55%),
-    radial-gradient(circle at 100% 0%,
-      rgba(250,204,21,0.42) 0%,      /* tăng sáng vàng */
-      transparent 55%),
-    radial-gradient(circle at 15% 90%,
-      rgba(45,212,191,0.42) 0%,      /* tăng sáng xanh ngọc */
-      transparent 55%),
-    linear-gradient(180deg,
-      #1a1238 0%,   /* sáng hơn #0b0720 */
-      #241a55 35%,
-      #31236b 65%,
-      #40255a 100%  /* tím sáng hơn */
-    );
+    radial-gradient(circle at 20% 10%, rgba(195,185,255,0.6) 0%, transparent 55%), /* pastel tím sáng */
+    radial-gradient(circle at 80% 20%, rgba(152,248,174,0.45) 0%, transparent 55%), /* xanh lá mát */
+    linear-gradient(180deg, #f5f2ff 0%, #d8d6ff 45%, #a8a8d5 100%);  /* background sáng, tím xanh mịn màng */
 
   background-attachment:fixed;
   color:var(--ink);
@@ -101,32 +88,27 @@
     }
 
         .card{
-      width:100%;
-      background:rgba(255,255,255,0.30); /* light pastel glass */
-      border-radius:22px;
-      border:1px solid rgba(255,255,255,0.45);
-    
-      /* pastel aurora shine bên trong */
-      background:
-        radial-gradient(circle at 6% 10%, rgba(255,190,245,0.45), transparent 60%),
-        radial-gradient(circle at 95% 5%, rgba(255,240,170,0.45), transparent 60%),
-        radial-gradient(circle at 20% 95%, rgba(190,255,230,0.45), transparent 60%),
-        linear-gradient(180deg,
-          rgba(255,255,255,0.55),
-          rgba(255,255,255,0.38)
-        );
-    
-      box-shadow:0 14px 32px rgba(20,20,50,0.35);
-      padding:20px 16px;
-      display:grid;
-      gap:16px;
-    
-      backdrop-filter:blur(24px);
-      -webkit-backdrop-filter:blur(24px);
-    
-      position:relative;
-      overflow:hidden;
-    }
+  width:100%;
+  background:
+    radial-gradient(circle at 10% 10%, rgba(255,240,255,0.2), transparent 60%),
+    radial-gradient(circle at 90% 5%, rgba(200,255,210,0.15), transparent 60%),
+    linear-gradient(180deg, rgba(255,255,255,0.15), rgba(255,255,255,0.10));
+
+  border-radius:22px;
+  border:1px solid rgba(255,255,255,0.35);
+  box-shadow:0 14px 36px rgba(0,0,0,0.25);
+
+  padding:20px 16px;
+  display:grid;
+  gap:16px;
+
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+
+  position:relative;
+  overflow:hidden;
+}
+
 
     /* lớp ánh sáng nhẹ bên trong card */
     .card::before{
@@ -221,38 +203,27 @@
     }
 
     button.key{
-      height:54px;
-      border-radius:999px;
-      border:none;
-      background:
-        radial-gradient(circle at 0% 0%, rgba(250,204,21,0.35) 0%, transparent 55%),
-        radial-gradient(circle at 100% 0%, rgba(45,212,191,0.3) 0%, transparent 55%),
-        linear-gradient(135deg,
-          rgba(30,64,175,1),
-          rgba(79,70,229,1),
-          rgba(168,85,247,1));
-      box-shadow:0 10px 26px rgba(15,23,42,0.9);
-      font-size:20px;
-      font-family:'Bubblegum Sans', cursive;
-      color:#fefce8;
-      cursor:pointer;
-      transition:transform .1s, box-shadow .2s, filter .2s, background .25s;
-      -webkit-tap-highlight-color:transparent;
-      touch-action:manipulation;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-    }
+  height:54px;
+  border-radius:18px;
+  border:none;
+  background:linear-gradient(135deg, rgba(180,225,255,0.65), rgba(170,150,245,0.6)); /* pastel xanh nhạt + tím */
+  box-shadow:0 8px 22px rgba(0,0,0,0.2);
+  font-size:20px;
+  font-family:'Bubblegum Sans', cursive;
+  color:#fff;
+  cursor:pointer;
+  transition:transform .1s, background .25s, box-shadow .25s;
+}
 
-    button.key:hover{
-      filter:brightness(1.08);
-      box-shadow:0 12px 30px rgba(15,23,42,1);
-    }
+button.key:hover{
+  background:linear-gradient(135deg, rgba(180,225,255,0.75), rgba(150,150,245,0.65)); /* hiệu ứng sáng nhẹ */
+}
 
-    button.key:active{
-      transform:scale(.96);
-      box-shadow:0 6px 18px rgba(15,23,42,0.9);
-    }
+button.key:active{
+  transform:scale(.96);
+  box-shadow:0 6px 16px rgba(0,0,0,0.25);
+}
+
 
     /* nút OK 💖 – thiên về hồng + vàng */
     .key.ok{
@@ -473,5 +444,6 @@ if('serviceWorker' in navigator){
 </script>
 </body>
 </html>
+
 
 
