@@ -35,7 +35,16 @@
       --accent:#7dd3ff;
     }
     *{ box-sizing:border-box; }
-    html,body{ height:100%; margin:0; }
+        html, body{
+      height:100%;
+      margin:0;
+      touch-action: manipulation; /* hạn chế double-tap zoom */
+    }  
+    
+    button.key{
+      touch-action: manipulation;         /* ưu tiên xử lý tap như nút bấm */
+      -webkit-tap-highlight-color: transparent; /* bỏ viền xám khi chạm trên iOS */
+    }
     body{
       background:
         radial-gradient(circle at 15% 0%, #4b2cff 0%, transparent 55%),
@@ -299,6 +308,15 @@ addEventListener('keydown',e=>{
 
 /* render ban đầu */
 updateDisp();
+/* Chặn double-tap zoom trên iOS */
+let lastTouchEnd = 0;
+document.addEventListener('touchend', function (event) {
+  const now = Date.now();
+  if (now - lastTouchEnd <= 300) {
+    event.preventDefault(); // không cho Safari zoom
+  }
+  lastTouchEnd = now;
+}, { passive: false });
 
 /* ==== PHẦN MỚI: lấy ảnh Index từ IndexedDB thay vì localStorage ==== */
 
@@ -358,3 +376,4 @@ if('serviceWorker' in navigator){
 </script>
 </body>
 </html>
+
