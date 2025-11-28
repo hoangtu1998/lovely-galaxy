@@ -2,14 +2,13 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
   <title>💖 Mở Quà Bí Mật 💖</title>
 
   <!-- Font hỗn hợp: chữ mềm + số tròn -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@600&family=Bubblegum+Sans&display=swap" rel="stylesheet">
 
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
   <meta name="theme-color" content="#5c4d9f">
 
   <!-- Cho Android -->
@@ -147,7 +146,7 @@
       align-items:center;
       justify-content:flex-end;
       font-size:24px;
-      color:#fef9c3;
+      color:#fef9c3; /* Màu sắc của dấu chấm rõ ràng hơn */
       letter-spacing:5px;
       font-family:'Bubblegum Sans', cursive;
     }
@@ -165,7 +164,8 @@
       border:none;
       background:linear-gradient(135deg, rgba(200,225,255,0.65), rgba(180,150,245,0.6)); /* pastel xanh và tím dịu */
       box-shadow:0 8px 22px rgba(0,0,0,0.2);
-      font-size:20px;
+      font-size:22px;
+      font-weight: bold; /* Làm đậm các chữ số */
       font-family:'Bubblegum Sans', cursive;
       color:#fff;
       cursor:pointer;
@@ -287,6 +287,7 @@ function getSecret(){
 /* cập nhật ô hiển thị pass (dùng dấu chấm) */
 function updateDisp(){
   disp.textContent = buf.replace(/./g,'•');
+  disp.style.color = '#fef9c3';  // Đổi màu chữ cho mật khẩu
 }
 
 /* hiệu ứng lắc khi sai pass */
@@ -384,4 +385,3 @@ async function getImageFromDB(key){
 </script>
 </body>
 </html>
-
