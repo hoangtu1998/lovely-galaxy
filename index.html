@@ -49,32 +49,34 @@
     }
 
     body{
-      /* nền aurora: tím + hồng + xanh + vàng */
-      background:
-        radial-gradient(circle at 0% 0%,
-          rgba(244,114,182,0.35) 0%,
-          transparent 55%),
-        radial-gradient(circle at 100% 0%,
-          rgba(250,204,21,0.30) 0%,
-          transparent 55%),
-        radial-gradient(circle at 15% 90%,
-          rgba(45,212,191,0.32) 0%,
-          transparent 55%),
-        linear-gradient(180deg,
-          #0b0720 0%,
-          #15103b 35%,
-          #21124b 65%,
-          #2b153e 100%);
-      background-attachment:fixed;
+  /* Nền aurora sáng hơn ~15% */
+  background:
+    radial-gradient(circle at 0% 0%,
+      rgba(244,114,182,0.45) 0%,     /* tăng sáng hồng */
+      transparent 55%),
+    radial-gradient(circle at 100% 0%,
+      rgba(250,204,21,0.42) 0%,      /* tăng sáng vàng */
+      transparent 55%),
+    radial-gradient(circle at 15% 90%,
+      rgba(45,212,191,0.42) 0%,      /* tăng sáng xanh ngọc */
+      transparent 55%),
+    linear-gradient(180deg,
+      #1a1238 0%,   /* sáng hơn #0b0720 */
+      #241a55 35%,
+      #31236b 65%,
+      #40255a 100%  /* tím sáng hơn */
+    );
 
-      color:var(--ink);
-      font-family:'Quicksand', sans-serif;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      padding:16px 0;
-      min-height:100vh;
-    }
+  background-attachment:fixed;
+  color:var(--ink);
+  font-family:'Quicksand', sans-serif;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:16px 0;
+  min-height:100vh;
+}
+
 
     h1{
       font-family:'Pacifico', cursive;
@@ -460,3 +462,4 @@ if('serviceWorker' in navigator){
 </script>
 </body>
 </html>
+
