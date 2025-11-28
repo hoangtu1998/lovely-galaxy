@@ -67,18 +67,19 @@
       padding:0 16px;
     }
 
-  .card {
+ .card {
   width: 100%;
   background: var(--card);
   border-radius: 20px; /* Bo tròn các góc */
-  border: 2px solid; /* Để border hiển thị */
-  border-image: linear-gradient(45deg, #f5a7b8, #a8d0ff) 1; /* Gradient màu hồng nhạt và xanh nhạt */
-  box-shadow: 0 8px 16px rgba(255, 182, 193, .3); /* Shadow nhẹ nhàng, tạo cảm giác dễ thương */
   padding: 20px 16px;
   display: grid;
   grid-template-columns: 1fr;
   gap: 16px;
   transition: transform .15s ease;
+
+  /* Thêm box-shadow với gradient cho viền bo tròn */
+  box-shadow: 0 4px 16px rgba(0, 51, 102, .4), 0 0 0 2px inset rgba(0, 0, 0, 0.1), 
+    0 0 0 5px inset linear-gradient(45deg, #2d3b52, #f4c542); 
 }
 
 
@@ -339,6 +340,7 @@ async function getImageFromDB(key){
 </script>
 </body>
 </html>
+
 
 
 
