@@ -2,345 +2,252 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>💖 Mở Quà Bí Mật 💖</title>
 
-  <!-- Font -->
+  <!-- Font hỗn hợp: chữ mềm + số tròn -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@600&family=Bubblegum+Sans&display=swap" rel="stylesheet">
 
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
   <meta name="theme-color" content="#000000">
+
+  <!-- Cho Android -->
   <meta name="mobile-web-app-capable" content="yes">
+
+  <!-- Cho iOS -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
+  <!-- manifest PWA -->
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icon-192.png">
 
   <style>
     :root{
-      /* tông galaxy: tím xanh + neon */
+      /* tông galaxy */
+      --bg:#050819;
+      --card:#101527;
       --ink:#e8ebff;
-      --muted:#8b8fc0;
-      --key-bg:rgba(19, 29, 75, 0.75);
-      --key-bg-active:rgba(93, 159, 255, 0.9);
-      --accent:#ffffff;
-      --glow:0 0 12px rgba(124, 197, 255, 0.9);
+      --muted:#9aa0d8;
+      --key:#111933;
+      --shadow:0 8px 24px rgba(5,10,40,0.95);
+      --accent:#7dd3ff;
     }
     *{ box-sizing:border-box; }
     html,body{ height:100%; margin:0; }
-
     body{
-      min-height:100vh;
-      margin:0;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:flex-start;
-      padding:0 16px;
-      color:var(--ink);
-      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Quicksand",sans-serif;
       background:
         radial-gradient(circle at 15% 0%, #4b2cff 0%, transparent 55%),
         radial-gradient(circle at 85% 0%, #ff5fdc 0%, transparent 60%),
         radial-gradient(circle at 50% 100%, #0a2342 0%, #02020a 55%, #000000 100%);
       background-attachment:fixed;
-    }
-
-    /* giả Dynamic Island */
-    .top-bar{
-      width:100%;
-      max-width:430px;
-      padding-top:18px;
+      color:var(--ink);
+      font-family:'Quicksand', sans-serif;
       display:flex;
-      justify-content:center;
-    }
-    .island{
-      width:150px;
-      height:32px;
-      border-radius:999px;
-      background:rgba(0,0,0,0.88);
-      display:flex;
+      flex-direction:column;
       align-items:center;
-      justify-content:space-between;
-      padding:0 10px;
-      color:#ffffff;
-      font-size:14px;
-      box-shadow:0 0 18px rgba(0,0,0,0.8);
-    }
-    .island-lock{
-      font-size:15px;
-    }
-    .island-dot{
-      width:14px;
-      height:14px;
-      border-radius:50%;
-      border:2px solid rgba(255,255,255,0.55);
-      box-shadow:0 0 0 2px rgba(0,0,0,0.9);
+      padding:16px 0;
+      min-height:100vh;
     }
 
     h1{
-      margin-top:48px;
-      margin-bottom:18px;
-      font-size:22px;
-      font-weight:500;
+      font-family:'Pacifico', cursive;
+      font-size:clamp(24px,4vw,32px);
+      color:#e5e7ff;
+      margin:8px 0 16px;
+      text-shadow:0 0 12px rgba(129,140,248,.9);
+      letter-spacing:1px;
       text-align:center;
-      text-shadow:0 0 10px rgba(165, 191, 255, 0.7);
+      max-width:90vw;
+      line-height:1.2;
     }
 
     .wrap{
       width:100%;
-      max-width:430px;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      gap:24px;
+      max-width:420px;
+      display:grid;
+      place-items:center;
+      padding:0 16px;
     }
 
     .card{
       width:100%;
-      background:transparent;
-      border:none;
-      box-shadow:none;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      gap:24px;
+      background:rgba(7,11,30,0.9);
+      border-radius:20px;
+      border:1px solid rgba(125,211,255,0.4);
+      box-shadow:0 14px 45px rgba(3,7,30,0.95);
+      padding:20px 16px;
+      display:grid;
+      grid-template-columns:1fr;
+      gap:16px;
       transition:transform .15s ease;
+      backdrop-filter:blur(18px);
+      -webkit-backdrop-filter:blur(18px);
     }
 
-    /* ẩn phần ảnh nhưng vẫn giữ để code dùng */
-    .left{ display:none; }
+    .left{ display:flex; justify-content:center; }
 
-    /* vùng chấm mật mã */
-    .display{
-      min-width:0;
-      background:transparent;
-      border:none;
-      box-shadow:none;
-      display:flex;
-      justify-content:center;
-      gap:14px;
-      padding:0;
+    .frame{
+      width:200px;
+      max-width:70vw;
+      border-radius:16px;
+      border:2px solid rgba(129,140,248,0.8);
+      box-shadow:0 10px 32px rgba(15,23,42,.9);
+      overflow:hidden;
     }
-    .dot{
-      width:12px;
-      height:12px;
-      border-radius:50%;
-      border:2px solid rgba(198, 211, 255, 0.9);
-      background:transparent;
-      transition:background .15s ease,border-color .15s ease, box-shadow .15s ease;
-    }
-    .dot.filled{
-      background:var(--accent);
-      border-color:var(--accent);
-      box-shadow:0 0 10px rgba(124, 197, 255, 0.9);
+    .frame img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+      aspect-ratio:1/1;
     }
 
     .right{
-      width:100%;
-      max-width:360px;
+      display:grid;
+      gap:12px;
+      align-content:start;
+    }
+
+    .display{
+      height:48px;
+      background:rgba(3,7,30,0.9);
+      border-radius:14px;
+      border:1px solid rgba(148,163,255,0.6);
+      box-shadow:inset 0 0 12px rgba(15,23,42,0.9);
       display:flex;
-      flex-direction:column;
       align-items:center;
-      gap:24px;
+      justify-content:flex-end;
+      padding:0 12px;
+      font-size:24px;
+      color:var(--accent);
+      letter-spacing:5px;
+      font-family:'Bubblegum Sans', cursive;
+      text-shadow:0 0 10px rgba(125,211,255,0.9);
     }
 
     .pad{
-      width:100%;
       display:grid;
       grid-template-columns:repeat(3,1fr);
-      gap:16px;
+      gap:10px;
       user-select:none;
     }
 
     button.key{
-      position:relative;
-      width:100%;
-      aspect-ratio:1/1;
+      height:54px;
       border-radius:999px;
       border:none;
-      background:var(--key-bg);
-      backdrop-filter:blur(18px);
-      -webkit-backdrop-filter:blur(18px);
-      box-shadow:0 4px 18px rgba(0,0,0,0.85);
+      background:linear-gradient(145deg, rgba(15,23,42,0.96), rgba(30,64,175,0.9));
+      box-shadow:var(--shadow);
+      font-size:20px;
+      font-family:'Bubblegum Sans', cursive;
       color:var(--accent);
       cursor:pointer;
-      transition:transform .08s ease, background .12s ease, box-shadow .12s ease;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
+      transition:transform .1s, background .2s, box-shadow .15s;
+    }
+    button.key:hover{
+      background:linear-gradient(145deg, rgba(30,64,175,1), rgba(59,130,246,1));
+      box-shadow:0 0 16px rgba(96,165,250,0.9);
     }
     button.key:active{
-      transform:scale(.94);
-      background:var(--key-bg-active);
-      box-shadow:var(--glow);
+      transform:scale(.96);
+      box-shadow:0 0 10px rgba(96,165,250,0.9);
     }
 
-    .num{
-      font-size:30px;
-      font-weight:500;
-      line-height:1;
-      text-shadow:0 0 8px rgba(160, 210, 255, 0.9);
+    .key.ok{
+      background:linear-gradient(145deg,#6366f1,#ec4899);
+      color:#fff;
+      border:0;
+      font-size:20px;
+      box-shadow:0 0 18px rgba(236,72,153,0.9);
     }
-    .letters{
-      margin-top:2px;
-      font-size:11px;
-      letter-spacing:1px;
-      text-transform:uppercase;
-      color:var(--muted);
+    .key.ok:hover{
+      background:linear-gradient(145deg,#818cf8,#f472b6);
+      box-shadow:0 0 22px rgba(244,114,182,0.95);
     }
 
     .key.del{
+      background:linear-gradient(145deg,rgba(15,23,42,0.96),rgba(12,74,110,0.9));
+      color:#bae6fd;
+      border:1px solid rgba(56,189,248,0.6);
+      font-family:'Quicksand';
       font-size:18px;
-      text-shadow:none;
     }
 
     .foot{
-      width:100%;
-      max-width:360px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      font-size:14px;
+      text-align:center;
       color:var(--muted);
-      margin-top:8px;
+      font-size:12px;
+      line-height:1.4;
+      font-family:'Quicksand', sans-serif;
     }
-    .foot a{
-      color:var(--muted);
-      text-decoration:none;
-    }
-    .foot a:hover{ text-decoration:underline; }
 
     .links{
-      margin-top:10px;
-      font-size:13px;
-      color:var(--muted);
+      text-align:center;
+      margin:12px 0 0;
+      font-size:14px;
     }
     .links a{
-      color:#8bd1ff;
+      color:#7dd3ff;
       text-decoration:none;
     }
-    .links a:hover{ text-decoration:underline; }
+    .links a:hover{
+      text-decoration:underline;
+    }
 
-    @media (max-width:480px){
-      h1{ margin-top:40px; }
+    @media(max-width:820px){
+      .card{ grid-template-columns:1fr; }
     }
   </style>
 </head>
 <body>
-  <!-- Dynamic Island -->
-  <div class="top-bar">
-    <div class="island">
-      <span class="island-lock">🔒</span>
-      <span class="island-dot"></span>
-    </div>
-  </div>
-
-  <h1>Nhập mật mã</h1>
-
+  <h1>🌌 Nhập Pass đi người đẹp 🌌</h1>
   <section class="wrap">
     <div class="card" id="card">
-      <!-- Ảnh index dùng cho IndexedDB (ẩn bằng CSS) -->
       <div class="left">
         <div class="frame">
           <img id="indexPic" src="assets/OIP.webp" alt="Ảnh index"/>
         </div>
       </div>
-
       <div class="right">
-        <!-- 6 chấm mật mã -->
-        <div class="display" id="disp">
-          <div class="dot" data-i="0"></div>
-          <div class="dot" data-i="1"></div>
-          <div class="dot" data-i="2"></div>
-          <div class="dot" data-i="3"></div>
-          <div class="dot" data-i="4"></div>
-          <div class="dot" data-i="5"></div>
-        </div>
-
-        <!-- Bàn phím số -->
+        <div class="display" id="disp"></div>
         <div class="pad">
-          <button class="key" data-k="1">
-            <span class="num">1</span>
-          </button>
-          <button class="key" data-k="2">
-            <span class="num">2</span>
-            <span class="letters">ABC</span>
-          </button>
-          <button class="key" data-k="3">
-            <span class="num">3</span>
-            <span class="letters">DEF</span>
-          </button>
-
-          <button class="key" data-k="4">
-            <span class="num">4</span>
-            <span class="letters">GHI</span>
-          </button>
-          <button class="key" data-k="5">
-            <span class="num">5</span>
-            <span class="letters">JKL</span>
-          </button>
-          <button class="key" data-k="6">
-            <span class="num">6</span>
-            <span class="letters">MNO</span>
-          </button>
-
-          <button class="key" data-k="7">
-            <span class="num">7</span>
-            <span class="letters">PQRS</span>
-          </button>
-          <button class="key" data-k="8">
-            <span class="num">8</span>
-            <span class="letters">TUV</span>
-          </button>
-          <button class="key" data-k="9">
-            <span class="num">9</span>
-            <span class="letters">WXYZ</span>
-          </button>
-
-          <div></div>
-          <button class="key" data-k="0">
-            <span class="num">0</span>
-          </button>
+          <button class="key" data-k="1">1</button>
+          <button class="key" data-k="2">2</button>
+          <button class="key" data-k="3">3</button>
+          <button class="key" data-k="4">4</button>
+          <button class="key" data-k="5">5</button>
+          <button class="key" data-k="6">6</button>
+          <button class="key" data-k="7">7</button>
+          <button class="key" data-k="8">8</button>
+          <button class="key" data-k="9">9</button>
           <button class="key del" data-k="del">⌫</button>
+          <button class="key" data-k="0">0</button>
+          <button class="key ok" data-k="ok">💖</button>
         </div>
-
-        <div class="foot">
-          <span>Khẩn cấp</span>
-          <a href="settings.html">Hủy</a>
-        </div>
+        <div class="foot">Vào <a href="settings.html">Cài đặt</a> để chọn ảnh & mật khẩu dễ thương 💗</div>
       </div>
     </div>
-
-    <div class="links">
-      <a href="settings.html">⚙️ Cài đặt ảnh & mật khẩu</a>
-    </div>
+    <div class="links"><a href="settings.html">⚙️ Cài đặt</a></div>
   </section>
 
 <script>
-/* ==== mật khẩu dùng localStorage như cũ ==== */
+/* ==== mật khẩu vẫn y như bạn đang dùng ==== */
 const LS_PW = 'userPassword';
 
 const disp = document.getElementById('disp');
 const card = document.getElementById('card');
 let buf = "";
-const MAX_LEN = 6; // tối đa 6 số giống iPhone
 
-/* lấy mật khẩu đang lưu */
+/* Lấy mật khẩu đang lưu */
 function getSecret(){
   return (localStorage.getItem(LS_PW)||'').trim() || "1234";
 }
 
-/* cập nhật chấm tròn */
+/* cập nhật ô hiển thị pass (dùng dấu chấm) */
 function updateDisp(){
-  const dots = disp.querySelectorAll('.dot');
-  dots.forEach((d,i)=>{
-    if(i < buf.length) d.classList.add('filled');
-    else d.classList.remove('filled');
-  });
+  disp.textContent = buf.replace(/./g,'•');
 }
 
 /* hiệu ứng lắc khi sai pass */
@@ -354,52 +261,52 @@ function shake(){
 function submit(){
   if(buf===getSecret()){
     localStorage.setItem('gift_unlocked','1');
-    // Cho phép autoplay nhạc ở trang birthday
+
+    // Cho phép autoplay ở trang birthday (vì có tương tác người dùng)
     sessionStorage.setItem('allow_music','1');
+
     location.href='birthday.html';
   }else{
     buf=""; updateDisp(); shake();
   }
 }
 
-/* xử lý bấm phím */
+
+/* xử lý bấm phím keypad */
 function press(k){
+  if(k==='ok') return submit();
   if(k==='del'){
     buf = buf.slice(0,-1);
     return updateDisp();
   }
-  if(/^[0-9]$/.test(k) && buf.length < MAX_LEN){
+  if(/^[0-9]$/.test(k) && buf.length<12){
     buf += k;
     updateDisp();
-
-    const secretLen = getSecret().length;
-    // Khi nhập đủ số bằng độ dài mật khẩu -> tự submit
-    if(buf.length === secretLen){
-      submit();
-    }
   }
 }
 
-/* click keypad */
+/* gán click cho các nút */
 document.querySelectorAll('.key').forEach(b=>{
   b.addEventListener('click',()=>press(b.dataset.k));
 });
 
-/* bàn phím thật (dùng trên PC) */
+/* gán phím cứng bàn phím thật (desktop) */
 addEventListener('keydown',e=>{
   if(e.key>='0'&&e.key<='9') press(e.key);
   if(e.key==='Backspace')    press('del');
-  if(e.key==='Enter')        submit();
+  if(e.key==='Enter')        press('ok');
 });
 
 /* render ban đầu */
 updateDisp();
 
-/* ==== Lấy ảnh Index từ IndexedDB (giữ nguyên logic) ==== */
+/* ==== PHẦN MỚI: lấy ảnh Index từ IndexedDB thay vì localStorage ==== */
+
+/* tên DB/indexedDB giống settings và galaxy */
 const DB_NAME = 'birthdayDB';
 const DB_VER  = 1;
 const STORE   = 'images';
-const INDEX_KEY = 'img_index_main';
+const INDEX_KEY = 'img_index_main'; // ảnh index lưu bằng key này trong settings mới
 
 function openDB() {
   return new Promise((resolve, reject) => {
@@ -428,12 +335,14 @@ async function getImageFromDB(key){
 /* load ảnh Index khi mở trang */
 (async function loadIndexPic(){
   const imgEl = document.getElementById('indexPic');
+
   try {
     const blob = await getImageFromDB(INDEX_KEY);
     if (blob) {
       const url = URL.createObjectURL(blob);
-      imgEl.src = url;
+      imgEl.src = url;  // dùng ảnh user upload, dung lượng lớn ok
     } else {
+      // nếu chưa có trong DB -> giữ fallback assets/OIP.webp
       imgEl.src = "assets/OIP.webp";
     }
   } catch (err) {
@@ -442,7 +351,7 @@ async function getImageFromDB(key){
   }
 })();
 
-/* ==== PWA service worker ==== */
+/* ==== optional: PWA service worker ==== */
 if('serviceWorker' in navigator){
   navigator.serviceWorker.register('./sw.js').catch(()=>{});
 }
