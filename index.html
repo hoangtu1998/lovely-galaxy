@@ -6,7 +6,6 @@
         content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
   <title>💖 Mở Quà Bí Mật 💖</title>
 
-  <!-- Font mềm kiểu iOS -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600&display=swap" rel="stylesheet">
 
@@ -17,6 +16,7 @@
 
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icon-192.png">
+
   <style>
     :root{
       --ink:#fef9ff;
@@ -40,7 +40,7 @@
       overflow:hidden;
     }
 
-    /* ===== Wallpaper full màn giống lockscreen neon ===== */
+    /* ===== Nền neon giống hình ===== */
     .wallpaper{
       position:fixed;
       inset:0;
@@ -56,13 +56,12 @@
       width:100%;
       height:100%;
       object-fit:cover;
-      transform:scale(1.1);
-      opacity:0.55;               /* hòa với nền neon */
+      transform:scale(1.08);
+      opacity:0.55;
       mix-blend-mode:soft-light;
       filter:blur(18px) saturate(1.25);
     }
 
-    /* layer glow neon mờ bên trên */
     .overlay{
       position:fixed;
       inset:0;
@@ -79,7 +78,7 @@
       z-index:-1;
     }
 
-    /* ===== Khung chính kiểu màn hình điện thoại ===== */
+    /* ===== Khung chính — tỷ lệ màn điện thoại ===== */
     .lock-root{
       position:relative;
       flex:1;
@@ -92,7 +91,112 @@
       justify-content:space-between;
     }
 
-    /* Trung tâm: giờ + ngày */
+    /* ===== Thanh trạng thái trên cùng: sóng + wifi + pin ===== */
+    .status-bar{
+      position:absolute;
+      top:8px;
+      left:0;
+      right:0;
+      padding:0 18px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      font-size:13px;
+      color:rgba(255,255,255,0.95);
+      text-shadow:0 0 8px rgba(0,0,0,0.85);
+      pointer-events:none;
+      user-select:none;
+      z-index:3;
+    }
+    .sb-left{
+      opacity:0.9;
+    }
+    .sb-right{
+      display:flex;
+      align-items:center;
+      gap:6px;
+    }
+
+    /* Sóng */
+    .signal{
+      display:flex;
+      gap:1px;
+      align-items:flex-end;
+    }
+    .signal span{
+      width:2px;
+      border-radius:3px;
+      background:rgba(255,255,255,0.9);
+      box-shadow:0 0 5px rgba(255,255,255,0.8);
+    }
+    .signal .b1{ height:6px; opacity:.65; }
+    .signal .b2{ height:8px; opacity:.75; }
+    .signal .b3{ height:10px; opacity:.85; }
+    .signal .b4{ height:12px; opacity:.95; }
+
+    /* Wifi */
+    .wifi{
+      position:relative;
+      width:15px;
+      height:12px;
+    }
+    .wifi::before,
+    .wifi::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      border-radius:50%;
+      border:2px solid transparent;
+      border-top-color:rgba(255,255,255,0.9);
+      box-shadow:0 0 6px rgba(255,255,255,0.85);
+    }
+    .wifi::after{
+      inset:4px;
+      border-width:2px;
+      opacity:0.8;
+    }
+    .wifi-dot{
+      position:absolute;
+      bottom:-1px;
+      left:50%;
+      transform:translateX(-50%);
+      width:4px;
+      height:4px;
+      border-radius:50%;
+      background:rgba(255,255,255,0.95);
+      box-shadow:0 0 4px rgba(255,255,255,0.9);
+    }
+
+    /* Pin */
+    .battery{
+      display:flex;
+      align-items:center;
+      gap:2px;
+    }
+    .battery-body{
+      width:22px;
+      height:10px;
+      border-radius:3px;
+      border:1.4px solid rgba(255,255,255,0.9);
+      padding:1px;
+      box-sizing:border-box;
+      display:flex;
+      align-items:stretch;
+    }
+    .battery-level{
+      flex:1;
+      border-radius:2px;
+      background:linear-gradient(90deg,#e8ffb4,#ffffff);
+      box-shadow:0 0 6px rgba(255,255,255,0.9);
+    }
+    .battery-cap{
+      width:2.5px;
+      height:6px;
+      border-radius:1.5px;
+      background:rgba(255,255,255,0.9);
+    }
+
+    /* ===== Trung tâm: ngày + giờ ===== */
     .lock-top{
       flex:1;
       display:flex;
@@ -122,12 +226,13 @@
         0 0 70px rgba(97,146,255,0.9);
     }
 
-    /* Dưới: khu vực nhập mật mã + keypad (trong suốt nhẹ) */
+    /* ===== Card nhập mật mã + keypad ===== */
     .card{
       display:flex;
       flex-direction:column;
       align-items:center;
       gap:10px;
+      margin-top:0;
       padding:12px 12px 20px;
       border-radius:30px;
       border:1px solid rgba(255,255,255,0.22);
@@ -142,6 +247,7 @@
       box-shadow:
         0 26px 60px rgba(0,0,0,0.9),
         0 0 40px rgba(255,120,200,0.25);
+      margin-bottom:80px; /* chừa chỗ cho icon dưới cùng */
     }
 
     .avatar-wrap{ display:none; }
@@ -253,18 +359,95 @@
       text-underline-offset:3px;
     }
 
-    .lock-bottom{
-      text-align:center;
-      margin-top:8px;
-      font-size:12px;
-      color:rgba(241,225,255,0.9);
-      text-shadow:0 0 12px rgba(0,0,0,0.8);
+    /* ===== Hàng icon dưới: đèn pin, máy ảnh, thanh home ===== */
+    .bottom-row{
+      position:absolute;
+      left:0;
+      right:0;
+      bottom:18px;
+      padding:0 32px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      pointer-events:none; /* không cho bấm thật – chỉ là trang trí */
     }
-    .lock-bottom small{
-      font-size:11px;
-      opacity:0.9;
+    .round-icon{
+      pointer-events:none;
+      width:40px;
+      height:40px;
+      border-radius:50%;
+      border:1px solid rgba(255,255,255,0.7);
+      background:rgba(0,0,0,0.35);
+      box-shadow:
+        0 0 14px rgba(0,0,0,0.9),
+        0 0 16px rgba(255,255,255,0.2);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .icon{
+      position:relative;
+      width:18px;
+      height:18px;
     }
 
+    /* icon đèn pin */
+    .icon-flash::before,
+    .icon-flash::after{
+      content:"";
+      position:absolute;
+      left:50%;
+      transform:translateX(-50%);
+      background:rgba(255,255,255,0.95);
+    }
+    .icon-flash::before{
+      top:0;
+      width:9px;
+      height:5px;
+      border-radius:2px 2px 1px 1px;
+    }
+    .icon-flash::after{
+      top:5px;
+      width:7px;
+      height:10px;
+      border-radius:2px;
+    }
+
+    /* icon camera */
+    .icon-camera::before,
+    .icon-camera::after{
+      content:"";
+      position:absolute;
+      background:transparent;
+    }
+    .icon-camera::before{
+      top:2px;
+      left:1px;
+      right:1px;
+      bottom:2px;
+      border-radius:4px;
+      border:1.5px solid rgba(255,255,255,0.95);
+    }
+    .icon-camera::after{
+      top:6px;
+      left:6px;
+      width:6px;
+      height:6px;
+      border-radius:50%;
+      border:1.5px solid rgba(255,255,255,0.95);
+    }
+
+    .home-indicator{
+      width:90px;
+      height:3px;
+      border-radius:999px;
+      background:rgba(255,255,255,0.8);
+      box-shadow:
+        0 0 10px rgba(0,0,0,0.9),
+        0 0 12px rgba(255,255,255,0.4);
+    }
+
+    /* Lắc khi sai mật mã */
     @keyframes shakeCard{
       0%{ transform:translateX(0); }
       20%{ transform:translateX(-6px); }
@@ -284,14 +467,13 @@
       }
       .card{
         padding:8px 8px 16px;
+        margin-bottom:70px;
       }
       .lock-time{
         font-size:clamp(60px, 18vw, 90px);
       }
     }
   </style>
-
-  
 </head>
 <body>
   <!-- Wallpaper từ ảnh index -->
@@ -301,15 +483,36 @@
   <div class="overlay"></div>
 
   <main class="lock-root">
-    <!-- Giờ + ngày nằm giữa màn hình -->
+    <!-- Thanh trạng thái -->
+    <div class="status-bar">
+      <div class="sb-left">9:41</div>
+      <div class="sb-right">
+        <div class="signal">
+          <span class="b1"></span>
+          <span class="b2"></span>
+          <span class="b3"></span>
+          <span class="b4"></span>
+        </div>
+        <div class="wifi">
+          <span class="wifi-dot"></span>
+        </div>
+        <div class="battery">
+          <div class="battery-body">
+            <div class="battery-level"></div>
+          </div>
+          <div class="battery-cap"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Giữa: ngày + giờ -->
     <header class="lock-top">
-      <div class="lock-date" id="lockDate">Thursday, November 27</div>
-      <div class="lock-time" id="lockTime">09:41</div>
+      <div class="lock-date" id="lockDate">Tue Apr 1</div>
+      <div class="lock-time" id="lockTime">9:41</div>
     </header>
 
-    <!-- Khu vực nhập mật mã + keypad -->
+    <!-- Card nhập mật mã + keypad -->
     <section class="card" id="card">
-      <!-- Avatar ẩn (giữ cấu trúc) -->
       <div class="avatar-wrap">
         <div class="avatar-ring">
           <div class="avatar-ring-inner">
@@ -343,9 +546,11 @@
       </div>
     </section>
 
-    <div class="lock-bottom">
-      <div>Swipe up trong tim bạn để mở quà 💖</div>
-      <small>(Nhập đúng mật mã trước đã nha)</small>
+    <!-- Dưới cùng: đèn pin / máy ảnh + thanh home -->
+    <div class="bottom-row">
+      <div class="round-icon"><span class="icon icon-flash"></span></div>
+      <div class="home-indicator"></div>
+      <div class="round-icon"><span class="icon icon-camera"></span></div>
     </div>
   </main>
 
@@ -377,7 +582,7 @@ function updateDisp(){
 /* hiệu ứng lắc khi sai pass */
 function shake(){
   card.classList.remove('shake');
-  void card.offsetWidth; // force reflow
+  void card.offsetWidth;
   card.classList.add('shake');
 }
 
@@ -473,7 +678,7 @@ async function getImageFromDB(key){
   }
 })();
 
-/* ==== đồng hồ ở giữa như iPhone ==== */
+/* ==== đồng hồ / ngày cập nhật theo giờ thật ==== */
 function updateLockTime(){
   const tEl = document.getElementById('lockTime');
   const dEl = document.getElementById('lockDate');
@@ -483,13 +688,13 @@ function updateLockTime(){
   const mm = String(now.getMinutes()).padStart(2,'0');
   tEl.textContent = `${hh}:${mm}`;
 
-  const weekdayNames = ['Chủ nhật','Thứ hai','Thứ ba','Thứ tư','Thứ năm','Thứ sáu','Thứ bảy'];
-  const monthNames = ['thg 1','thg 2','thg 3','thg 4','thg 5','thg 6','thg 7','thg 8','thg 9','thg 10','thg 11','thg 12'];
+  const weekdayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
   const wd = weekdayNames[now.getDay()];
   const day = now.getDate();
   const mon = monthNames[now.getMonth()];
-  dEl.textContent = `${wd}, ${day} ${mon}`;
+  dEl.textContent = `${wd} ${mon} ${day}`;
 }
 updateLockTime();
 setInterval(updateLockTime, 30000);
@@ -501,4 +706,3 @@ if('serviceWorker' in navigator){
 </script>
 </body>
 </html>
-
