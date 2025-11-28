@@ -1,709 +1,119 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
-  <title>💖 Mở Quà Bí Mật 💖</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Màn hình nhập mật mã</title>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600&display=swap" rel="stylesheet">
-
-  <meta name="theme-color" content="#000000">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
-  <link rel="manifest" href="manifest.json">
-  <link rel="apple-touch-icon" href="icon-192.png">
-
-  <style>
-    :root{
-      --ink:#fef9ff;
-      --muted:#e2c9ff;
-      --accent:#ffffff;
-      --btn-bg:rgba(8,8,20,0.75);
-      --btn-border:rgba(255,255,255,0.35);
-      --btn-shadow:0 14px 40px rgba(0,0,0,0.85);
-    }
-    *{ box-sizing:border-box; margin:0; padding:0; }
-    html,body{ height:100%; }
-
+<style>
     body{
-      font-family:-apple-system, BlinkMacSystemFont, system-ui, "Quicksand", sans-serif;
-      color:var(--ink);
-      background:#02030a;
-      min-height:100vh;
-      display:flex;
-      justify-content:center;
-      align-items:stretch;
-      overflow:hidden;
+        margin:0;
+        height:100vh;
+        display:flex;
+        flex-direction:column;
+        justify-content:flex-start;
+        align-items:center;
+        background:linear-gradient(180deg, #6d058f, #000000);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color:white;
     }
 
-    /* ===== Nền neon giống hình ===== */
-    .wallpaper{
-      position:fixed;
-      inset:0;
-      z-index:-2;
-      overflow:hidden;
-      background:
-        radial-gradient(circle at 5% 15%, #ffb347 0, rgba(255,179,71,0.05) 55%),
-        radial-gradient(circle at 90% 10%, #ff4fa3 0, rgba(255,79,163,0.05) 55%),
-        radial-gradient(circle at 50% 95%, #6366f1 0, rgba(99,102,241,0.05) 55%),
-        linear-gradient(145deg,#050514 0,#0a0215 40%,#090b30 75%,#050514 100%);
-    }
-    .wallpaper img{
-      width:100%;
-      height:100%;
-      object-fit:cover;
-      transform:scale(1.08);
-      opacity:0.55;
-      mix-blend-mode:soft-light;
-      filter:blur(18px) saturate(1.25);
+    .title{
+        margin-top:120px;
+        font-size:24px;
+        font-weight:500;
     }
 
-    .overlay{
-      position:fixed;
-      inset:0;
-      pointer-events:none;
-      background:
-        radial-gradient(120% 120% at 50% 0,
-          rgba(255,255,255,0.16) 0,
-          rgba(255,255,255,0.05) 40%,
-          transparent 60%),
-        linear-gradient(180deg,
-          rgba(0,0,0,0) 0,
-          rgba(0,0,0,0.35) 55%,
-          rgba(0,0,0,0.9) 100%);
-      z-index:-1;
-    }
-
-    /* ===== Khung chính — tỷ lệ màn điện thoại ===== */
-    .lock-root{
-      position:relative;
-      flex:1;
-      max-width:430px;
-      height:100vh;
-      margin:auto;
-      padding:22px 18px 30px;
-      display:flex;
-      flex-direction:column;
-      justify-content:space-between;
-    }
-
-    /* ===== Thanh trạng thái trên cùng: sóng + wifi + pin ===== */
-    .status-bar{
-      position:absolute;
-      top:8px;
-      left:0;
-      right:0;
-      padding:0 18px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      font-size:13px;
-      color:rgba(255,255,255,0.95);
-      text-shadow:0 0 8px rgba(0,0,0,0.85);
-      pointer-events:none;
-      user-select:none;
-      z-index:3;
-    }
-    .sb-left{
-      opacity:0.9;
-    }
-    .sb-right{
-      display:flex;
-      align-items:center;
-      gap:6px;
-    }
-
-    /* Sóng */
-    .signal{
-      display:flex;
-      gap:1px;
-      align-items:flex-end;
-    }
-    .signal span{
-      width:2px;
-      border-radius:3px;
-      background:rgba(255,255,255,0.9);
-      box-shadow:0 0 5px rgba(255,255,255,0.8);
-    }
-    .signal .b1{ height:6px; opacity:.65; }
-    .signal .b2{ height:8px; opacity:.75; }
-    .signal .b3{ height:10px; opacity:.85; }
-    .signal .b4{ height:12px; opacity:.95; }
-
-    /* Wifi */
-    .wifi{
-      position:relative;
-      width:15px;
-      height:12px;
-    }
-    .wifi::before,
-    .wifi::after{
-      content:"";
-      position:absolute;
-      inset:0;
-      border-radius:50%;
-      border:2px solid transparent;
-      border-top-color:rgba(255,255,255,0.9);
-      box-shadow:0 0 6px rgba(255,255,255,0.85);
-    }
-    .wifi::after{
-      inset:4px;
-      border-width:2px;
-      opacity:0.8;
-    }
-    .wifi-dot{
-      position:absolute;
-      bottom:-1px;
-      left:50%;
-      transform:translateX(-50%);
-      width:4px;
-      height:4px;
-      border-radius:50%;
-      background:rgba(255,255,255,0.95);
-      box-shadow:0 0 4px rgba(255,255,255,0.9);
-    }
-
-    /* Pin */
-    .battery{
-      display:flex;
-      align-items:center;
-      gap:2px;
-    }
-    .battery-body{
-      width:22px;
-      height:10px;
-      border-radius:3px;
-      border:1.4px solid rgba(255,255,255,0.9);
-      padding:1px;
-      box-sizing:border-box;
-      display:flex;
-      align-items:stretch;
-    }
-    .battery-level{
-      flex:1;
-      border-radius:2px;
-      background:linear-gradient(90deg,#e8ffb4,#ffffff);
-      box-shadow:0 0 6px rgba(255,255,255,0.9);
-    }
-    .battery-cap{
-      width:2.5px;
-      height:6px;
-      border-radius:1.5px;
-      background:rgba(255,255,255,0.9);
-    }
-
-    /* ===== Trung tâm: ngày + giờ ===== */
-    .lock-top{
-      flex:1;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      text-align:center;
-      pointer-events:none;
-      user-select:none;
-    }
-    .lock-date{
-      font-size:13px;
-      letter-spacing:0.08em;
-      text-transform:uppercase;
-      color:rgba(255,255,255,0.7);
-      text-shadow:0 0 10px rgba(0,0,0,0.8);
-      margin-bottom:6px;
-    }
-    .lock-time{
-      font-size:clamp(72px, 22vw, 108px);
-      font-weight:500;
-      letter-spacing:3px;
-      color:rgba(255,255,255,0.86);
-      text-shadow:
-        0 0 18px rgba(255,255,255,0.85),
-        0 0 40px rgba(255,120,200,0.85),
-        0 0 70px rgba(97,146,255,0.9);
-    }
-
-    /* ===== Card nhập mật mã + keypad ===== */
-    .card{
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      gap:10px;
-      margin-top:0;
-      padding:12px 12px 20px;
-      border-radius:30px;
-      border:1px solid rgba(255,255,255,0.22);
-      background:
-        radial-gradient(circle at 10% 0, rgba(255,255,255,0.18), transparent 55%),
-        radial-gradient(circle at 90% 100%, rgba(120,180,255,0.25), transparent 55%),
-        linear-gradient(180deg,
-          rgba(3,3,15,0.65),
-          rgba(3,3,15,0.95));
-      backdrop-filter:blur(24px) saturate(170%);
-      -webkit-backdrop-filter:blur(24px) saturate(170%);
-      box-shadow:
-        0 26px 60px rgba(0,0,0,0.9),
-        0 0 40px rgba(255,120,200,0.25);
-      margin-bottom:80px; /* chừa chỗ cho icon dưới cùng */
-    }
-
-    .avatar-wrap{ display:none; }
-
-    .lock-title{
-      font-size:15px;
-    }
-    .lock-sub{
-      font-size:12px;
-      color:rgba(232,214,255,0.9);
-      margin-top:-2px;
-    }
-
-    .display{
-      margin-top:8px;
-      display:flex;
-      gap:10px;
-      justify-content:center;
-      align-items:center;
-      min-height:26px;
+    .dots{
+        display:flex;
+        gap:15px;
+        margin-top:25px;
     }
     .dot{
-      width:12px;
-      height:12px;
-      border-radius:50%;
-      border:1px solid rgba(255,255,255,0.8);
-      background:rgba(255,255,255,0.05);
-      box-shadow:0 0 0 0 transparent;
-      transition:background .18s ease, box-shadow .18s ease, transform .16s ease;
-    }
-    .dot.filled{
-      background:#fff;
-      box-shadow:
-        0 0 12px rgba(255,255,255,0.9),
-        0 0 18px rgba(255,160,220,0.9);
-      transform:scale(1.05);
+        width:14px;height:14px;
+        border-radius:50%;
+        border:2px solid white;
     }
 
-    .pad{
-      margin-top:10px;
-      width:100%;
-      max-width:320px;
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:12px 18px;
-      user-select:none;
+    .keypad{
+        margin-top:40px;
+        width:80%;
+        max-width:350px;
+        display:grid;
+        grid-template-columns:repeat(3, 1fr);
+        gap:20px;
     }
 
-    button.key{
-      height:60px;
-      width:60px;
-      margin:0 auto;
-      border-radius:50%;
-      border:1px solid var(--btn-border);
-      background:
-        radial-gradient(circle at 30% 20%, rgba(255,255,255,0.6), rgba(40,40,70,0.95));
-      box-shadow:var(--btn-shadow);
-      color:var(--accent);
-      font-size:22px;
-      font-weight:500;
-      cursor:pointer;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      transition:
-        transform .08s ease,
-        box-shadow .12s ease,
-        background .12s ease,
-        border-color .12s ease,
-        opacity .12s ease;
-      -webkit-tap-highlight-color:transparent;
+    .key{
+        width:100%;
+        aspect-ratio:1/1;
+        background:rgba(255,255,255,0.08);
+        border-radius:50%;
+        display:flex;
+        flex-direction:column;
+        justify-content:center;
+        align-items:center;
+        backdrop-filter: blur(8px);
+        cursor:pointer;
+        transition:0.15s;
     }
-    button.key:active{
-      transform:scale(0.94);
-      box-shadow:0 6px 18px rgba(0,0,0,0.9);
-      background:
-        radial-gradient(circle at 30% 20%, #ffffff, rgba(20,20,45,1));
-    }
-    .key.del,
-    .key.ok{
-      font-size:18px;
-    }
-    .key.del{
-      color:rgba(255,255,255,0.9);
-      background:
-        radial-gradient(circle at 30% 20%, rgba(255,255,255,0.45), rgba(30,30,60,0.95));
-      border-color:rgba(255,255,255,0.55);
-    }
-    .key.ok{
-      background:
-        radial-gradient(circle at 30% 20%, #ffffff, #ffe3ff);
-      color:#17152d;
-      border-color:#ffffff;
-      box-shadow:
-        0 18px 45px rgba(0,0,0,0.95),
-        0 0 24px rgba(255,255,255,0.4);
+    .key:active{
+        background:rgba(255,255,255,0.2);
     }
 
-    .foot{
-      margin-top:10px;
-      font-size:11px;
-      color:rgba(227,206,255,0.9);
-      text-align:center;
+    .key .num{
+        font-size:30px;
+        font-weight:500;
     }
-    .foot a{
-      color:#fdfbff;
-      text-decoration:underline;
-      text-decoration-thickness:1px;
-      text-underline-offset:3px;
+    .key .letters{
+        font-size:11px;
+        opacity:0.7;
+        margin-top:-4px;
     }
 
-    /* ===== Hàng icon dưới: đèn pin, máy ảnh, thanh home ===== */
-    .bottom-row{
-      position:absolute;
-      left:0;
-      right:0;
-      bottom:18px;
-      padding:0 32px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      pointer-events:none; /* không cho bấm thật – chỉ là trang trí */
+    .footer{
+        width:90%;
+        display:flex;
+        justify-content:space-between;
+        position:absolute;
+        bottom:40px;
+        font-size:16px;
+        opacity:0.8;
     }
-    .round-icon{
-      pointer-events:none;
-      width:40px;
-      height:40px;
-      border-radius:50%;
-      border:1px solid rgba(255,255,255,0.7);
-      background:rgba(0,0,0,0.35);
-      box-shadow:
-        0 0 14px rgba(0,0,0,0.9),
-        0 0 16px rgba(255,255,255,0.2);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-    }
-    .icon{
-      position:relative;
-      width:18px;
-      height:18px;
-    }
-
-    /* icon đèn pin */
-    .icon-flash::before,
-    .icon-flash::after{
-      content:"";
-      position:absolute;
-      left:50%;
-      transform:translateX(-50%);
-      background:rgba(255,255,255,0.95);
-    }
-    .icon-flash::before{
-      top:0;
-      width:9px;
-      height:5px;
-      border-radius:2px 2px 1px 1px;
-    }
-    .icon-flash::after{
-      top:5px;
-      width:7px;
-      height:10px;
-      border-radius:2px;
-    }
-
-    /* icon camera */
-    .icon-camera::before,
-    .icon-camera::after{
-      content:"";
-      position:absolute;
-      background:transparent;
-    }
-    .icon-camera::before{
-      top:2px;
-      left:1px;
-      right:1px;
-      bottom:2px;
-      border-radius:4px;
-      border:1.5px solid rgba(255,255,255,0.95);
-    }
-    .icon-camera::after{
-      top:6px;
-      left:6px;
-      width:6px;
-      height:6px;
-      border-radius:50%;
-      border:1.5px solid rgba(255,255,255,0.95);
-    }
-
-    .home-indicator{
-      width:90px;
-      height:3px;
-      border-radius:999px;
-      background:rgba(255,255,255,0.8);
-      box-shadow:
-        0 0 10px rgba(0,0,0,0.9),
-        0 0 12px rgba(255,255,255,0.4);
-    }
-
-    /* Lắc khi sai mật mã */
-    @keyframes shakeCard{
-      0%{ transform:translateX(0); }
-      20%{ transform:translateX(-6px); }
-      40%{ transform:translateX(6px); }
-      60%{ transform:translateX(-4px); }
-      80%{ transform:translateX(4px); }
-      100%{ transform:translateX(0); }
-    }
-    .card.shake{
-      animation:shakeCard 0.22s ease-in-out;
-    }
-
-    @media (max-height:640px){
-      .lock-root{
-        padding-top:10px;
-        padding-bottom:18px;
-      }
-      .card{
-        padding:8px 8px 16px;
-        margin-bottom:70px;
-      }
-      .lock-time{
-        font-size:clamp(60px, 18vw, 90px);
-      }
-    }
-  </style>
+</style>
 </head>
+
 <body>
-  <!-- Wallpaper từ ảnh index -->
-  <div class="wallpaper">
-    <img id="indexPic" src="assets/OIP.webp" alt="Wallpaper">
-  </div>
-  <div class="overlay"></div>
 
-  <main class="lock-root">
-    <!-- Thanh trạng thái -->
-    <div class="status-bar">
-      <div class="sb-left">9:41</div>
-      <div class="sb-right">
-        <div class="signal">
-          <span class="b1"></span>
-          <span class="b2"></span>
-          <span class="b3"></span>
-          <span class="b4"></span>
-        </div>
-        <div class="wifi">
-          <span class="wifi-dot"></span>
-        </div>
-        <div class="battery">
-          <div class="battery-body">
-            <div class="battery-level"></div>
-          </div>
-          <div class="battery-cap"></div>
-        </div>
-      </div>
+    <div class="title">Nhập mật mã</div>
+
+    <div class="dots">
+        <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+        <div class="dot"></div><div class="dot"></div><div class="dot"></div>
     </div>
 
-    <!-- Giữa: ngày + giờ -->
-    <header class="lock-top">
-      <div class="lock-date" id="lockDate">Tue Apr 1</div>
-      <div class="lock-time" id="lockTime">9:41</div>
-    </header>
+    <div class="keypad">
+        <div class="key"><div class="num">1</div></div>
+        <div class="key"><div class="num">2</div><div class="letters">ABC</div></div>
+        <div class="key"><div class="num">3</div><div class="letters">DEF</div></div>
 
-    <!-- Card nhập mật mã + keypad -->
-    <section class="card" id="card">
-      <div class="avatar-wrap">
-        <div class="avatar-ring">
-          <div class="avatar-ring-inner">
-            <img id="avatarPic" src="assets/OIP.webp" alt="Owner">
-          </div>
-        </div>
-      </div>
+        <div class="key"><div class="num">4</div><div class="letters">GHI</div></div>
+        <div class="key"><div class="num">5</div><div class="letters">JKL</div></div>
+        <div class="key"><div class="num">6</div><div class="letters">MNO</div></div>
 
-      <div class="lock-title">Nhập mật mã</div>
-      <div class="lock-sub">Để mở món quà bí mật ✨</div>
+        <div class="key"><div class="num">7</div><div class="letters">PQRS</div></div>
+        <div class="key"><div class="num">8</div><div class="letters">TUV</div></div>
+        <div class="key"><div class="num">9</div><div class="letters">WXYZ</div></div>
 
-      <div class="display" id="disp"></div>
-
-      <div class="pad">
-        <button class="key" data-k="1">1</button>
-        <button class="key" data-k="2">2</button>
-        <button class="key" data-k="3">3</button>
-        <button class="key" data-k="4">4</button>
-        <button class="key" data-k="5">5</button>
-        <button class="key" data-k="6">6</button>
-        <button class="key" data-k="7">7</button>
-        <button class="key" data-k="8">8</button>
-        <button class="key" data-k="9">9</button>
-        <button class="key del" data-k="del">⌫</button>
-        <button class="key" data-k="0">0</button>
-        <button class="key ok" data-k="ok">OK</button>
-      </div>
-
-      <div class="foot">
-        Vào <a href="settings.html">Cài đặt</a> để chọn ảnh & mật khẩu dễ thương 💗
-      </div>
-    </section>
-
-    <!-- Dưới cùng: đèn pin / máy ảnh + thanh home -->
-    <div class="bottom-row">
-      <div class="round-icon"><span class="icon icon-flash"></span></div>
-      <div class="home-indicator"></div>
-      <div class="round-icon"><span class="icon icon-camera"></span></div>
+        <div></div>
+        <div class="key"><div class="num">0</div></div>
+        <div></div>
     </div>
-  </main>
 
-<script>
-/* ==== Mật khẩu: giữ nguyên logic cũ ==== */
-const LS_PW = 'userPassword';
+    <div class="footer">
+        <div>Khẩn cấp</div>
+        <div>Hủy</div>
+    </div>
 
-const disp = document.getElementById('disp');
-const card = document.getElementById('card');
-let buf = "";
-
-/* Lấy mật khẩu đang lưu */
-function getSecret(){
-  return (localStorage.getItem(LS_PW)||'').trim() || "1234";
-}
-
-/* render chấm tròn theo độ dài buf */
-function updateDisp(){
-  const maxDots = 4;
-  const len = Math.min(buf.length, maxDots);
-  disp.innerHTML = "";
-  for(let i=0;i<maxDots;i++){
-    const dot = document.createElement('div');
-    dot.className = 'dot' + (i < len ? ' filled' : '');
-    disp.appendChild(dot);
-  }
-}
-
-/* hiệu ứng lắc khi sai pass */
-function shake(){
-  card.classList.remove('shake');
-  void card.offsetWidth;
-  card.classList.add('shake');
-}
-
-function submit(){
-  if(buf===getSecret()){
-    localStorage.setItem('gift_unlocked','1');
-    sessionStorage.setItem('allow_music','1');
-    location.href='birthday.html';
-  }else{
-    buf="";
-    updateDisp();
-    shake();
-  }
-}
-
-/* xử lý bấm phím keypad */
-function press(k){
-  if(k==='ok') return submit();
-  if(k==='del'){
-    buf = buf.slice(0,-1);
-    return updateDisp();
-  }
-  if(/^[0-9]$/.test(k) && buf.length<12){
-    buf += k;
-    updateDisp();
-  }
-}
-
-/* gán click cho các nút */
-document.querySelectorAll('.key').forEach(b=>{
-  b.addEventListener('click',()=>press(b.dataset.k));
-});
-
-/* gán phím cứng (desktop) */
-addEventListener('keydown',e=>{
-  if(e.key>='0'&&e.key<='9') press(e.key);
-  if(e.key==='Backspace')    press('del');
-  if(e.key==='Enter')        press('ok');
-});
-
-/* render ban đầu */
-updateDisp();
-
-/* ==== wallpaper & avatar từ IndexedDB ==== */
-const DB_NAME = 'birthdayDB';
-const DB_VER  = 1;
-const STORE   = 'images';
-const INDEX_KEY = 'img_index_main';
-
-function openDB() {
-  return new Promise((resolve, reject) => {
-    const req = indexedDB.open(DB_NAME, DB_VER);
-    req.onupgradeneeded = () => {
-      const db = req.result;
-      if (!db.objectStoreNames.contains(STORE)) {
-        db.createObjectStore(STORE);
-      }
-    };
-    req.onsuccess = () => resolve(req.result);
-    req.onerror   = () => reject(req.error);
-  });
-}
-
-async function getImageFromDB(key){
-  const db = await openDB();
-  return new Promise((resolve, reject) => {
-    const tx = db.transaction(STORE,'readonly');
-    const req = tx.objectStore(STORE).get(key);
-    req.onsuccess = () => resolve(req.result || null);
-    req.onerror   = () => reject(req.error);
-  });
-}
-
-/* load ảnh Index -> wallpaper & avatar */
-(async function loadIndexPic(){
-  const wall = document.getElementById('indexPic');
-  const avatar = document.getElementById('avatarPic');
-
-  try {
-    const blob = await getImageFromDB(INDEX_KEY);
-    if (blob) {
-      const url = URL.createObjectURL(blob);
-      wall.src = url;
-      avatar.src = url;
-    } else {
-      wall.src = "assets/OIP.webp";
-      avatar.src = "assets/OIP.webp";
-    }
-  } catch (err) {
-    console.error('Không load được ảnh Index từ IndexedDB:', err);
-    wall.src = "assets/OIP.webp";
-    avatar.src = "assets/OIP.webp";
-  }
-})();
-
-/* ==== đồng hồ / ngày cập nhật theo giờ thật ==== */
-function updateLockTime(){
-  const tEl = document.getElementById('lockTime');
-  const dEl = document.getElementById('lockDate');
-  const now = new Date();
-
-  const hh = String(now.getHours()).padStart(2,'0');
-  const mm = String(now.getMinutes()).padStart(2,'0');
-  tEl.textContent = `${hh}:${mm}`;
-
-  const weekdayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-
-  const wd = weekdayNames[now.getDay()];
-  const day = now.getDate();
-  const mon = monthNames[now.getMonth()];
-  dEl.textContent = `${wd} ${mon} ${day}`;
-}
-updateLockTime();
-setInterval(updateLockTime, 30000);
-
-/* ==== PWA service worker ==== */
-if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('./sw.js').catch(()=>{});
-}
-</script>
 </body>
 </html>
-
